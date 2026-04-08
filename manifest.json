@@ -1,0 +1,9 @@
+{
+  "name": "The Wheel",
+  "short_name": "The Wheel",
+  "start_url": "/the-wheel/",
+  "display": "standalone",
+  "background_color": "#05050e",
+  "theme_color": "#05050e",
+  "icons": []
+}
