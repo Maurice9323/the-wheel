@@ -14,8 +14,87 @@
 <meta name="apple-mobile-web-app-title" content="The Wheel">
 <meta name="theme-color" content="#05050e">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBaP6IJ6FlzwCLedy2wypXTtswUV_qx_CM",
+    authDomain: "the-wheel-a4199.firebaseapp.com",
+    projectId: "the-wheel-a4199",
+    storageBucket: "the-wheel-a4199.firebasestorage.app",
+    messagingSenderId: "1016646322886",
+    appId: "1:1016646322886:web:041fd9223debe9ef54e5c7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const COL = 'thewheel';
+
+  // Expose as window.storage matching existing API
+  window.storage = {
+    async get(key) {
+      try {
+        const snap = await getDoc(doc(db, COL, key));
+        if (snap.exists()) return { key, value: snap.data().value };
+        return null;
+      } catch(e) {
+        // fallback to localStorage
+        const v = localStorage.getItem(key);
+        return v ? { key, value: v } : null;
+      }
+    },
+    async set(key, value) {
+      try {
+        await setDoc(doc(db, COL, key), { value });
+        localStorage.setItem(key, value); // local mirror
+        return { key, value };
+      } catch(e) {
+        localStorage.setItem(key, value);
+        return { key, value };
+      }
+    },
+    async delete(key) {
+      try {
+        await deleteDoc(doc(db, COL, key));
+        localStorage.removeItem(key);
+        return { key, deleted: true };
+      } catch(e) {
+        localStorage.removeItem(key);
+        return { key, deleted: true };
+      }
+    },
+    async list(prefix) {
+      try {
+        const snap = await getDocs(collection(db, COL));
+        const keys = snap.docs.map(d => d.id).filter(k => !prefix || k.startsWith(prefix));
+        return { keys };
+      } catch(e) {
+        const keys = Object.keys(localStorage).filter(k => !prefix || k.startsWith(prefix));
+        return { keys };
+      }
+    }
+  };
+
+  // Signal that Firebase is ready
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+/* ── PIN GATE ── */
+#pinGate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+#pinGate.hidden{display:none}
+.pin-title{font-family:'Cinzel Decorative',serif;font-size:1.2rem;color:var(--accent);letter-spacing:3px;text-shadow:0 0 30px rgba(192,18,28,.5)}
+.pin-dots{display:flex;gap:14px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:all .2s}
+.pin-dot.filled{background:var(--accent);border-color:var(--accent)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,72px);gap:10px}
+.pin-btn{width:72px;height:72px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:600;cursor:pointer;transition:all .2s;touch-action:manipulation}
+.pin-btn:hover{border-color:var(--accent);color:var(--accent)}
+.pin-btn.wide{border-radius:36px;grid-column:span 1}
+.pin-error{color:var(--accent);font-size:.8rem;letter-spacing:2px;text-transform:uppercase;opacity:0;transition:opacity .3s}
+.pin-error.show{opacity:1}
 :root{
   --bg:#05050e;--bg2:#0c0c1a;--bg3:#111120;
   --accent:#c0121c;--accent2:#7a0000;--gold:#b8920b;
@@ -237,6 +316,31 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:14
 </style>
 </head>
 <body>
+<!-- PIN GATE -->
+<div id="pinGate">
+  <div class="pin-title">THE WHEEL</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-btn" onclick="pinPress(1)">1</button>
+    <button class="pin-btn" onclick="pinPress(2)">2</button>
+    <button class="pin-btn" onclick="pinPress(3)">3</button>
+    <button class="pin-btn" onclick="pinPress(4)">4</button>
+    <button class="pin-btn" onclick="pinPress(5)">5</button>
+    <button class="pin-btn" onclick="pinPress(6)">6</button>
+    <button class="pin-btn" onclick="pinPress(7)">7</button>
+    <button class="pin-btn" onclick="pinPress(8)">8</button>
+    <button class="pin-btn" onclick="pinPress(9)">9</button>
+    <button class="pin-btn" onclick="pinClear()">⌫</button>
+    <button class="pin-btn" onclick="pinPress(0)">0</button>
+    <button class="pin-btn" onclick="pinClear()">✕</button>
+  </div>
+  <div class="pin-error" id="pinError">Incorrect PIN</div>
+</div>
 <header>
   <div>
     <div class="title">THE WHEEL</div>
@@ -5545,8 +5649,84 @@ function deleteTemplate(id){if(cachedTemplates.length<=1){alert("Can't delete la
 function exportTemplates(){autoSaveActive();const b=new Blob([JSON.stringify(cachedTemplates,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wheel_templates.json';a.click();URL.revokeObjectURL(a.href);}
 function importTemplates(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const im=JSON.parse(e.target.result);if(!Array.isArray(im))throw new Error();const eids=new Set(cachedTemplates.map(t=>t.id));const nw=im.filter(t=>!eids.has(t.id));cachedTemplates=[...cachedTemplates,...nw];persistSave();renderTemplatePanel();alert(`Imported ${nw.length} template(s).`);}catch(err){alert('Import failed.');}};r.readAsText(f);inp.value='';}
 
+// ═══════════════ PIN GATE ═══════════════
+const PIN_CORRECT = '1234'; // ← CHANGE THIS TO YOUR PIN
+const PIN_STORAGE = 'thewheel-pin-unlocked';
+let pinEntry = '';
+
+function pinPress(n){
+  if(pinEntry.length >= 4) return;
+  pinEntry += n;
+  updatePinDots();
+  if(pinEntry.length === 4) setTimeout(pinCheck, 120);
+}
+
+function pinClear(){
+  pinEntry = pinEntry.slice(0, -1);
+  updatePinDots();
+  document.getElementById('pinError').classList.remove('show');
+}
+
+function updatePinDots(){
+  for(let i=0;i<4;i++){
+    document.getElementById('pd'+i).classList.toggle('filled', i < pinEntry.length);
+  }
+}
+
+function pinCheck(){
+  if(pinEntry === PIN_CORRECT){
+    localStorage.setItem(PIN_STORAGE, '1');
+    document.getElementById('pinGate').classList.add('hidden');
+  } else {
+    document.getElementById('pinError').classList.add('show');
+    pinEntry = '';
+    updatePinDots();
+  }
+}
+
+function checkPin(){
+  // Already unlocked on this device
+  if(localStorage.getItem(PIN_STORAGE) === '1'){
+    document.getElementById('pinGate').classList.add('hidden');
+    return true;
+  }
+  return false;
+}
+
 // ═══════════════ INIT ═══════════════
-initApp().then(()=>{renderWheelUI();drawWheel(0);});
+function startApp(){
+  if(!checkPin()){
+    // App will start after PIN entered — wait for gate to hide
+    const obs = new MutationObserver(()=>{
+      if(document.getElementById('pinGate').classList.contains('hidden')){
+        obs.disconnect();
+        initApp().then(()=>{renderWheelUI();drawWheel(0);});
+      }
+    });
+    obs.observe(document.getElementById('pinGate'), {attributes:true, attributeFilter:['class']});
+  } else {
+    initApp().then(()=>{renderWheelUI();drawWheel(0);});
+  }
+}
+
+// Wait for Firebase to be ready before starting
+if(window.storage){
+  startApp();
+} else {
+  window.addEventListener('firebase-ready', startApp, {once:true});
+  // Fallback if Firebase fails to load within 3s
+  setTimeout(()=>{
+    if(!window.storage){
+      window.storage={
+        async get(k){const v=localStorage.getItem(k);return v?{key:k,value:v}:null;},
+        async set(k,v){localStorage.setItem(k,v);return{key:k,value:v};},
+        async delete(k){localStorage.removeItem(k);return{key:k,deleted:true};},
+        async list(p){return{keys:Object.keys(localStorage).filter(k=>!p||k.startsWith(p))};}
+      };
+      startApp();
+    }
+  }, 3000);
+}
 </script>
 </body>
 </html>
