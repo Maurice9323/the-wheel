@@ -17,7 +17,7 @@
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaP6IJ6FlzwCLedy2wypXTtswUV_qx_CM",
@@ -32,23 +32,51 @@
   const db = getFirestore(app);
   const COL = 'thewheel';
 
+  // Track last write timestamp per key to avoid re-applying our own writes
+  const lastWrite = {};
+
+  // Real-time listener — fires whenever any doc in collection changes
+  // Only applies changes that came from another device (not our own writes)
+  onSnapshot(collection(db, COL), snapshot => {
+    snapshot.docChanges().forEach(change => {
+      const key = change.doc.id;
+      const value = change.doc.data().value;
+      const now = Date.now();
+
+      // Skip if we wrote this ourselves in the last 2 seconds
+      if(lastWrite[key] && now - lastWrite[key] < 2000) return;
+
+      // Update localStorage mirror
+      if(value !== undefined) localStorage.setItem(key, value);
+
+      // Notify app of remote change for key-specific reload
+      window.dispatchEvent(new CustomEvent('firestore-update', { detail: { key, value } }));
+    });
+  });
+
   // Expose as window.storage matching existing API
   window.storage = {
     async get(key) {
       try {
         const snap = await getDoc(doc(db, COL, key));
-        if (snap.exists()) return { key, value: snap.data().value };
-        return null;
+        if (snap.exists()) {
+          const value = snap.data().value;
+          localStorage.setItem(key, value);
+          return { key, value };
+        }
+        // Fallback to localStorage
+        const v = localStorage.getItem(key);
+        return v ? { key, value: v } : null;
       } catch(e) {
-        // fallback to localStorage
         const v = localStorage.getItem(key);
         return v ? { key, value: v } : null;
       }
     },
     async set(key, value) {
+      lastWrite[key] = Date.now();
       try {
         await setDoc(doc(db, COL, key), { value });
-        localStorage.setItem(key, value); // local mirror
+        localStorage.setItem(key, value);
         return { key, value };
       } catch(e) {
         localStorage.setItem(key, value);
@@ -56,6 +84,7 @@
       }
     },
     async delete(key) {
+      lastWrite[key] = Date.now();
       try {
         await deleteDoc(doc(db, COL, key));
         localStorage.removeItem(key);
@@ -1250,8 +1279,8 @@ amount:{name:'Amount',segments:[
 ]},
 mode:{name:'Mode',segments:[
   {label:'Wife',weight:10},{label:'Lover',weight:16},{label:'Pet',weight:20},
-  {label:'Slave',weight:25},{label:'Child',weight:19},{label:'Mother',weight:18},
-  {label:'Sibling',weight:16},{label:'Aunt/Cousin',weight:16},
+  {label:'Slave',weight:25},{label:'Sub',weight:19},{label:'Mother',weight:18},
+  {label:'Sibling',weight:16},{label:'Aunt/Cousin',weight:16},{label:'Teacher',weight:16},
   {label:'Spiteful Friend',weight:17},{label:'FWB',weight:15},
   {label:'Superior',weight:11},{label:'Subordinate',weight:19},
 ]},
@@ -2153,6 +2182,76 @@ auntcousin_depth:{name:'Aunt/Cousin Role Depth & Intensity',segments:[
   {label:'STUB — paste segments here',weight:10},
 ]},
 
+// ── ABUSE WHEELS (56–64) ──
+mother_a_abuse:{name:'Mother A. Abuse',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+sister_a_abuse:{name:'Sister A. Abuse',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+aunt_a_abuse:{name:'Aunt/Cousin A. Abuse',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+general_abuse:{name:'General Extreme Dark Abuse Acts',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+mother_dark_acts:{name:'Extreme Dark Acts (Mother Delivering)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+sister_dark_acts:{name:'Extreme Dark Acts (Sister Delivering)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+auntcousin_dark_acts:{name:'Extreme Dark Acts (Aunt/Cousin Delivering)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+dark_psychology:{name:'Extreme Dark Psychology (Goal vs Actual Results)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+
+// ── TEACHER WHEELS (65–69, 70–72, 74–75) ──
+teacher_enthusiasm:{name:'Teacher Enthusiasm',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+teacher_sensation_me:{name:'Teacher Sensation (For Me)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+teacher_sensation_her:{name:'Teacher Sensation (For Her)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+teacher_psychology:{name:'Teacher Psychological Aspects',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+teacher_depth:{name:'Teacher Role Depth & Intensity',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+teacher_abuse_acts:{name:'Teacher Abuse Acts (Delivering)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+teacher_abuse_sensation:{name:'Teacher Abuse Sensation (For Me)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+teacher_abuse_psychology:{name:'Teacher Abuse Psychology',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+college_abuse_acts:{name:'Extreme Dark Abuse Acts (College Prof.)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+college_abuse_psychology:{name:'Extreme Dark Abuse Psychology (Teacher)',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+
+// ── BABY TALK + BREEDING (77–78) ──
+baby_talk:{name:'Baby Talk',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+breeding_gate:{name:'Breeding',segments:[
+  {label:'Yes',weight:10},
+  {label:'No',weight:10},
+]},
+breeding_wheel:{name:'Knocked Up by Family / Breeding Wheel',segments:[
+  {label:'STUB — paste segments here',weight:10},
+]},
+
 // ── PERSIAN SUB-WHEEL ──
 persian_sub:{name:'Persian Region',segments:[
   {label:'Iran',weight:35},
@@ -2805,9 +2904,19 @@ const WHEEL_ORDER=[
   'length','disobedience','punishment','location',
   'fav_part','bonus',
   'pegging_enthusiasm','pegging_sensation',
+  'general_abuse',
+  'baby_talk',
+  'breeding_gate','breeding_wheel',
   'mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth',
+  'mother_a_abuse','mother_dark_acts',
   'sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth',
+  'sister_a_abuse','sister_dark_acts',
   'auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth',
+  'aunt_a_abuse','auntcousin_dark_acts',
+  'dark_psychology',
+  'teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth',
+  'teacher_abuse_acts','teacher_abuse_sensation','teacher_abuse_psychology',
+  'college_abuse_acts','college_abuse_psychology',
   'time_day','season','wildcard'
 ];
 
@@ -3156,15 +3265,36 @@ function computeNext(fromId,label,seg){
   if(fromId==='kink'){
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(label))return nextEnabled('pegging_enthusiasm');
-    return nextEnabled('amount');
+    return nextEnabled('breeding_gate');
   }
   if(fromId==='pegging_enthusiasm')return nextEnabled('pegging_sensation');
-  if(fromId==='pegging_sensation')return nextEnabled('amount');
+  if(fromId==='pegging_sensation'){
+    const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
+    if(kinkResult==='Super Dom'||kinkResult==='Med Dom')return nextEnabled('general_abuse');
+    if(kinkResult==='Light Dom')return nextEnabled('baby_talk');
+    return nextEnabled('breeding_gate'); // Gentle Dom
+  }
+  if(fromId==='general_abuse')return nextEnabled('baby_talk');
+  if(fromId==='baby_talk'){
+    const modeResult=results.find(r=>r.wheelId==='mode')?.label||'';
+    if(['Mother','Sibling','Aunt/Cousin','Teacher'].includes(modeResult))return nextEnabled('breeding_wheel');
+    return nextEnabled('breeding_gate');
+  }
+  if(fromId==='breeding_gate'){
+    if(label==='Yes')return nextEnabled('breeding_wheel');
+    return nextEnabled('amount');
+  }
+  if(fromId==='breeding_wheel'){
+    const modeResult=results.find(r=>r.wheelId==='mode')?.label||'';
+    if(['Mother','Sibling','Aunt/Cousin','Teacher'].includes(modeResult))return nextEnabled('length');
+    return nextEnabled('amount');
+  }
   if(fromId==='amount')return nextEnabled('mode');
   if(fromId==='mode'){
     if(label==='Mother')return nextEnabled('mothering_enthusiasm');
     if(label==='Sibling')return nextEnabled('sibling_enthusiasm');
     if(label==='Aunt/Cousin')return nextEnabled('auntcousin_enthusiasm');
+    if(label==='Teacher')return nextEnabled('teacher_enthusiasm');
     return nextEnabled('length');
   }
   // ── Mothering roleplay wheels ──
@@ -3172,19 +3302,57 @@ function computeNext(fromId,label,seg){
   if(fromId==='mothering_sensation_me')return nextEnabled('mothering_sensation_her');
   if(fromId==='mothering_sensation_her')return nextEnabled('mothering_psychology');
   if(fromId==='mothering_psychology')return nextEnabled('mothering_depth');
-  if(fromId==='mothering_depth')return nextEnabled('length');
+  if(fromId==='mothering_depth'){
+    const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
+    const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
+    if(domLabels.includes(kinkResult))return nextEnabled('mother_a_abuse');
+    return nextEnabled('baby_talk');
+  }
+  if(fromId==='mother_a_abuse')return nextEnabled('mother_dark_acts');
+  if(fromId==='mother_dark_acts')return nextEnabled('dark_psychology');
   // ── Sibling roleplay wheels ──
   if(fromId==='sibling_enthusiasm')return nextEnabled('sibling_sensation_me');
   if(fromId==='sibling_sensation_me')return nextEnabled('sibling_sensation_her');
   if(fromId==='sibling_sensation_her')return nextEnabled('sibling_psychology');
   if(fromId==='sibling_psychology')return nextEnabled('sibling_depth');
-  if(fromId==='sibling_depth')return nextEnabled('length');
+  if(fromId==='sibling_depth'){
+    const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
+    const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
+    if(domLabels.includes(kinkResult))return nextEnabled('sister_a_abuse');
+    return nextEnabled('baby_talk');
+  }
+  if(fromId==='sister_a_abuse')return nextEnabled('sister_dark_acts');
+  if(fromId==='sister_dark_acts')return nextEnabled('dark_psychology');
   // ── Aunt/Cousin roleplay wheels ──
   if(fromId==='auntcousin_enthusiasm')return nextEnabled('auntcousin_sensation_me');
   if(fromId==='auntcousin_sensation_me')return nextEnabled('auntcousin_sensation_her');
   if(fromId==='auntcousin_sensation_her')return nextEnabled('auntcousin_psychology');
   if(fromId==='auntcousin_psychology')return nextEnabled('auntcousin_depth');
-  if(fromId==='auntcousin_depth')return nextEnabled('length');
+  if(fromId==='auntcousin_depth'){
+    const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
+    const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
+    if(domLabels.includes(kinkResult))return nextEnabled('aunt_a_abuse');
+    return nextEnabled('baby_talk');
+  }
+  if(fromId==='aunt_a_abuse')return nextEnabled('auntcousin_dark_acts');
+  if(fromId==='auntcousin_dark_acts')return nextEnabled('dark_psychology');
+  // ── Dark psychology (shared endpoint) ──
+  if(fromId==='dark_psychology')return nextEnabled('baby_talk');
+  // ── Teacher roleplay wheels ──
+  if(fromId==='teacher_enthusiasm')return nextEnabled('teacher_sensation_me');
+  if(fromId==='teacher_sensation_me')return nextEnabled('teacher_sensation_her');
+  if(fromId==='teacher_sensation_her')return nextEnabled('teacher_psychology');
+  if(fromId==='teacher_psychology')return nextEnabled('teacher_depth');
+  if(fromId==='teacher_depth'){
+    const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
+    if(kinkResult==='Super Dom'||kinkResult==='Med Dom')return nextEnabled('teacher_abuse_acts');
+    return nextEnabled('baby_talk');
+  }
+  if(fromId==='teacher_abuse_acts')return nextEnabled('teacher_abuse_sensation');
+  if(fromId==='teacher_abuse_sensation')return nextEnabled('teacher_abuse_psychology');
+  if(fromId==='teacher_abuse_psychology')return nextEnabled('college_abuse_acts');
+  if(fromId==='college_abuse_acts')return nextEnabled('college_abuse_psychology');
+  if(fromId==='college_abuse_psychology')return nextEnabled('baby_talk');
   if(fromId==='length')return nextEnabled('disobedience');
   if(fromId==='disobedience')return nextEnabled('punishment');
   if(fromId==='punishment')return nextEnabled('location');
@@ -3426,6 +3594,24 @@ function applyConsistencyMatrix(weights,segs,wid){
     // Short height: suppress USSBBW/SSBBW
     if(heightGroup==='short'||heightGroup==='very_short'){
       w.forEach((_,i)=>{if(/ussbbw|ssbbw/i.test(lbl(i)))w[i]*=(matrixMultipliers['short_bbw_suppress']??0.3);});
+    }
+    return w;
+  }
+
+  // ── Mode wheel — age-based boosts/blocks ──
+  if(wid==='mode'){
+    // Age 51+: boost Mother 3x, boost Teacher 2x
+    if(ageGroup==='older'||ageGroup==='mature'){
+      w.forEach((_,i)=>{
+        if(segs[i].label==='Mother') w[i]*=(matrixMultipliers['older_mother_boost']??3.0);
+        if(segs[i].label==='Teacher') w[i]*=(matrixMultipliers['older_teacher_boost']??2.0);
+      });
+    }
+    // Age 18-24: block Teacher entirely
+    if(ageGroup==='teen'||ageGroup==='young'){
+      w.forEach((_,i)=>{
+        if(segs[i].label==='Teacher') w[i]=0;
+      });
     }
     return w;
   }
@@ -4271,10 +4457,11 @@ function generateNarrative(){
     'FWB':`The arrangement is casual — she is your FWB`,
     'Pet':`She is your pet. Not a metaphor`,
     'Slave':`She is your property`,
-    'Child':`She is yours to shape`,
+    'Sub':`She is yours to shape`,
     'Mother':`She is the mother of your children`,
     'Sibling':`She is your sibling. The line was crossed`,
     'Aunt/Cousin':`She is family. The kind you're not supposed to want`,
+    'Teacher':`She is your teacher. The dynamic shifted`,
     'Spiteful Friend':`She calls herself your friend. The relationship is something else`,
     'Superior':`She outranks you on paper. That stopped mattering`,
     'Subordinate':`She works under you. In more ways than one`,
@@ -4582,8 +4769,8 @@ const WHEEL_CATEGORIES = {
   'Physical Detail':['shave','cleavage','body_hair','hands','position','feet'],
   'Sensory':['skin_soft','nat_scent','skin_temp','touch_resp'],
   'Character':['financial','personality','education','intelligence','street_smarts','sex_exp','acquired','mental_state','emotional','bond_threat','voice','language'],
-  'Scenario':['kink','amount','mode','length','disobedience','punishment','location','fav_part','bonus','pegging_enthusiasm','pegging_sensation'],
-  'Roleplay':['mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth','sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth','auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth'],
+  'Scenario':['kink','amount','mode','length','disobedience','punishment','location','fav_part','bonus','pegging_enthusiasm','pegging_sensation','general_abuse','baby_talk','breeding_gate','breeding_wheel'],
+  'Roleplay':['mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth','mother_a_abuse','mother_dark_acts','sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth','sister_a_abuse','sister_dark_acts','auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth','aunt_a_abuse','auntcousin_dark_acts','dark_psychology','teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth','teacher_abuse_acts','teacher_abuse_sensation','teacher_abuse_psychology','college_abuse_acts','college_abuse_psychology'],
   'Setting':['time_day','season','wildcard'],
 };
 
@@ -4598,7 +4785,13 @@ function getOriginWheelIds(){
 }
 
 function getCatWheels(cat){
-  if(cat==='all') return WHEEL_ORDER.filter(id=>WHEEL_DEFS[id]);
+  if(cat==='all'){
+    // Start with WHEEL_ORDER, then append any WHEEL_DEFS not in order
+    const ordered=WHEEL_ORDER.filter(id=>WHEEL_DEFS[id]);
+    const inOrder=new Set(ordered);
+    const extras=Object.keys(WHEEL_DEFS).filter(id=>!inOrder.has(id));
+    return [...ordered,...extras];
+  }
   if(cat==='Origins') return getOriginWheelIds().filter(id=>WHEEL_DEFS[id]);
   const ids = WHEEL_CATEGORIES[cat]||[];
   return ids.filter(id=>WHEEL_DEFS[id]);
@@ -4632,14 +4825,17 @@ function setEditCat(cat){
 
 function refreshWheelSelectForCat(cat){
   const sel=document.getElementById('editWheelSelect');
-  const ids=getCatWheels(cat);
+  const prev=sel.value;
   sel.innerHTML='';
-  ids.forEach(id=>{
-    const o=document.createElement('option');
-    o.value=id;
-    o.textContent=WHEEL_DEFS[id].name;
-    sel.appendChild(o);
-  });
+  if(cat==='all'){
+    const shown=new Set();
+    WHEEL_ORDER.forEach(id=>{if(!WHEEL_DEFS[id])return;const o=document.createElement('option');o.value=id;o.textContent=WHEEL_DEFS[id].name;sel.appendChild(o);shown.add(id);});
+    Object.entries(WHEEL_DEFS).forEach(([id,def])=>{if(shown.has(id))return;const o=document.createElement('option');o.value=id;o.textContent=def.name;sel.appendChild(o);});
+  } else {
+    const ids=getCatWheels(cat);
+    ids.forEach(id=>{const o=document.createElement('option');o.value=id;o.textContent=WHEEL_DEFS[id].name;sel.appendChild(o);});
+  }
+  if(prev&&WHEEL_DEFS[prev])sel.value=prev;
 }
 
 function editNavPrev(){
@@ -5117,6 +5313,8 @@ const MATRIX_DEFAULTS={
   'older_ass_proj_boost':1.8,
   'older_ass_firm_suppress':0.3,
   'teen_ass_mommy':0.1,
+  'older_mother_boost':3.0,
+  'older_teacher_boost':2.0,
 };
 let matrixMultipliers={...MATRIX_DEFAULTS};
 
@@ -5136,7 +5334,7 @@ function exportConfig(){
     disabled:[...disabledWheels],
     matrix:matrixMultipliers,
     hardBlocks:hardBlockToggles,
-    version:'v5.0',
+    version:'v5.1',
     exported:new Date().toISOString(),
   };
   // Export all wheel definitions (names + segments)
@@ -5605,7 +5803,7 @@ async function initApp(){
 }
 
 // Version stamp — bump this whenever WHEEL_DEFS structure changes significantly
-const WHEEL_VERSION='v5.0';
+const WHEEL_VERSION='v5.1';
 
 function applyTemplate(tpl,save=true){
   // If the saved template predates the current wheel version, ignore its wheelDefs
@@ -5648,6 +5846,44 @@ function renameTemplate(id){const t=cachedTemplates.find(t=>t.id===id);if(!t)ret
 function deleteTemplate(id){if(cachedTemplates.length<=1){alert("Can't delete last template.");return;}const t=cachedTemplates.find(t=>t.id===id);if(!confirm(`Delete "${t?.name}"?`))return;cachedTemplates=cachedTemplates.filter(t=>t.id!==id);persistSave();if(id===cachedActiveId)loadTemplate(cachedTemplates[0].id);else renderTemplatePanel();}
 function exportTemplates(){autoSaveActive();const b=new Blob([JSON.stringify(cachedTemplates,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wheel_templates.json';a.click();URL.revokeObjectURL(a.href);}
 function importTemplates(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const im=JSON.parse(e.target.result);if(!Array.isArray(im))throw new Error();const eids=new Set(cachedTemplates.map(t=>t.id));const nw=im.filter(t=>!eids.has(t.id));cachedTemplates=[...cachedTemplates,...nw];persistSave();renderTemplatePanel();alert(`Imported ${nw.length} template(s).`);}catch(err){alert('Import failed.');}};r.readAsText(f);inp.value='';}
+
+// ═══════════════ REAL-TIME SYNC HANDLER ═══════════════
+window.addEventListener('firestore-update', async e => {
+  const { key, value } = e.detail;
+  if(!value) return;
+  try {
+    switch(key) {
+      case 'thewheel-data-v5':
+        const d = JSON.parse(value);
+        if(Array.isArray(d.templates) && d.templates.length){
+          cachedTemplates = d.templates;
+          cachedActiveId = d.activeId || 'default';
+          const active = cachedTemplates.find(t=>t.id===cachedActiveId)||cachedTemplates[0];
+          if(active) applyTemplate(active, false);
+        }
+        break;
+      case 'thewheel-disabled-v1':
+        disabledWheels = new Set(JSON.parse(value));
+        renderProgress();
+        break;
+      case 'thewheel-matrix-v1':
+        Object.assign(matrixMultipliers, JSON.parse(value));
+        break;
+      case 'thewheel-hardblocks-v1':
+        Object.assign(hardBlockToggles, JSON.parse(value));
+        break;
+      case 'thewheel-diffmult-v1':
+        Object.assign(diffMultipliers, JSON.parse(value));
+        break;
+      case 'thewheel-groupmaps-v1':
+        groupMaps = JSON.parse(value);
+        break;
+      case 'thewheel-history-v1':
+        spinHistory = JSON.parse(value);
+        break;
+    }
+  } catch(err) {}
+});
 
 // ═══════════════ PIN GATE ═══════════════
 const PIN_CORRECT = '1234'; // ← CHANGE THIS TO YOUR PIN
