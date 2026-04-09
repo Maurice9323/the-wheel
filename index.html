@@ -415,6 +415,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
     <button type="button" class="btn" onclick="openMatrixPanel()" style="font-size:.75rem">⚖ Matrix</button>
     <button type="button" class="btn" onclick="openHistoryPanel()" style="font-size:.75rem">⏱ History</button>
     <button type="button" class="btn" onclick="openGroupPanel()" style="font-size:.75rem">⊞ Groups</button>
+    <button type="button" class="btn" onclick="openRulesPanel()" style="font-size:.75rem;border-color:rgba(184,146,11,.4);color:var(--gold)">⚡ Rules</button>
     <button type="button" class="btn" onclick="restartAll()">↺ Restart</button>
   </div>
 </header>
@@ -683,6 +684,24 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
     <div class="ep-note" style="margin-bottom:10px">Last 20 spins. Tap Restore to reload a previous result.</div>
     <button type="button" class="add-seg-btn" onclick="exportHTML()" style="width:100%;margin-bottom:14px;background:var(--accent2);border-color:var(--accent);color:var(--text)">⬇ Export Wheel as HTML</button>
     <div id="historyList"></div>
+  </div>
+</div>
+<!-- RULES PANEL -->
+<div class="overlay" id="rulesOverlay" onclick="closeRulesPanel()"></div>
+<div class="side-panel" id="rulesPanel">
+  <div class="panel-head">
+    <div class="panel-title">⚡ Consistency Rules</div>
+    <button type="button" class="close-x" onclick="closeRulesPanel()">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="ep-note" style="margin-bottom:12px">Upload a rules JSON exported from the Rules Builder. Rules affect segment weights during spins based on prior results.</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button type="button" class="add-seg-btn" onclick="document.getElementById('rulesUpload').click()" style="flex:1;margin-top:0;border-color:var(--gold);color:var(--gold)">⬆ Upload Rules JSON</button>
+      <input type="file" id="rulesUpload" accept=".json" style="display:none" onchange="loadRulesJSON(event)">
+      <button type="button" class="add-seg-btn" onclick="clearAllRules()" style="flex:1;margin-top:0;border-color:var(--accent);color:var(--accent)">✕ Clear All Rules</button>
+    </div>
+    <div id="rulesStats" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap"></div>
+    <div id="rulesListPanel"></div>
   </div>
 </div>
 <!-- PREFERENCES PANEL -->
@@ -3647,10 +3666,10 @@ function applyConsistencyMatrix(weights,segs,wid){
         if(segs[i].label==='Teacher') w[i]=0;
       });
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
-  return w;
+  return applyActiveRules(w, segs, wid);
 }
 
 function getAdjWeights(segs,wid){
@@ -5892,6 +5911,7 @@ async function initApp(){
   await loadHistory();
   await loadGroupMaps();
   await loadDiffMultipliers();
+  await loadRulesFromStorage();
   const loaded=await persistLoad();
   if(!loaded){cachedTemplates=[getDefaultTpl()];cachedActiveId='default';await persistSave();}
   const active=cachedTemplates.find(t=>t.id===cachedActiveId)||cachedTemplates[0];
@@ -5943,7 +5963,146 @@ function deleteTemplate(id){if(cachedTemplates.length<=1){alert("Can't delete la
 function exportTemplates(){autoSaveActive();const b=new Blob([JSON.stringify(cachedTemplates,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wheel_templates.json';a.click();URL.revokeObjectURL(a.href);}
 function importTemplates(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const im=JSON.parse(e.target.result);if(!Array.isArray(im))throw new Error();const eids=new Set(cachedTemplates.map(t=>t.id));const nw=im.filter(t=>!eids.has(t.id));cachedTemplates=[...cachedTemplates,...nw];persistSave();renderTemplatePanel();alert(`Imported ${nw.length} template(s).`);}catch(err){alert('Import failed.');}};r.readAsText(f);inp.value='';}
 
-// ═══════════════ REAL-TIME SYNC HANDLER ═══════════════
+// ═══════════════ CONSISTENCY RULES ENGINE ═══════════════
+const RULES_STORAGE_KEY = 'thewheel-rules-v1';
+let activeRules = [];
+
+async function loadRulesFromStorage(){
+  try {
+    const r = await window.storage.get(RULES_STORAGE_KEY);
+    if(r?.value) activeRules = JSON.parse(r.value);
+  } catch(e){ activeRules = []; }
+}
+
+async function saveRulesToStorage(){
+  try {
+    await window.storage.set(RULES_STORAGE_KEY, JSON.stringify(activeRules));
+  } catch(e){}
+}
+
+function loadRulesJSON(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(!data.rules || !Array.isArray(data.rules)) throw new Error('Invalid rules file');
+      activeRules = data.rules;
+      saveRulesToStorage();
+      renderRulesPanel();
+      alert(`✓ Loaded ${activeRules.length} rules.`);
+    } catch(err){
+      alert('Failed to load rules: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function clearAllRules(){
+  if(!confirm('Clear all rules?')) return;
+  activeRules = [];
+  saveRulesToStorage();
+  renderRulesPanel();
+}
+
+function toggleRuleEnabled(idx){
+  if(activeRules[idx]) activeRules[idx].enabled = !activeRules[idx].enabled;
+  saveRulesToStorage();
+  renderRulesPanel();
+}
+
+function openRulesPanel(){
+  renderRulesPanel();
+  document.getElementById('rulesOverlay').classList.add('open');
+  document.getElementById('rulesPanel').classList.add('open');
+}
+
+function closeRulesPanel(){
+  document.getElementById('rulesOverlay').classList.remove('open');
+  document.getElementById('rulesPanel').classList.remove('open');
+}
+
+function renderRulesPanel(){
+  const total = activeRules.length;
+  const active = activeRules.filter(r=>r.enabled).length;
+  const suppress = activeRules.filter(r=>r.enabled&&r.direction==='suppress').length;
+  const boost = activeRules.filter(r=>r.enabled&&r.direction==='boost').length;
+
+  const stats = document.getElementById('rulesStats');
+  if(stats){
+    stats.innerHTML = [
+      ['Total', total],
+      ['Active', active],
+      ['Suppress', suppress],
+      ['Boost', boost],
+    ].map(([l,v])=>`
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:6px 12px;flex:1;min-width:60px;text-align:center">
+        <div style="font-size:1.1rem;font-weight:700;color:var(--accent)">${v}</div>
+        <div style="font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px">${l}</div>
+      </div>`).join('');
+  }
+
+  const list = document.getElementById('rulesListPanel');
+  if(!list) return;
+
+  if(activeRules.length === 0){
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text2);font-size:.85rem;border:1px dashed var(--border)">No rules loaded.<br>Upload a JSON file from the Rules Builder.</div>';
+    return;
+  }
+
+  list.innerHTML = '';
+  activeRules.forEach((r, idx) => {
+    const twName = WHEEL_DEFS[r.triggerWheel]?.name || r.triggerWheel;
+    const tarwName = WHEEL_DEFS[r.targetWheel]?.name || r.targetWheel;
+    const dirColor = r.direction === 'suppress' ? '#ff6666' : '#66ff99';
+    const dirLabel = r.direction === 'suppress' ? '▼' : '▲';
+    const row = document.createElement('div');
+    row.style.cssText = `background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${r.enabled?(r.direction==='suppress'?'var(--accent)':'var(--green)'):'var(--border)'};padding:10px 12px;margin-bottom:8px;opacity:${r.enabled?1:0.45}`;
+    row.innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:8px">
+        <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;margin-top:2px">
+          <input type="checkbox" ${r.enabled?'checked':''} style="opacity:0;width:0;height:0"
+            onchange="toggleRuleEnabled(${idx})">
+          <span style="position:absolute;inset:0;background:${r.enabled?'var(--green)':'#333'};border-radius:10px;cursor:pointer;transition:.3s">
+            <span style="position:absolute;width:14px;height:14px;left:${r.enabled?'19px':'3px'};top:3px;background:#fff;border-radius:50%;transition:.3s;display:block"></span>
+          </span>
+        </label>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.78rem;color:var(--text);line-height:1.5">
+            IF <span style="color:var(--gold)">${twName}</span> = <em style="color:var(--text2)">"${r.triggerSegment}"</em>
+          </div>
+          <div style="font-size:.78rem;color:var(--text);line-height:1.5">
+            <span style="color:${dirColor};font-weight:700">${dirLabel} ${r.direction}</span>
+            <em style="color:var(--text2)">"${r.targetSegment}"</em> in <span style="color:var(--gold)">${tarwName}</span>
+            <span style="color:var(--accent);font-weight:700"> × ${r.multiplier}</span>
+          </div>
+        </div>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+// ── Apply rules inside applyConsistencyMatrix ──
+function applyActiveRules(weights, segs, wid){
+  if(!activeRules || activeRules.length === 0) return weights;
+  const w = [...weights];
+  activeRules.forEach(rule => {
+    if(!rule.enabled) return;
+    if(rule.targetWheel !== wid) return;
+    // Check if trigger wheel has a result matching trigger segment
+    const triggerResult = results.find(r => r.wheelId === rule.triggerWheel);
+    if(!triggerResult || triggerResult.label !== rule.triggerSegment) return;
+    // Apply multiplier to matching target segments
+    segs.forEach((seg, i) => {
+      if(seg.label === rule.targetSegment){
+        w[i] = Math.max(w[i] * rule.multiplier, w[i] * 0.05);
+      }
+    });
+  });
+  return w;
+}
 window.addEventListener('firestore-update', async e => {
   const { key, value } = e.detail;
   if(!value) return;
@@ -5974,8 +6133,9 @@ window.addEventListener('firestore-update', async e => {
       case 'thewheel-groupmaps-v1':
         groupMaps = JSON.parse(value);
         break;
-      case 'thewheel-history-v1':
-        spinHistory = JSON.parse(value);
+      case 'thewheel-rules-v1':
+        activeRules = JSON.parse(value);
+        renderRulesPanel();
         break;
     }
   } catch(err) {}
