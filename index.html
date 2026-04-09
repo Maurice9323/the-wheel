@@ -196,15 +196,15 @@ canvas#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 50px 
 .btn-restart-out:hover{background:var(--accent);color:#fff}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s}
 .overlay.open{opacity:1;pointer-events:all}
-.side-panel{position:fixed;right:-520px;top:0;bottom:0;width:500px;background:var(--panel);border-left:1px solid var(--border);z-index:101;overflow:hidden;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
-.side-panel.open{right:0}
+.side-panel{position:fixed;right:0;top:0;bottom:0;width:500px;background:var(--panel);border-left:1px solid var(--border);z-index:101;overflow:hidden;transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;transform:translateX(520px)}
+.side-panel.open{transform:translateX(0)}
 .side-panel::-webkit-scrollbar{width:4px}
 .side-panel::-webkit-scrollbar-thumb{background:var(--border)}
 .panel-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--panel);z-index:2}
 .panel-title{font-family:'Cinzel Decorative',serif;font-size:.9rem;color:var(--text)}
 .close-x{background:none;border:none;color:var(--text2);font-size:1.3rem;cursor:pointer;padding:0;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:4px;transition:all .2s;flex-shrink:0}
 .close-x:hover{color:var(--text);background:rgba(255,255,255,.05)}
-.panel-body{padding:16px 20px;flex:1;min-height:0;overflow-y:auto}
+.panel-body{padding:16px 20px;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .ep-label{display:block;font-size:.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
 .ep-select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:'Rajdhani',sans-serif;font-size:.9rem;appearance:none;cursor:pointer;margin-bottom:14px}
 .ep-select:focus{outline:none;border-color:var(--accent)}
@@ -337,7 +337,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
   .results-section{top:0}
   .results-section{width:100%;position:static;max-width:500px}
   .results-scroll{max-height:180px}
-  .side-panel{width:100%;right:-100%}
+  .side-panel{width:100%;transform:translateX(100%)}
   .tpl-panel{width:96vw}
   .output-section{padding:0 14px 20px}
   .header-btns .btn{padding:5px 8px;font-size:.68rem}
@@ -566,11 +566,11 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
       <button type="button" class="cat-tab" onclick="setEditCat('Setting')">Setting</button>
     </div>
     <!-- Flow map view -->
-    <div id="editFlowMap" style="display:block;overflow-y:auto;flex:1;min-height:0;padding-bottom:20px">
+    <div id="editFlowMap" style="display:block;overflow-y:auto;flex:1;min-height:0;padding-bottom:20px;-webkit-overflow-scrolling:touch">
       <div id="flowMapGrid"></div>
     </div>
     <!-- Wheel editor view -->
-    <div id="editWheelEditor" style="display:none;padding:10px;overflow-y:auto;flex:1;min-height:0">
+    <div id="editWheelEditor" style="display:none;padding:10px;overflow-y:auto;flex:1;min-height:0;-webkit-overflow-scrolling:touch">
       <!-- Prev/Next navigation -->
       <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px">
         <button type="button" class="btn" onclick="editNavPrev()" style="padding:5px 10px;font-size:.75rem">◀ Prev</button>
