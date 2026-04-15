@@ -605,26 +605,6 @@ Clip Skip: 2</div>
     <div id="editCatTabs" style="display:flex;flex-wrap:wrap;gap:4px;padding:10px 10px 0;background:var(--panel);flex-shrink:0">
       <button type="button" class="cat-tab active" onclick="setEditCat('flow')">🗺 Flow</button>
       <button type="button" class="cat-tab" onclick="setEditCat('all')">☰ All</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Race')">Race</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Origins')">Origins</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Face')">Face</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Hair')">Hair</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Body')">Body</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Ass')">Ass</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Breast')">Breast</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Nipple')">Nipple</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Areola')">Areola</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Breast Response')">Breast Resp</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Lower')">Lower</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Body Composition')">Body Comp</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Thighs')">Thighs</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Full Body')">Full Body</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Physical Detail')">Physical Detail</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Sensory')">Sensory</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Character')">Character</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Scenario')">Scenario</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Roleplay')">Roleplay</button>
-      <button type="button" class="cat-tab" onclick="setEditCat('Setting')">Setting</button>
     </div>
     <!-- Flow map view -->
     <div id="editFlowMap" style="display: block; overflow-y: auto; flex: 1 1 0%; min-height: 0px; padding-bottom: 20px;">
@@ -5996,20 +5976,6 @@ const WHEEL_ORDER=[
   'hair_col_north_asian',
   'hair_col_medium',
   'hair_col_dark',
-  'ass_size',
-  'ass_shape',
-  'ass_projection',
-  'ass_firmness',
-  'ass_transition',
-  'ass_skin_texture',
-  'ass_body_hair',
-  'anal_appearance',
-  'anal_sensation_me',
-  'anal_sensation_her',
-  'anal_enthusiasm',
-  'anal_anatomy',
-  'anal_psychology',
-  'anal_depth',
   'cup_size',
   'breast_shape',
   'breast_position',
@@ -6033,6 +5999,20 @@ const WHEEL_ORDER=[
   'lactation_volume',
   'lactation_taste',
   'milk_play',
+  'ass_size',
+  'ass_shape',
+  'ass_projection',
+  'ass_firmness',
+  'ass_transition',
+  'ass_skin_texture',
+  'ass_body_hair',
+  'anal_appearance',
+  'anal_sensation_me',
+  'anal_sensation_her',
+  'anal_enthusiasm',
+  'anal_anatomy',
+  'anal_psychology',
+  'anal_depth',
   'thigh_thickness',
   'thigh_shape',
   'thigh_inner',
@@ -6378,7 +6358,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='anal_enthusiasm')return nextEnabled('anal_anatomy');
   if(fromId==='anal_anatomy')return nextEnabled('anal_psychology');
   if(fromId==='anal_psychology')return nextEnabled('anal_depth');
-  if(fromId==='anal_depth')return nextEnabled('cup_size');
+  if(fromId==='anal_depth')return nextEnabled('thigh_thickness');
   // ── Breast system ──
   if(fromId==='cup_size'){
     // Store cup group for consistency
@@ -6405,7 +6385,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='breast_compression')return nextEnabled('lactation_volume');
   if(fromId==='lactation_volume')return nextEnabled('lactation_taste');
   if(fromId==='lactation_taste')return nextEnabled('milk_play');
-  if(fromId==='milk_play')return nextEnabled('labia_size');
+  if(fromId==='milk_play')return nextEnabled('ass_size');
   if(fromId==='labia_size')return nextEnabled(labColW());
   if(['labia_col_light','labia_col_medium','labia_col_dark'].includes(fromId))return nextEnabled('vaginal_moisture');
   if(fromId==='vaginal_moisture')return nextEnabled('vaginal_sensation_me');
@@ -6429,7 +6409,7 @@ function computeNext(fromId,label,seg){
     muscleGroup=detectMuscleGroup(label);
     return nextEnabled(bodyW('waist'));
   }
-  if(fromId.startsWith('waist_'))return nextEnabled('thigh_thickness');
+  if(fromId.startsWith('waist_'))return nextEnabled('skin_light');
   // ── Thigh system ──
   if(fromId==='thigh_thickness')return nextEnabled('thigh_shape');
   if(fromId==='thigh_shape')return nextEnabled('thigh_inner');
@@ -6439,7 +6419,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='stomach')return nextEnabled('legs');
   if(fromId==='legs')return nextEnabled('back');
   if(fromId==='back')return nextEnabled('collarbone');
-  if(fromId==='collarbone')return nextEnabled('face');
+  if(fromId==='collarbone')return nextEnabled('labia_size');
   // ── Face detail (moved up) ──
   if(fromId==='face')return nextEnabled('face_shape');
   if(fromId==='face_shape')return nextEnabled('teeth');
@@ -6452,7 +6432,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='oral_enthusiasm')return nextEnabled('oral_anatomy');
   if(fromId==='oral_anatomy')return nextEnabled('oral_psychology');
   if(fromId==='oral_psychology')return nextEnabled('oral_depth');
-  if(fromId==='oral_depth')return nextEnabled('shave');
+  if(fromId==='oral_depth')return nextEnabled('hair_light');
   // ── Detail ──
   if(fromId==='shave')return nextEnabled('cleavage');
   if(fromId==='cleavage')return nextEnabled('body_hair');
@@ -7974,11 +7954,11 @@ const WHEEL_CATEGORIES = {
   'Face':['skin_light','skin_medium','skin_dark','freckles','eyes_light','eyes_medium','eyes_dark','nose_light','nose_medium','nose_dark','eyebrows_light','eyebrows_medium','eyebrows_dark','skin_glow_light','skin_glow_medium','skin_glow_dark','lips_light','lips_medium','lips_dark','face','face_shape','teeth','ears','neck','oral_saliva','oral_sensation_me','oral_sensation_her','oral_enthusiasm','oral_anatomy','oral_psychology','oral_depth'],
   'Hair':['hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark','hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark'],
   'Body':['age','height','body','stretch_thin','stretch_mid','stretch_bbw','cellulite_thin','cellulite_mid','cellulite_bbw','muscle_thin','muscle_mid','muscle_bbw','waist_thin','waist_mid','waist_bbw'],
-  'Ass':['ass_size','ass_shape','ass_projection','ass_firmness','ass_transition','ass_skin_texture','ass_body_hair','anal_appearance','anal_sensation_me','anal_sensation_her','anal_enthusiasm','anal_anatomy','anal_psychology','anal_depth'],
   'Breast':['cup_size','breast_shape','breast_position','breast_firmness','breast_projection'],
   'Nipple':['nipple_size','nipple_type','nipple_placement','nipple_col_light','nipple_col_medium','nipple_col_dark'],
   'Areola':['areola_size','areola_texture','areola_shape'],
   'Breast Response':['breast_sensation_her_gland','breast_sensation_her_nipple','breast_enthusiasm','breast_anatomy','breast_psychology','breast_compression','lactation_volume','lactation_taste','milk_play'],
+  'Ass':['ass_size','ass_shape','ass_projection','ass_firmness','ass_transition','ass_skin_texture','ass_body_hair','anal_appearance','anal_sensation_me','anal_sensation_her','anal_enthusiasm','anal_anatomy','anal_psychology','anal_depth'],
   'Thighs':['thigh_thickness','thigh_shape','thigh_inner','thigh_texture'],
   'Full Body':['stomach','legs','back','collarbone'],
   'Lower':['labia_size','labia_col_light','labia_col_medium','labia_col_dark','vaginal_moisture','vaginal_sensation_me','vaginal_sensation_her','vaginal_enthusiasm','vaginal_anatomy','vaginal_psychology','vaginal_depth','squirt_anatomy','squirt_sensation_me','squirt_sensation_her','squirt_enthusiasm','squirt_threshold','squirt_psychology','squirt_fluid'],
@@ -9062,6 +9042,51 @@ function getDefaultTpl(){return{id:'default',name:'Character Generator',entryWhe
 async function persistSave(){try{await window.storage.set(STORAGE_KEY,JSON.stringify({templates:cachedTemplates,activeId:cachedActiveId}));}catch(e){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({templates:cachedTemplates,activeId:cachedActiveId}));}catch(e2){}}}
 async function persistLoad(){try{let raw=null;try{const r=await window.storage.get(STORAGE_KEY);if(r?.value)raw=r.value;}catch(e){}if(!raw)raw=localStorage.getItem(STORAGE_KEY);if(raw){const d=JSON.parse(raw);if(Array.isArray(d.templates)&&d.templates.length){cachedTemplates=d.templates;cachedActiveId=d.activeId||'default';return true;}}}catch(e){}return false;}
 
+
+function buildEditCatTabs(){
+  const tabs=document.getElementById('editCatTabs');
+  if(!tabs)return;
+  // Remove all category tabs (keep Flow and All which are first 2)
+  const existing=[...tabs.querySelectorAll('.cat-tab')];
+  existing.slice(2).forEach(b=>b.remove());
+  // Get ordered categories from WHEEL_CATEGORIES
+  const catOrder=Object.keys(WHEEL_CATEGORIES);
+  // Also add any categories implied by WHEEL_ORDER but not in WHEEL_CATEGORIES
+  const seen=new Set(catOrder);
+  const extraCats=[];
+  if(!seen.has('Origins'))extraCats.push('Origins');
+  const allCats=[...catOrder,...extraCats];
+  allCats.forEach(cat=>{
+    if(!cat||cat==='Other')return;
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='cat-tab';
+    // Short label for long names
+    const label=cat==='Breast Response'?'Breast Resp':cat==='Physical Detail'?'Physical':cat;
+    btn.textContent=label;
+    btn.onclick=()=>setEditCat(cat);
+    tabs.appendChild(btn);
+  });
+}
+
+function buildEditSelect(){
+  const sel=document.getElementById('editWheelSelect');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='';
+  WHEEL_ORDER.forEach(id=>{
+    if(!WHEEL_DEFS[id])return;
+    const opt=document.createElement('option');
+    opt.value=id;
+    opt.textContent=WHEEL_DEFS[id].name;
+    sel.appendChild(opt);
+  });
+  // Restore selection if still valid
+  if(cur&&WHEEL_DEFS[cur])sel.value=cur;
+  else if(WHEEL_ORDER.length)sel.value=WHEEL_ORDER[0];
+  // Rebuild category tabs to match current WHEEL_CATEGORIES order
+  buildEditCatTabs();
+}
 async function initApp(){
   // Register service worker for offline support
   if('serviceWorker' in navigator){
@@ -9079,10 +9104,11 @@ async function initApp(){
   if(!loaded){cachedTemplates=[getDefaultTpl()];cachedActiveId='default';await persistSave();}
   const active=cachedTemplates.find(t=>t.id===cachedActiveId)||cachedTemplates[0];
   applyTemplate(active,false);
+  buildEditSelect();
 }
 
 // Version stamp — bump this whenever WHEEL_DEFS structure changes significantly
-const WHEEL_VERSION='v5.1-export-2026-04-12';
+const WHEEL_VERSION='v5.2-export-2026-04-15';
 
 function applyTemplate(tpl,save=true){
   // If the saved template predates the current wheel version, ignore its wheelDefs
