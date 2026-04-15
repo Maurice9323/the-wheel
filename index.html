@@ -4145,9 +4145,6 @@ areola_shape:{name:"Areola Shape",segments:[
   {label:'Fading edge — no defined border, color gradually fades into surrounding skin',weight:14},
   {label:'Sharp defined edge — very clear distinct border between areola and breast skin',weight:16},
 ]},
-breast_sensation_me:{name:"Breast Sensation (For Me)",segments:[
-  {label:'STUB — paste segments here',weight:10},
-]},
 breast_sensation_her_gland:{name:"Breast Sensation (For Her — Glandular)",segments:[
   {label:'Warm Ligament Glow - Soothing 1.5-inch heat blooms pleasurably.',weight:10},
   {label:'Rhythmic Compression Peaks - Squeeze rhythm forces glandular orgasms.',weight:10},
@@ -5944,6 +5941,21 @@ const WHEEL_ORDER=[
   'origin_pakistani',
   'origin_bangladeshi',
   'origin_burmese',
+  'age',
+  'height',
+  'body',
+  'stretch_thin',
+  'stretch_mid',
+  'stretch_bbw',
+  'cellulite_thin',
+  'cellulite_mid',
+  'cellulite_bbw',
+  'muscle_thin',
+  'muscle_mid',
+  'muscle_bbw',
+  'waist_thin',
+  'waist_mid',
+  'waist_bbw',
   'skin_light',
   'skin_medium',
   'skin_dark',
@@ -5984,9 +5996,6 @@ const WHEEL_ORDER=[
   'hair_col_north_asian',
   'hair_col_medium',
   'hair_col_dark',
-  'age',
-  'height',
-  'body',
   'ass_size',
   'ass_shape',
   'ass_projection',
@@ -6015,7 +6024,6 @@ const WHEEL_ORDER=[
   'areola_size',
   'areola_texture',
   'areola_shape',
-  'breast_sensation_me',
   'breast_sensation_her_gland',
   'breast_sensation_her_nipple',
   'breast_enthusiasm',
@@ -6025,6 +6033,14 @@ const WHEEL_ORDER=[
   'lactation_volume',
   'lactation_taste',
   'milk_play',
+  'thigh_thickness',
+  'thigh_shape',
+  'thigh_inner',
+  'thigh_texture',
+  'stomach',
+  'legs',
+  'back',
+  'collarbone',
   'labia_size',
   'labia_col_light',
   'labia_col_medium',
@@ -6043,26 +6059,6 @@ const WHEEL_ORDER=[
   'squirt_threshold',
   'squirt_psychology',
   'squirt_fluid',
-  'stretch_thin',
-  'stretch_mid',
-  'stretch_bbw',
-  'cellulite_thin',
-  'cellulite_mid',
-  'cellulite_bbw',
-  'muscle_thin',
-  'muscle_mid',
-  'muscle_bbw',
-  'waist_thin',
-  'waist_mid',
-  'waist_bbw',
-  'thigh_thickness',
-  'thigh_shape',
-  'thigh_inner',
-  'thigh_texture',
-  'stomach',
-  'legs',
-  'back',
-  'collarbone',
   'shave',
   'cleavage',
   'body_hair',
@@ -6337,7 +6333,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='pacific_sub'){
     return PACIFIC_ORIGIN_MAP[label]||raceW('skin');
   }
-  if(fromId.startsWith('origin_'))return nextEnabled(raceW('skin'));
+  if(fromId.startsWith('origin_'))return nextEnabled('age');
   if(['skin_light','skin_medium','skin_dark'].includes(fromId))return raceGroup==='light'?'freckles':raceW('eyes');
   if(fromId==='freckles')return nextEnabled(raceW('eyes'));
   if(['eyes_light','eyes_medium','eyes_dark'].includes(fromId))return nextEnabled(raceW('nose'));
@@ -6346,7 +6342,7 @@ function computeNext(fromId,label,seg){
   if(['skin_glow_light','skin_glow_medium','skin_glow_dark'].includes(fromId))return nextEnabled(raceW('lips'));
   if(['lips_light','lips_medium','lips_dark'].includes(fromId))return nextEnabled(hairW());
   if(['hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark'].includes(fromId))return nextEnabled(hairColW());
-  if(fromId.startsWith('hair_col_'))return nextEnabled('age');
+  // hair_col_ falls through to next in sequence (ass_size)
   if(fromId==='age'){
     ageGroup=detectAgeGroup(label);
     return nextEnabled('height');
@@ -6399,8 +6395,8 @@ function computeNext(fromId,label,seg){
   if(['nipple_col_light','nipple_col_medium','nipple_col_dark'].includes(fromId))return nextEnabled('areola_size');
   if(fromId==='areola_size')return nextEnabled('areola_texture');
   if(fromId==='areola_texture')return nextEnabled('areola_shape');
-  if(fromId==='areola_shape')return nextEnabled('breast_sensation_me');
-  if(fromId==='breast_sensation_me')return nextEnabled('breast_sensation_her_gland');
+  if(fromId==='areola_shape')return nextEnabled('breast_sensation_her_gland');
+  
   if(fromId==='breast_sensation_her_gland')return nextEnabled('breast_sensation_her_nipple');
   if(fromId==='breast_sensation_her_nipple')return nextEnabled('breast_enthusiasm');
   if(fromId==='breast_enthusiasm')return nextEnabled('breast_anatomy');
@@ -7977,16 +7973,15 @@ const WHEEL_CATEGORIES = {
   'Origins':[], // populated lazily via getOriginWheelIds()
   'Face':['skin_light','skin_medium','skin_dark','freckles','eyes_light','eyes_medium','eyes_dark','nose_light','nose_medium','nose_dark','eyebrows_light','eyebrows_medium','eyebrows_dark','skin_glow_light','skin_glow_medium','skin_glow_dark','lips_light','lips_medium','lips_dark','face','face_shape','teeth','ears','neck','oral_saliva','oral_sensation_me','oral_sensation_her','oral_enthusiasm','oral_anatomy','oral_psychology','oral_depth'],
   'Hair':['hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark','hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark'],
-  'Body':['age','height','body'],
+  'Body':['age','height','body','stretch_thin','stretch_mid','stretch_bbw','cellulite_thin','cellulite_mid','cellulite_bbw','muscle_thin','muscle_mid','muscle_bbw','waist_thin','waist_mid','waist_bbw'],
   'Ass':['ass_size','ass_shape','ass_projection','ass_firmness','ass_transition','ass_skin_texture','ass_body_hair','anal_appearance','anal_sensation_me','anal_sensation_her','anal_enthusiasm','anal_anatomy','anal_psychology','anal_depth'],
   'Breast':['cup_size','breast_shape','breast_position','breast_firmness','breast_projection'],
   'Nipple':['nipple_size','nipple_type','nipple_placement','nipple_col_light','nipple_col_medium','nipple_col_dark'],
   'Areola':['areola_size','areola_texture','areola_shape'],
-  'Breast Response':['breast_sensation_me','breast_sensation_her_gland','breast_sensation_her_nipple','breast_enthusiasm','breast_anatomy','breast_psychology','breast_compression','lactation_volume','lactation_taste','milk_play'],
-  'Lower':['labia_size','labia_col_light','labia_col_medium','labia_col_dark','vaginal_moisture','vaginal_sensation_me','vaginal_sensation_her','vaginal_enthusiasm','vaginal_anatomy','vaginal_psychology','vaginal_depth','squirt_anatomy','squirt_sensation_me','squirt_sensation_her','squirt_enthusiasm','squirt_threshold','squirt_psychology','squirt_fluid'],
-  'Body Composition':['stretch_thin','stretch_mid','stretch_bbw','cellulite_thin','cellulite_mid','cellulite_bbw','muscle_thin','muscle_mid','muscle_bbw','waist_thin','waist_mid','waist_bbw'],
+  'Breast Response':['breast_sensation_her_gland','breast_sensation_her_nipple','breast_enthusiasm','breast_anatomy','breast_psychology','breast_compression','lactation_volume','lactation_taste','milk_play'],
   'Thighs':['thigh_thickness','thigh_shape','thigh_inner','thigh_texture'],
   'Full Body':['stomach','legs','back','collarbone'],
+  'Lower':['labia_size','labia_col_light','labia_col_medium','labia_col_dark','vaginal_moisture','vaginal_sensation_me','vaginal_sensation_her','vaginal_enthusiasm','vaginal_anatomy','vaginal_psychology','vaginal_depth','squirt_anatomy','squirt_sensation_me','squirt_sensation_her','squirt_enthusiasm','squirt_threshold','squirt_psychology','squirt_fluid'],
   'Physical Detail':['shave','cleavage','body_hair','hands','position','feet'],
   'Sensory':['skin_soft','nat_scent','skin_temp','touch_resp'],
   'Character':['financial','personality','education','intelligence','street_smarts','sex_exp','acquired','mental_state','emotional','bond_threat','voice','language'],
