@@ -153,9 +153,9 @@ canvas#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 50px 
 .result-overlay-text{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--text);text-align:center;padding:20px;line-height:1.6;text-shadow:0 0 20px rgba(255,255,255,.2)}
 .result-overlay-sub{display:block;font-family:'Rajdhani',sans-serif;font-size:.75rem;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
 .progress-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:525px}
-.pdot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:all .3s;cursor:help}
-.pdot.done{background:var(--accent2)}
-.pdot.current{background:var(--gold);box-shadow:0 0 8px rgba(184,146,11,.7)}
+
+
+
 .spin-row{display:flex;gap:14px;align-items:center}
 .btn-spin{background:var(--accent);border:none;color:#fff;padding:16px 56px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;touch-action:manipulation}
 .btn-spin:hover{background:#a50e17;box-shadow:0 0 30px rgba(200,18,28,.5)}
@@ -374,6 +374,38 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
   .seg-row{padding:14px!important}
   .del-wheel-btn{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 }
+.pdot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all .25s;cursor:pointer;flex-shrink:0;position:relative}
+.pdot:hover{transform:scale(1.4);z-index:2}
+.pdot.done{background:var(--gold);opacity:.85}
+.pdot.done:hover{opacity:1}
+.pdot.skipped{background:#5a2020;border:1px solid #7a3030}
+.pdot.current{background:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.9);transform:scale(1.3);animation:pdot-pulse 1.2s ease-in-out infinite}
+@keyframes pdot-pulse{0%,100%{box-shadow:0 0 6px rgba(201,168,76,.7)}50%{box-shadow:0 0 14px rgba(201,168,76,1)}}
+.pdot.cat-break{margin-left:6px}
+#wheelDetailOverlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:900;display:none;align-items:flex-end;justify-content:center}
+#wheelDetailOverlay.open{display:flex}
+#wheelDetailPanel{background:var(--panel);border-top:1px solid var(--border);width:100%;max-width:700px;max-height:70vh;display:flex;flex-direction:column;border-radius:12px 12px 0 0;overflow:hidden}
+#wheelDetailPanel .wdp-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+#wheelDetailPanel .wdp-name{flex:1;font-size:.85rem;font-weight:700;color:var(--text);letter-spacing:.5px}
+#wheelDetailPanel .wdp-status{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:3px}
+.wdp-status.done{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--gold)}
+.wdp-status.current{background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold)}
+.wdp-status.skipped{background:rgba(90,32,32,.3);color:#c07070;border:1px solid #7a3030}
+.wdp-status.pending{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border)}
+#wheelDetailPanel .wdp-nav{display:flex;gap:6px}
+#wheelDetailPanel .wdp-nav button{background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;cursor:pointer;font-size:.7rem;font-family:inherit}
+#wheelDetailPanel .wdp-nav button:hover{border-color:var(--gold);color:var(--gold)}
+#wheelDetailPanel .wdp-close{background:none;border:none;color:var(--text2);font-size:1.2rem;cursor:pointer;padding:0 4px;line-height:1}
+#wheelDetailPanel .wdp-close:hover{color:var(--gold)}
+#wheelDetailPanel .wdp-result{padding:8px 16px;background:rgba(201,168,76,.08);border-bottom:1px solid var(--border);font-size:.82rem;color:var(--gold);font-weight:600;flex-shrink:0}
+#wheelDetailPanel .wdp-result span{color:var(--text2);font-weight:400;font-size:.72rem;margin-right:6px}
+#wheelDetailPanel .wdp-segs{flex:1;overflow-y:auto;padding:8px 16px}
+#wheelDetailPanel .wdp-seg{padding:5px 8px;font-size:.72rem;color:var(--text2);border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:8px;border-radius:3px}
+#wheelDetailPanel .wdp-seg.chosen{color:var(--gold);font-weight:700;background:rgba(201,168,76,.1)}
+#wheelDetailPanel .wdp-seg.chosen::before{content:'▶';font-size:.6rem;color:var(--gold);flex-shrink:0}
+#wheelDetailPanel .wdp-seg:not(.chosen)::before{content:'';width:.6rem;flex-shrink:0}
+#wheelDetailPanel .wdp-seg .seg-w{color:var(--text3);font-size:.6rem;margin-left:auto;flex-shrink:0}
+#wheelDetailPanel .wdp-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.65rem;color:var(--text2);flex-shrink:0}
 </style>
 <style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style></head>
 <body data-new-gr-c-s-check-loaded="14.1282.0" data-gr-ext-installed="" style="isolation: isolate;">
@@ -6320,9 +6352,10 @@ function computeNext(fromId,label,seg){
   if(['nose_light','nose_medium','nose_dark'].includes(fromId))return nextEnabled(raceW('eyebrows'));
   if(['eyebrows_light','eyebrows_medium','eyebrows_dark'].includes(fromId))return nextEnabled(raceW('skin_glow'));
   if(['skin_glow_light','skin_glow_medium','skin_glow_dark'].includes(fromId))return nextEnabled(raceW('lips'));
-  if(['lips_light','lips_medium','lips_dark'].includes(fromId))return nextEnabled(hairW());
+  if(['lips_light','lips_medium','lips_dark'].includes(fromId))return nextEnabled('face');
   if(['hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark'].includes(fromId))return nextEnabled(hairColW());
-  // hair_col_ falls through to next in sequence (ass_size)
+  if(fromId.startsWith('hair_col_'))return nextEnabled('cup_size');
+  // hair_col_ → cup_size (Breast section)
   if(fromId==='age'){
     ageGroup=detectAgeGroup(label);
     return nextEnabled('height');
@@ -6333,7 +6366,7 @@ function computeNext(fromId,label,seg){
   }
   if(fromId==='body'){
     bodyGroup=detectBodyGroup(label);
-    return nextEnabled('ass_size');
+    return nextEnabled('stretch_thin');
   }
   // ── Ass system ──
   if(fromId==='ass_size'){
@@ -6401,7 +6434,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='squirt_enthusiasm')return nextEnabled('squirt_threshold');
   if(fromId==='squirt_threshold')return nextEnabled('squirt_psychology');
   if(fromId==='squirt_psychology')return nextEnabled('squirt_fluid');
-  if(fromId==='squirt_fluid')return nextEnabled(bodyW('stretch'));
+  if(fromId==='squirt_fluid')return nextEnabled('shave');
   if(fromId.startsWith('stretch_'))return nextEnabled(bodyW('cellulite'));
   if(fromId.startsWith('cellulite_'))return nextEnabled(bodyW('muscle'));
   if(fromId.startsWith('muscle_')){
@@ -6566,11 +6599,17 @@ function getSequence(){
   const rr=results.find(r=>r.wheelId==='race')?.label||'';
   const sr=results.find(r=>['white_euro','latina','black_afro','north_asian','south_asian',
     'persian_sub','indian_sub','native_sub','pacific_sub'].includes(r.wheelId))?.label||'';
-  const br=results.find(r=>r.wheelId==='body')?.label||'';
-  const fr=results.find(r=>r.wheelId==='fav_part')?.label||'';
-  const rg=raceGroup,hg=hairGroup,bg=bodyGroup;
-  const seq=['difficulty','race'];
-  // Sub-wheel
+  const rg=raceGroup||'light';
+  const hg=hairGroup||'light';
+  const bg=bodyGroup||'thin';
+  const bs=bg==='thin'?'thin':bg==='bbw'?'bbw':'mid';
+  const kr=results.find(r=>r.wheelId==='kink')?.label||'';
+  const mr=results.find(r=>r.wheelId==='mode')?.label||'';
+  const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
+  const seq=[];
+
+  // ── Race ──
+  seq.push('difficulty','race');
   if(rr==='White Euro')seq.push('white_euro');
   else if(rr==='Latina')seq.push('latina');
   else if(rr==='Black Afro')seq.push('black_afro');
@@ -6580,7 +6619,8 @@ function getSequence(){
   else if(rr==='Indian')seq.push('indian_sub');
   else if(rr==='Native American')seq.push('native_sub');
   else if(rr==='Pacific Island')seq.push('pacific_sub');
-  // Origin wheel — resolve to specific country/region
+
+  // ── Origin ──
   let ow=null;
   if(rr==='White Euro'&&sr)ow=EURO_ORIGIN_MAP[sr];
   else if(rr==='Latina'&&sr)ow=LATINA_ORIGIN_MAP[sr];
@@ -6593,43 +6633,80 @@ function getSequence(){
   else if(rr==='Pacific Island'&&sr)ow=PACIFIC_ORIGIN_MAP[sr];
   else if(rr)ow=originW(rr,'');
   if(ow&&WHEEL_DEFS[ow])seq.push(ow);
+
+  // ── Body ──
+  seq.push('age','height','body');
+  seq.push('stretch_'+bs,'cellulite_'+bs,'muscle_'+bs,'waist_'+bs);
+
+  // ── Face ──
   seq.push('skin_'+rg);
   if(rg==='light')seq.push('freckles');
   seq.push('eyes_'+rg,'nose_'+rg,'eyebrows_'+rg,'skin_glow_'+rg,'lips_'+rg);
-  seq.push('hair_'+hg,hg==='afro_latina'?'hair_col_medium':'hair_col_'+hg);
-  seq.push('age','height','body');
-  // Ass system
+  seq.push('face','face_shape','teeth','ears','neck');
+  seq.push('oral_saliva','oral_sensation_me','oral_sensation_her','oral_enthusiasm','oral_anatomy','oral_psychology','oral_depth');
+
+  // ── Hair ──
+  seq.push('hair_'+hg);
+  seq.push(hg==='afro_latina'?'hair_col_medium':'hair_col_'+hg);
+
+  // ── Breast ──
+  seq.push('cup_size','breast_shape','breast_position','breast_firmness','breast_projection');
+
+  // ── Nipple ──
+  seq.push('nipple_size','nipple_type','nipple_placement','nipple_col_'+rg);
+
+  // ── Areola ──
+  seq.push('areola_size','areola_texture','areola_shape');
+
+  // ── Breast Response ──
+  seq.push('breast_sensation_her_gland','breast_sensation_her_nipple','breast_enthusiasm','breast_anatomy','breast_psychology','breast_compression');
+  seq.push('lactation_volume','lactation_taste','milk_play');
+
+  // ── Ass ──
   seq.push('ass_size','ass_shape','ass_projection','ass_firmness','ass_transition','ass_skin_texture','ass_body_hair');
   seq.push('anal_appearance','anal_sensation_me','anal_sensation_her','anal_enthusiasm','anal_anatomy','anal_psychology','anal_depth');
-  // Breast system
-  seq.push('cup_size','breast_shape','breast_position','breast_firmness','breast_projection');
-  // Nipple system
-  seq.push('nipple_size','nipple_type','nipple_placement','nipple_col_'+rg);
-  // Areola system
-  seq.push('areola_size','areola_texture','areola_shape');
-  // Labia
-  seq.push('labia_size','labia_col_'+rg);
-  // Body detail
-  const bs=bg==='thin'?'thin':bg==='bbw'?'bbw':'mid';
-  seq.push('stretch_'+bs,'cellulite_'+bs,'muscle_'+bs,'waist_'+bs);
-  // Thighs
+
+  // ── Thighs ──
   seq.push('thigh_thickness','thigh_shape','thigh_inner','thigh_texture');
-  // Full body
+
+  // ── Full Body ──
   seq.push('stomach','legs','back','collarbone');
-  // Face detail
-  seq.push('face','face_shape','teeth','ears','neck');
-  // Detail
+
+  // ── Lower ──
+  seq.push('labia_size','labia_col_'+rg);
+  seq.push('vaginal_moisture','vaginal_sensation_me','vaginal_sensation_her','vaginal_enthusiasm','vaginal_anatomy','vaginal_psychology','vaginal_depth');
+  seq.push('squirt_anatomy','squirt_sensation_me','squirt_sensation_her','squirt_enthusiasm','squirt_threshold','squirt_psychology','squirt_fluid');
+
+  // ── Physical Detail ──
   seq.push('shave','cleavage','body_hair','hands','position','feet');
-  // Sensory
+
+  // ── Sensory ──
   seq.push('skin_soft','nat_scent','skin_temp','touch_resp');
-  // Character (incl. Voice & Language)
+
+  // ── Character ──
   seq.push('financial','personality','education','intelligence','street_smarts','sex_exp','acquired','mental_state','emotional','bond_threat','voice','language');
-  // Scenario
-  seq.push('kink','amount','mode','length','disobedience','punishment','location','fav_part','bonus');
-  // Setting
+
+  // ── Scenario ──
+  seq.push('kink');
+  if(domLabels.includes(kr))seq.push('pegging_enthusiasm','pegging_sensation');
+  if(kr==='Super Dom'||kr==='Med Dom')seq.push('general_abuse');
+  seq.push('baby_talk','breeding_gate','breeding_wheel','amount','mode','length','disobedience','punishment','location','fav_part','bonus');
+
+  // ── Roleplay (mode-specific) ──
+  if(mr==='Mother')seq.push('mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth');
+  else if(mr==='Sibling')seq.push('sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth');
+  else if(mr==='Aunt/Cousin')seq.push('auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth');
+  else if(mr==='Teacher')seq.push('teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth');
+
+  // ── Setting ──
   seq.push('time_day','season','wildcard');
+
+  // ── Custom ──
+  WHEEL_ORDER.forEach(id=>{if(id.startsWith('custom_'))seq.push(id);});
+
   return seq.filter(id=>WHEEL_DEFS[id]&&!disabledWheels.has(id));
 }
+
 
 // ═══════════════ DIFFICULTY ═══════════════
 function storeDiff(l){
@@ -6953,16 +7030,134 @@ function renderWheelUI(){
   renderProgress();
 }
 
+// ── Progress detail panel ──
+let _wdpSeq=[];let _wdpIdx=0;
+
 function renderProgress(){
   const wrap=document.getElementById('progressWrap');
-  const seq=getSequence();wrap.innerHTML='';
-  seq.forEach(wid=>{
-    const d=document.createElement('div');d.className='pdot';
-    d.title=WHEEL_DEFS[wid]?.name||wid;
-    if(results.some(r=>r.wheelId===wid))d.classList.add('done');
-    if(wid===currentWheelId)d.classList.add('current');
+  const seq=getSequence();
+  _wdpSeq=seq;
+  wrap.innerHTML='';
+
+  // Determine which wheels were actually spun vs skipped
+  const spunIds=new Set(results.map(r=>r.wheelId));
+  // Find position of current wheel in seq
+  const curIdx=seq.indexOf(currentWheelId);
+
+  // Category tracking for visual breaks
+  const catOf=id=>{
+    for(const[c,ids] of Object.entries(WHEEL_CATEGORIES)){if(ids&&ids.includes&&ids.includes(id))return c;}
+    if(id.startsWith('origin_'))return'Origins';
+    if(id.startsWith('custom_'))return'Custom';
+    return'Other';
+  };
+  let prevCat=null;
+
+  seq.forEach((wid,i)=>{
+    const d=document.createElement('div');
+    d.className='pdot';
+
+    const cat=catOf(wid);
+    if(cat!==prevCat&&i>0)d.classList.add('cat-break');
+    prevCat=cat;
+
+    const isDone=spunIds.has(wid);
+    const isCurrent=wid===currentWheelId;
+    const isSkipped=!isDone&&!isCurrent&&curIdx>-1&&i<curIdx;
+
+    if(isCurrent)d.classList.add('current');
+    else if(isDone)d.classList.add('done');
+    else if(isSkipped)d.classList.add('skipped');
+
+    d.title=(WHEEL_DEFS[wid]?.name||wid)+(isDone?' ✓':isSkipped?' (skipped)':'');
+    d.onclick=()=>openWheelDetail(i);
     wrap.appendChild(d);
   });
+}
+
+function openWheelDetail(idx){
+  _wdpIdx=idx;
+  _renderWheelDetail();
+  document.getElementById('wheelDetailOverlay').classList.add('open');
+}
+
+function closeWheelDetail(){
+  document.getElementById('wheelDetailOverlay').classList.remove('open');
+}
+
+function navWheelDetail(dir){
+  _wdpIdx=Math.max(0,Math.min(_wdpSeq.length-1,_wdpIdx+dir));
+  _renderWheelDetail();
+}
+
+function _renderWheelDetail(){
+  const seq=_wdpSeq;
+  const wid=seq[_wdpIdx];
+  if(!wid||!WHEEL_DEFS[wid])return;
+  const def=WHEEL_DEFS[wid];
+  const res=results.find(r=>r.wheelId===wid);
+  const spunIds=new Set(results.map(r=>r.wheelId));
+  const curIdx=seq.indexOf(currentWheelId);
+  const isCurrent=wid===currentWheelId;
+  const isDone=spunIds.has(wid);
+  const isSkipped=!isDone&&!isCurrent&&curIdx>-1&&_wdpIdx<curIdx;
+
+  // Header
+  document.getElementById('wdpName').textContent=def.name;
+
+  // Status badge
+  const sb=document.getElementById('wdpStatus');
+  if(isCurrent){sb.textContent='CURRENT';sb.className='wdp-status current';}
+  else if(isDone){sb.textContent='SPUN';sb.className='wdp-status done';}
+  else if(isSkipped){sb.textContent='SKIPPED';sb.className='wdp-status skipped';}
+  else{sb.textContent='PENDING';sb.className='wdp-status pending';}
+
+  // Result row
+  const resRow=document.getElementById('wdpResult');
+  if(isDone&&res){
+    resRow.style.display='block';
+    document.getElementById('wdpResultText').textContent=res.label;
+  } else if(isSkipped){
+    resRow.style.display='block';
+    document.getElementById('wdpResultText').textContent='—';
+    resRow.querySelector('span').textContent='Not spun — ';
+  } else {
+    resRow.style.display='none';
+  }
+
+  // Segments list
+  const segsEl=document.getElementById('wdpSegs');
+  segsEl.innerHTML='';
+  (def.segments||[]).forEach(seg=>{
+    const s=document.createElement('div');
+    s.className='wdp-seg';
+    if(res&&seg.label===res.label)s.classList.add('chosen');
+    const lbl=document.createElement('span');
+    lbl.textContent=seg.label;
+    const w=document.createElement('span');
+    w.className='seg-w';
+    w.textContent='w'+seg.weight;
+    s.appendChild(lbl);s.appendChild(w);
+    segsEl.appendChild(s);
+  });
+
+  // Scroll chosen segment into view
+  const chosen=segsEl.querySelector('.chosen');
+  if(chosen)chosen.scrollIntoView({block:'center',behavior:'smooth'});
+
+  // Footer
+  const catOf=id=>{
+    for(const[c,ids] of Object.entries(WHEEL_CATEGORIES)){if(ids&&ids.includes&&ids.includes(id))return c;}
+    if(id.startsWith('origin_'))return'Origins';
+    return'Other';
+  };
+  document.getElementById('wdpPos').textContent=`${_wdpIdx+1} / ${seq.length}`;
+  document.getElementById('wdpCat').textContent=catOf(wid);
+
+  // Nav button states
+  const btns=document.querySelectorAll('#wheelDetailPanel .wdp-nav button');
+  btns[0].disabled=_wdpIdx===0;
+  btns[1].disabled=_wdpIdx===seq.length-1;
 }
 
 function renderResultsList(){
@@ -7598,6 +7793,7 @@ function generateNarrative(){
   const eyebrows=ga('eyebrows_light','eyebrows_medium','eyebrows_dark');
   const lips=ga('lips_light','lips_medium','lips_dark');
   const teeth=gv('teeth');
+  const ears=gv('ears');
   const neck=gv('neck');
   const faceShape=gv('face_shape');
   const faceRating=gv('face');
@@ -7950,10 +8146,10 @@ let editPreviewWid = null;
 // ── WHEEL CATEGORIES ──
 const WHEEL_CATEGORIES = {
   'Race':['difficulty','race','white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub'],
-  'Origins':[], // populated lazily via getOriginWheelIds()
+  'Origins':[],
+  'Body':['age','height','body','stretch_thin','stretch_mid','stretch_bbw','cellulite_thin','cellulite_mid','cellulite_bbw','muscle_thin','muscle_mid','muscle_bbw','waist_thin','waist_mid','waist_bbw'],
   'Face':['skin_light','skin_medium','skin_dark','freckles','eyes_light','eyes_medium','eyes_dark','nose_light','nose_medium','nose_dark','eyebrows_light','eyebrows_medium','eyebrows_dark','skin_glow_light','skin_glow_medium','skin_glow_dark','lips_light','lips_medium','lips_dark','face','face_shape','teeth','ears','neck','oral_saliva','oral_sensation_me','oral_sensation_her','oral_enthusiasm','oral_anatomy','oral_psychology','oral_depth'],
   'Hair':['hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark','hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark'],
-  'Body':['age','height','body','stretch_thin','stretch_mid','stretch_bbw','cellulite_thin','cellulite_mid','cellulite_bbw','muscle_thin','muscle_mid','muscle_bbw','waist_thin','waist_mid','waist_bbw'],
   'Breast':['cup_size','breast_shape','breast_position','breast_firmness','breast_projection'],
   'Nipple':['nipple_size','nipple_type','nipple_placement','nipple_col_light','nipple_col_medium','nipple_col_dark'],
   'Areola':['areola_size','areola_texture','areola_shape'],
@@ -7967,7 +8163,7 @@ const WHEEL_CATEGORIES = {
   'Character':['financial','personality','education','intelligence','street_smarts','sex_exp','acquired','mental_state','emotional','bond_threat','voice','language'],
   'Scenario':['kink','amount','mode','length','disobedience','punishment','location','fav_part','bonus','pegging_enthusiasm','pegging_sensation','general_abuse','baby_talk','breeding_gate','breeding_wheel'],
   'Roleplay':['mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth','mother_a_abuse','mother_dark_acts','sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth','sister_a_abuse','sister_dark_acts','auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth','aunt_a_abuse','auntcousin_dark_acts','dark_psychology','teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth','teacher_abuse_acts','teacher_abuse_sensation','teacher_abuse_psychology','college_abuse_acts','college_abuse_psychology'],
-  'Setting':['time_day','season','wildcard'],
+  'Setting':['time_day','season','wildcard']
 };
 
 let currentEditCat = 'flow';
@@ -9050,12 +9246,18 @@ function buildEditCatTabs(){
   const existing=[...tabs.querySelectorAll('.cat-tab')];
   existing.slice(2).forEach(b=>b.remove());
   // Get ordered categories from WHEEL_CATEGORIES
-  const catOrder=Object.keys(WHEEL_CATEGORIES);
-  // Also add any categories implied by WHEEL_ORDER but not in WHEEL_CATEGORIES
-  const seen=new Set(catOrder);
-  const extraCats=[];
-  if(!seen.has('Origins'))extraCats.push('Origins');
-  const allCats=[...catOrder,...extraCats];
+  // Derive category order from WHEEL_ORDER directly — always correct
+  const catOrder=[];
+  const seenCats=new Set();
+  WHEEL_ORDER.forEach(id=>{
+    if(!WHEEL_DEFS[id])return;
+    let cat=null;
+    for(const[c,ids] of Object.entries(WHEEL_CATEGORIES)){if(ids&&ids.includes(id)){cat=c;break;}}
+    if(!cat&&id.startsWith('origin_'))cat='Origins';
+    if(!cat)cat='Other';
+    if(!seenCats.has(cat)){seenCats.add(cat);catOrder.push(cat);}
+  });
+  const allCats=catOrder;
   allCats.forEach(cat=>{
     if(!cat||cat==='Other')return;
     const btn=document.createElement('button');
@@ -9108,16 +9310,25 @@ async function initApp(){
 }
 
 // Version stamp — bump this whenever WHEEL_DEFS structure changes significantly
-const WHEEL_VERSION='v5.2-export-2026-04-15';
+const WHEEL_VERSION='v5.3-export-2026-04-15';
 
 function applyTemplate(tpl,save=true){
   // If the saved template predates the current wheel version, ignore its wheelDefs
   // and use the built-in WHEEL_DEFS instead — prevents stale saves breaking the app
   const isStale=!tpl.wheelVersion||tpl.wheelVersion!==WHEEL_VERSION;
   if(!isStale){
-    Object.keys(WHEEL_DEFS).forEach(k=>delete WHEEL_DEFS[k]);
-    Object.assign(WHEEL_DEFS,JSON.parse(JSON.stringify(tpl.wheelDefs)));
-    WHEEL_ORDER.length=0;tpl.wheelOrder.forEach(id=>WHEEL_ORDER.push(id));
+    // Restore custom segment edits from saved template
+    // but NEVER restore WHEEL_ORDER — always use built-in sequence
+    if(tpl.wheelDefs){
+      Object.keys(tpl.wheelDefs).forEach(id=>{
+        if(WHEEL_DEFS[id]&&tpl.wheelDefs[id]){
+          // Only restore segment-level edits, keep built-in structure
+          WHEEL_DEFS[id].segments=JSON.parse(JSON.stringify(tpl.wheelDefs[id].segments));
+          WHEEL_DEFS[id].name=tpl.wheelDefs[id].name;
+        }
+      });
+    }
+    // WHEEL_ORDER always comes from built-in source — never from Firebase
   }
   // Stamp the version on save so future loads know it's current
   tpl.wheelVersion=WHEEL_VERSION;
@@ -9412,4 +9623,26 @@ if(window.storage){
 
 
 <div id="deepseek-ai"></div><div id="coplmfnphahpcknbchcehdikbdieognn" style="all: initial; font-size: 16px !important"></div><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration>
-<div id="deepseek-ai"></div></body></html>
+<div id="deepseek-ai"></div>
+<div id="wheelDetailOverlay" onclick="if(event.target===this)closeWheelDetail()">
+  <div id="wheelDetailPanel">
+    <div class="wdp-header">
+      <div class="wdp-name" id="wdpName">—</div>
+      <span class="wdp-status" id="wdpStatus">—</span>
+      <div class="wdp-nav">
+        <button onclick="navWheelDetail(-1)">◀ Prev</button>
+        <button onclick="navWheelDetail(1)">Next ▶</button>
+      </div>
+      <button class="wdp-close" onclick="closeWheelDetail()">✕</button>
+    </div>
+    <div class="wdp-result" id="wdpResult" style="display:none">
+      <span>Result:</span><span id="wdpResultText"></span>
+    </div>
+    <div class="wdp-segs" id="wdpSegs"></div>
+    <div class="wdp-footer">
+      <span id="wdpPos"></span>
+      <span id="wdpCat"></span>
+    </div>
+  </div>
+</div>
+</body></html>
