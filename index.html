@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="The Wheel">
@@ -152,11 +152,51 @@ canvas#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 50px 
 .result-overlay.show{opacity:1}
 .result-overlay-text{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--text);text-align:center;padding:20px;line-height:1.6;text-shadow:0 0 20px rgba(255,255,255,.2)}
 .result-overlay-sub{display:block;font-family:'Rajdhani',sans-serif;font-size:.75rem;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
-.progress-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:525px}
 
 
 
 .spin-row{display:flex;gap:14px;align-items:center}
+
+/* ── Progress bar dots ── */
+.progress-wrap{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-start;align-content:flex-start;padding:8px 10px;box-sizing:border-box;width:100%}
+.pdot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:background .2s,transform .15s;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;z-index:1}
+.pdot::before{content:'';position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;}
+.pdot:hover{transform:scale(1.8);z-index:2}
+.pdot.done{background:var(--gold);opacity:.85}
+.pdot.done:hover{opacity:1}
+.pdot.skipped{background:#5a2020;border:1px solid #7a3030}
+.pdot.current{background:var(--gold);box-shadow:0 0 5px rgba(201,168,76,.9);transform:scale(1.5);animation:pdot-pulse 1.2s ease-in-out infinite}
+.pdot.cat-break{margin-left:5px}
+@keyframes pdot-pulse{0%,100%{box-shadow:0 0 3px rgba(201,168,76,.4)}50%{box-shadow:0 0 7px rgba(201,168,76,1)}}
+
+/* ── Wheel detail slide-up panel ── */
+#wheelDetailOverlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.82);z-index:1000;display:none;align-items:flex-end;justify-content:center}
+#wheelDetailOverlay.open{display:flex}
+@keyframes wdpSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#wheelDetailPanel{background:#0e0e1d;border-top:2px solid #c9a84c;width:100%;max-width:700px;max-height:75vh;display:flex;flex-direction:column;border-radius:12px 12px 0 0;overflow:hidden}
+#wheelDetailOverlay.open #wheelDetailPanel{animation:wdpSlideUp .28s cubic-bezier(.4,0,.2,1) both}
+#wheelDetailPanel .wdp-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+#wheelDetailPanel .wdp-name{flex:1;font-size:.85rem;font-weight:700;color:var(--text);letter-spacing:.5px}
+#wheelDetailPanel .wdp-status{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:3px}
+.wdp-status.done{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--gold)}
+.wdp-status.current{background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold)}
+.wdp-status.skipped{background:rgba(90,32,32,.3);color:#c07070;border:1px solid #7a3030}
+.wdp-status.pending{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border)}
+#wheelDetailPanel .wdp-nav{display:flex;gap:6px}
+#wheelDetailPanel .wdp-nav button{background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;cursor:pointer;font-size:.7rem;font-family:inherit}
+#wheelDetailPanel .wdp-nav button:hover{border-color:var(--gold);color:var(--gold)}
+#wheelDetailPanel .wdp-close{background:none;border:none;color:var(--text2);font-size:1.2rem;cursor:pointer;padding:0 4px;line-height:1}
+#wheelDetailPanel .wdp-close:hover{color:var(--gold)}
+#wheelDetailPanel .wdp-result{padding:8px 16px;background:rgba(201,168,76,.08);border-bottom:1px solid var(--border);font-size:.82rem;color:var(--gold);font-weight:600;flex-shrink:0}
+#wheelDetailPanel .wdp-result span{color:var(--text2);font-weight:400;font-size:.72rem;margin-right:6px}
+#wheelDetailPanel .wdp-segs{flex:1;overflow-y:auto;padding:8px 16px}
+#wheelDetailPanel .wdp-seg{padding:5px 8px;font-size:.72rem;color:var(--text2);border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:8px;border-radius:3px}
+#wheelDetailPanel .wdp-seg.chosen{color:var(--gold);font-weight:700;background:rgba(201,168,76,.1)}
+#wheelDetailPanel .wdp-seg.chosen::before{content:'▶';font-size:.6rem;color:var(--gold);flex-shrink:0}
+#wheelDetailPanel .wdp-seg:not(.chosen)::before{content:'';width:.6rem;flex-shrink:0}
+#wheelDetailPanel .wdp-seg .seg-w{color:var(--text3);font-size:.6rem;margin-left:auto;flex-shrink:0}
+#wheelDetailPanel .wdp-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.65rem;color:var(--text2);flex-shrink:0}
+
 .btn-spin{background:var(--accent);border:none;color:#fff;padding:16px 56px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;touch-action:manipulation}
 .btn-spin:hover{background:#a50e17;box-shadow:0 0 30px rgba(200,18,28,.5)}
 .btn-spin:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
@@ -374,38 +414,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
   .seg-row{padding:14px!important}
   .del-wheel-btn{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 }
-.pdot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all .25s;cursor:pointer;flex-shrink:0;position:relative}
-.pdot:hover{transform:scale(1.4);z-index:2}
-.pdot.done{background:var(--gold);opacity:.85}
-.pdot.done:hover{opacity:1}
-.pdot.skipped{background:#5a2020;border:1px solid #7a3030}
-.pdot.current{background:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.9);transform:scale(1.3);animation:pdot-pulse 1.2s ease-in-out infinite}
-@keyframes pdot-pulse{0%,100%{box-shadow:0 0 6px rgba(201,168,76,.7)}50%{box-shadow:0 0 14px rgba(201,168,76,1)}}
-.pdot.cat-break{margin-left:6px}
-#wheelDetailOverlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:900;display:none;align-items:flex-end;justify-content:center}
-#wheelDetailOverlay.open{display:flex}
-#wheelDetailPanel{background:var(--panel);border-top:1px solid var(--border);width:100%;max-width:700px;max-height:70vh;display:flex;flex-direction:column;border-radius:12px 12px 0 0;overflow:hidden}
-#wheelDetailPanel .wdp-header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
-#wheelDetailPanel .wdp-name{flex:1;font-size:.85rem;font-weight:700;color:var(--text);letter-spacing:.5px}
-#wheelDetailPanel .wdp-status{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:3px}
-.wdp-status.done{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--gold)}
-.wdp-status.current{background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold)}
-.wdp-status.skipped{background:rgba(90,32,32,.3);color:#c07070;border:1px solid #7a3030}
-.wdp-status.pending{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border)}
-#wheelDetailPanel .wdp-nav{display:flex;gap:6px}
-#wheelDetailPanel .wdp-nav button{background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;cursor:pointer;font-size:.7rem;font-family:inherit}
-#wheelDetailPanel .wdp-nav button:hover{border-color:var(--gold);color:var(--gold)}
-#wheelDetailPanel .wdp-close{background:none;border:none;color:var(--text2);font-size:1.2rem;cursor:pointer;padding:0 4px;line-height:1}
-#wheelDetailPanel .wdp-close:hover{color:var(--gold)}
-#wheelDetailPanel .wdp-result{padding:8px 16px;background:rgba(201,168,76,.08);border-bottom:1px solid var(--border);font-size:.82rem;color:var(--gold);font-weight:600;flex-shrink:0}
-#wheelDetailPanel .wdp-result span{color:var(--text2);font-weight:400;font-size:.72rem;margin-right:6px}
-#wheelDetailPanel .wdp-segs{flex:1;overflow-y:auto;padding:8px 16px}
-#wheelDetailPanel .wdp-seg{padding:5px 8px;font-size:.72rem;color:var(--text2);border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:8px;border-radius:3px}
-#wheelDetailPanel .wdp-seg.chosen{color:var(--gold);font-weight:700;background:rgba(201,168,76,.1)}
-#wheelDetailPanel .wdp-seg.chosen::before{content:'▶';font-size:.6rem;color:var(--gold);flex-shrink:0}
-#wheelDetailPanel .wdp-seg:not(.chosen)::before{content:'';width:.6rem;flex-shrink:0}
-#wheelDetailPanel .wdp-seg .seg-w{color:var(--text3);font-size:.6rem;margin-left:auto;flex-shrink:0}
-#wheelDetailPanel .wdp-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.65rem;color:var(--text2);flex-shrink:0}
+}
 </style>
 <style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style></head>
 <body data-new-gr-c-s-check-loaded="14.1282.0" data-gr-ext-installed="" style="isolation: isolate;">
@@ -464,7 +473,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
         <div class="result-overlay-text" id="resultText">—<span class="result-overlay-sub" id="resultSub"></span></div>
       </div>
     </div>
-    <div class="progress-wrap" id="progressWrap"><div class="pdot current" title="Difficulty"></div><div class="pdot" title="Race"></div><div class="pdot" title="Skin (Medium)"></div><div class="pdot" title="Eyes (Medium)"></div><div class="pdot" title="Nose (Medium)"></div><div class="pdot" title="Eyebrows (Medium)"></div><div class="pdot" title="Skin Glow (Medium)"></div><div class="pdot" title="Lips (Medium)"></div><div class="pdot" title="Hair (Medium)"></div><div class="pdot" title="Hair Color (Medium/Afro Latina)"></div><div class="pdot" title="Age"></div><div class="pdot" title="Height"></div><div class="pdot" title="Body Type"></div><div class="pdot" title="Ass Size"></div><div class="pdot" title="Ass Shape"></div><div class="pdot" title="Ass Projection"></div><div class="pdot" title="Ass Firmness"></div><div class="pdot" title="Ass-to-Lower-Back Transition"></div><div class="pdot" title="Ass Skin Texture"></div><div class="pdot" title="Ass Body Hair"></div><div class="pdot" title="Anal Appearance (Sphincter Only)"></div><div class="pdot" title="Anal Sensation (For Me)"></div><div class="pdot" title="Anal Sensation (For Her)"></div><div class="pdot" title="Anal Enthusiasm (Receive)"></div><div class="pdot" title="Anal Make Up"></div><div class="pdot" title="Anal Psychological Aspects"></div><div class="pdot" title="Anal Depth &amp; Capacity"></div><div class="pdot" title="Cup Size"></div><div class="pdot" title="Breast Shape"></div><div class="pdot" title="Breast Position"></div><div class="pdot" title="Breast Firmness"></div><div class="pdot" title="Breast Projection"></div><div class="pdot" title="Nipple Size"></div><div class="pdot" title="Nipple Type"></div><div class="pdot" title="Nipple Placement"></div><div class="pdot" title="Nipple Color (Medium)"></div><div class="pdot" title="Areola Size"></div><div class="pdot" title="Areola Texture"></div><div class="pdot" title="Areola Shape"></div><div class="pdot" title="Labia Size &amp; Shape"></div><div class="pdot" title="Labia Color (Medium)"></div><div class="pdot" title="Stretch Marks (Mid/Thick)"></div><div class="pdot" title="Cellulite (Mid/Thick)"></div><div class="pdot" title="Muscle Tone (Mid/Thick)"></div><div class="pdot" title="Waist-to-Hip (Mid/Thick)"></div><div class="pdot" title="Thigh Thickness"></div><div class="pdot" title="Thigh Shape"></div><div class="pdot" title="Thigh Inner Relationship"></div><div class="pdot" title="Thigh Texture"></div><div class="pdot" title="Stomach"></div><div class="pdot" title="Legs"></div><div class="pdot" title="Back"></div><div class="pdot" title="Collarbone"></div><div class="pdot" title="Face Rating"></div><div class="pdot" title="Face Shape"></div><div class="pdot" title="Teeth"></div><div class="pdot" title="Ears"></div><div class="pdot" title="Neck"></div><div class="pdot" title="Shave"></div><div class="pdot" title="Cleavage"></div><div class="pdot" title="General Body Hair"></div><div class="pdot" title="Hands"></div><div class="pdot" title="Position / Pose"></div><div class="pdot" title="Feet"></div><div class="pdot" title="Skin Softness"></div><div class="pdot" title="Natural Scent"></div><div class="pdot" title="Skin Temperature"></div><div class="pdot" title="Touch Response"></div><div class="pdot" title="Financial Status"></div><div class="pdot" title="Personality"></div><div class="pdot" title="Education"></div><div class="pdot" title="Intelligence"></div><div class="pdot" title="Street Smarts"></div><div class="pdot" title="Sexual Experience"></div><div class="pdot" title="How Acquired / Met"></div><div class="pdot" title="Mental State"></div><div class="pdot" title="Emotional Response"></div><div class="pdot" title="Bond &amp; Threat"></div><div class="pdot" title="Voice"></div><div class="pdot" title="Language &amp; Accent"></div><div class="pdot" title="Kink"></div><div class="pdot" title="Amount"></div><div class="pdot" title="Mode"></div><div class="pdot" title="Length"></div><div class="pdot" title="Disobedience"></div><div class="pdot" title="Punishment"></div><div class="pdot" title="Location"></div><div class="pdot" title="Fav Part"></div><div class="pdot" title="Bonus"></div><div class="pdot" title="Time of Day"></div><div class="pdot" title="Season / Weather"></div><div class="pdot" title="Wildcard"></div></div>
+    <div class="progress-wrap" id="progressWrap"></div>
     <div class="spin-row">
       <button type="button" class="btn" onclick="openEditPanel(true)" style="font-size:.7rem;padding:5px 10px" id="editThisBtn">Edit Wheel</button>
       <button type="button" class="btn btn-skip" id="skipBtn" onclick="skipDifficulty()" style="display: block;">Skip</button>
@@ -6366,16 +6375,10 @@ function computeNext(fromId,label,seg){
   }
   if(fromId==='body'){
     bodyGroup=detectBodyGroup(label);
-    return nextEnabled('stretch_thin');
+    return nextEnabled(bodyW('stretch'));
   }
   // ── Ass system ──
   if(fromId==='ass_size'){
-    // Hard block: anorexic/bulimic + huge/obscene → reroll
-    const bodyResult=results.find(r=>r.wheelId==='body')?.label||'';
-    if(hardBlockToggles['anorexic_ass']!==false&&/anorexic|bulimic/i.test(bodyResult)&&/huge|obscene/i.test(label)){
-      return nextEnabled('ass_size'); // reroll
-    }
-    // Store ass size group for consistency
     assSizeGroup=detectAssSizeGroup(label);
     return nextEnabled('ass_shape');
   }
@@ -6418,7 +6421,11 @@ function computeNext(fromId,label,seg){
   if(fromId==='breast_compression')return nextEnabled('lactation_volume');
   if(fromId==='lactation_volume')return nextEnabled('lactation_taste');
   if(fromId==='lactation_taste')return nextEnabled('milk_play');
-  if(fromId==='milk_play')return nextEnabled('ass_size');
+  if(fromId==='milk_play'){
+    const bodyResult=results.find(r=>r.wheelId==='body')?.label||'';
+    if(/anorexic|bulimic/i.test(bodyResult)){assSizeGroup='small';return nextEnabled('ass_shape');}
+    return nextEnabled('ass_size');
+  }
   if(fromId==='labia_size')return nextEnabled(labColW());
   if(['labia_col_light','labia_col_medium','labia_col_dark'].includes(fromId))return nextEnabled('vaginal_moisture');
   if(fromId==='vaginal_moisture')return nextEnabled('vaginal_sensation_me');
@@ -6442,7 +6449,7 @@ function computeNext(fromId,label,seg){
     muscleGroup=detectMuscleGroup(label);
     return nextEnabled(bodyW('waist'));
   }
-  if(fromId.startsWith('waist_'))return nextEnabled('skin_light');
+  if(fromId.startsWith('waist_'))return nextEnabled(raceW('skin'));
   // ── Thigh system ──
   if(fromId==='thigh_thickness')return nextEnabled('thigh_shape');
   if(fromId==='thigh_shape')return nextEnabled('thigh_inner');
@@ -6465,7 +6472,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='oral_enthusiasm')return nextEnabled('oral_anatomy');
   if(fromId==='oral_anatomy')return nextEnabled('oral_psychology');
   if(fromId==='oral_psychology')return nextEnabled('oral_depth');
-  if(fromId==='oral_depth')return nextEnabled('hair_light');
+  if(fromId==='oral_depth')return nextEnabled(hairW());
   // ── Detail ──
   if(fromId==='shave')return nextEnabled('cleavage');
   if(fromId==='cleavage')return nextEnabled('body_hair');
@@ -7076,7 +7083,10 @@ function renderProgress(){
 }
 
 function openWheelDetail(idx){
-  _wdpIdx=idx;
+  if(!_wdpSeq||!_wdpSeq.length)_wdpSeq=getSequence();
+  _wdpIdx=Math.max(0,Math.min((_wdpSeq.length||1)-1,Math.max(0,idx)));
+  const wid=_wdpSeq[_wdpIdx];
+  if(!wid||!WHEEL_DEFS[wid])return; // never open a blank panel
   _renderWheelDetail();
   document.getElementById('wheelDetailOverlay').classList.add('open');
 }
@@ -7119,8 +7129,8 @@ function _renderWheelDetail(){
     document.getElementById('wdpResultText').textContent=res.label;
   } else if(isSkipped){
     resRow.style.display='block';
-    document.getElementById('wdpResultText').textContent='—';
-    resRow.querySelector('span').textContent='Not spun — ';
+    document.getElementById('wdpResultText').textContent='Not spun';
+    resRow.querySelector('span').textContent='Status: ';
   } else {
     resRow.style.display='none';
   }
@@ -7173,6 +7183,7 @@ function renderResultsList(){
   });
   list.scrollTop=list.scrollHeight;
 }
+
 
 function restartAll(){
   results=[];currentWheelId='difficulty';currentAngle=0;spinning=false;
@@ -9310,7 +9321,7 @@ async function initApp(){
 }
 
 // Version stamp — bump this whenever WHEEL_DEFS structure changes significantly
-const WHEEL_VERSION='v5.3-export-2026-04-15';
+const WHEEL_VERSION='v5.4-export-2026-04-16';
 
 function applyTemplate(tpl,save=true){
   // If the saved template predates the current wheel version, ignore its wheelDefs
@@ -9335,7 +9346,10 @@ function applyTemplate(tpl,save=true){
   currentWheelId=tpl.entryWheel&&WHEEL_DEFS[tpl.entryWheel]?tpl.entryWheel:WHEEL_ORDER[0]||'difficulty';
   cachedActiveId=tpl.id;
   document.getElementById('headerTplName').textContent=tpl.name;
-  restartAll();if(save)persistSave();
+  // Only reset if no spin is in progress — prevents zoom/resize from wiping active runs
+  if(results.length===0&&!spinning)restartAll();
+  else{renderWheelUI();drawWheel(currentAngle);renderProgress();}
+  if(save)persistSave();
 }
 
 function autoSaveActive(){const tpl=cachedTemplates.find(t=>t.id===cachedActiveId);if(!tpl)return;tpl.wheelDefs=JSON.parse(JSON.stringify(WHEEL_DEFS));tpl.wheelOrder=[...WHEEL_ORDER];tpl.wheelVersion=WHEEL_VERSION;persistSave();}
