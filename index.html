@@ -293,14 +293,14 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
 .matrix-mult.boost{color:#ff9040}
 /* ── Flowchart ── */
 .fc-cat{font-size:.62rem;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:700;padding:14px 0 6px;text-align:center}
-.fc-box{background:var(--panel);border:1px solid var(--border);border-radius:4px;margin:0 8px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;user-select:none}
+.fc-box{background:var(--panel);border:1px solid var(--border);border-radius:4px;margin:0 8px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;user-select:none;min-height:44px;touch-action:manipulation}
 .fc-box:hover{border-color:var(--gold)}
 .fc-box.fc-active{border-color:var(--gold);background:#1a1a00}
 .fc-box.fc-done{border-color:var(--border);opacity:.7}
 .fc-box.fc-current{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
-.fc-box-head{display:flex;align-items:center;gap:8px;padding:9px 12px}
-.fc-box-name{flex:1;font-size:.8rem;font-weight:700;color:var(--text);letter-spacing:.5px}
-.fc-box-meta{font-size:.65rem;color:var(--text2)}
+.fc-box-head{display:flex;align-items:center;gap:8px;padding:10px 12px;flex-wrap:nowrap}
+.fc-box-name{flex:1;font-size:.8rem;font-weight:700;color:var(--text);letter-spacing:.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fc-box-meta{font-size:.65rem;color:var(--text2);white-space:nowrap;flex-shrink:0}
 .fc-box-chevron{font-size:.7rem;color:var(--text2);transition:transform .2s;flex-shrink:0}
 .fc-box.fc-active .fc-box-chevron{transform:rotate(180deg)}
 .fc-box-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--border)}
@@ -476,7 +476,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
     <div class="progress-wrap" id="progressWrap"></div>
     <div class="spin-row">
       <button type="button" class="btn" onclick="openEditPanel(true)" style="font-size:.7rem;padding:5px 10px" id="editThisBtn">Edit Wheel</button>
-      <button type="button" class="btn btn-skip" id="skipBtn" onclick="skipDifficulty()" style="display: block;">Skip</button>
+      <button type="button" class="btn btn-skip" id="skipBtn" onclick="doSkip()" style="display: block;">Skip</button>
       <button type="button" class="btn-spin" id="spinBtn" onclick="doSpin()">SPIN</button>
     </div>
   </div>
@@ -5797,9 +5797,11 @@ wildcard:{name:"Wildcard",segments:[
   {label:'flip kink to opposite',weight:8},
   {label:'add a second character, same race',weight:4},
   {label:'upgrade face rating by 2 points',weight:8},
-  {label:'everything stays but location changes',weight:8},
   {label:'reroll face rating',weight:6},
   {label:'upgrade difficulty by one tier',weight:4},
+  {label:'reroll ass',weight:8},
+  {label:'reroll breast',weight:8},
+  {label:'reroll lower',weight:8},
 ]},
 custom_1775979153180:{name:"Sibling Sub Enthusiasm",segments:[
   {label:'Needy Little Sister Begging - Whimpers desperately for big brother to use her.',weight:10},
@@ -6293,7 +6295,12 @@ function nextEnabled(wid){
 function computeNext(fromId,label,seg){
   if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(WHEEL_DEFS[seg.branch])return seg.branch;}
   if(fromId==='amount'&&label==='Start over')return'RESTART';
-  if(fromId==='wildcard')return'DONE';
+  if(fromId==='wildcard'){
+    const wcRerollMap={'reroll body wheel':'body','reroll kink wheel':'kink','reroll location wheel':'location','reroll face rating':'face','reroll ass':'ass_size','reroll breast':'cup_size','reroll lower':'labia_size'};
+    if(wcRerollMap[label]){const target=wcRerollMap[label];const targetIdx=WHEEL_ORDER.indexOf(target);if(targetIdx!==-1){const firstKeptIdx=results.findIndex(r=>WHEEL_ORDER.indexOf(r.wheelId)>=targetIdx);if(firstKeptIdx!==-1)results.splice(firstKeptIdx);}return target;}
+    if(label==='reroll race wheel, restart from race')return'RESTART';
+    return'DONE';
+  }
   if(fromId==='difficulty'){storeDiff(label);return nextEnabled('race');}
   if(fromId==='race'){
     raceGroup=detectRaceGroup(label);hairGroup=detectHairGroup(label,'');
@@ -6508,14 +6515,11 @@ function computeNext(fromId,label,seg){
   if(fromId==='pegging_sensation'){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     if(kinkResult==='Super Dom'||kinkResult==='Med Dom')return nextEnabled('general_abuse');
-    if(kinkResult==='Light Dom')return nextEnabled('baby_talk');
-    return nextEnabled('breeding_gate'); // Gentle Dom
+    return nextEnabled('breeding_gate'); // Light Dom, Gentle Dom — baby_talk fires at length
   }
-  if(fromId==='general_abuse')return nextEnabled('baby_talk');
+  if(fromId==='general_abuse')return nextEnabled('breeding_gate');
   if(fromId==='baby_talk'){
-    const modeResult=results.find(r=>r.wheelId==='mode')?.label||'';
-    if(['Mother','Sibling','Aunt/Cousin','Teacher'].includes(modeResult))return nextEnabled('breeding_wheel');
-    return nextEnabled('breeding_gate');
+    return nextEnabled('disobedience');
   }
   if(fromId==='breeding_gate'){
     if(label==='Yes')return nextEnabled('breeding_wheel');
@@ -6543,7 +6547,7 @@ function computeNext(fromId,label,seg){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(kinkResult))return nextEnabled('mother_a_abuse');
-    return nextEnabled('baby_talk');
+    return nextEnabled('length');
   }
   if(fromId==='mother_a_abuse')return nextEnabled('mother_dark_acts');
   if(fromId==='mother_dark_acts')return nextEnabled('dark_psychology');
@@ -6556,7 +6560,7 @@ function computeNext(fromId,label,seg){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(kinkResult))return nextEnabled('sister_a_abuse');
-    return nextEnabled('baby_talk');
+    return nextEnabled('length');
   }
   if(fromId==='sister_a_abuse')return nextEnabled('sister_dark_acts');
   if(fromId==='sister_dark_acts')return nextEnabled('dark_psychology');
@@ -6569,12 +6573,12 @@ function computeNext(fromId,label,seg){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(kinkResult))return nextEnabled('aunt_a_abuse');
-    return nextEnabled('baby_talk');
+    return nextEnabled('length');
   }
   if(fromId==='aunt_a_abuse')return nextEnabled('auntcousin_dark_acts');
   if(fromId==='auntcousin_dark_acts')return nextEnabled('dark_psychology');
   // ── Dark psychology (shared endpoint) ──
-  if(fromId==='dark_psychology')return nextEnabled('baby_talk');
+  if(fromId==='dark_psychology')return nextEnabled('length');
   // ── Teacher roleplay wheels ──
   if(fromId==='teacher_enthusiasm')return nextEnabled('teacher_sensation_me');
   if(fromId==='teacher_sensation_me')return nextEnabled('teacher_sensation_her');
@@ -6583,19 +6587,29 @@ function computeNext(fromId,label,seg){
   if(fromId==='teacher_depth'){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     if(kinkResult==='Super Dom'||kinkResult==='Med Dom')return nextEnabled('teacher_abuse_acts');
-    return nextEnabled('baby_talk');
+    return nextEnabled('length');
   }
   if(fromId==='teacher_abuse_acts')return nextEnabled('teacher_abuse_sensation');
   if(fromId==='teacher_abuse_sensation')return nextEnabled('teacher_abuse_psychology');
   if(fromId==='teacher_abuse_psychology')return nextEnabled('college_abuse_acts');
   if(fromId==='college_abuse_acts')return nextEnabled('college_abuse_psychology');
-  if(fromId==='college_abuse_psychology')return nextEnabled('baby_talk');
-  if(fromId==='length')return nextEnabled('disobedience');
+  if(fromId==='college_abuse_psychology')return nextEnabled('length');
+  if(fromId==='length'){
+    const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
+    const modeResult=results.find(r=>r.wheelId==='mode')?.label||'';
+    const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
+    const roleplayModes=['Mother','Sibling','Aunt/Cousin','Teacher'];
+    if(domLabels.includes(kinkResult)||roleplayModes.includes(modeResult))return nextEnabled('baby_talk');
+    return nextEnabled('disobedience');
+  }
   if(fromId==='disobedience')return nextEnabled('punishment');
-  if(fromId==='punishment')return nextEnabled('location');
+  if(fromId==='punishment'){
+    if(label==='Death')return nextEnabled('bonus');
+    return nextEnabled('location');
+  }
+  if(fromId==='bonus')return nextEnabled('location');
   if(fromId==='location')return nextEnabled('fav_part');
-  if(fromId==='fav_part')return nextEnabled('bonus');
-  if(fromId==='bonus')return nextEnabled('time_day');
+  if(fromId==='fav_part')return nextEnabled('time_day');
   // ── Setting ──
   if(fromId==='time_day')return nextEnabled('season');
   if(fromId==='season')return nextEnabled('wildcard');
@@ -6697,13 +6711,32 @@ function getSequence(){
   seq.push('kink');
   if(domLabels.includes(kr))seq.push('pegging_enthusiasm','pegging_sensation');
   if(kr==='Super Dom'||kr==='Med Dom')seq.push('general_abuse');
-  seq.push('baby_talk','breeding_gate','breeding_wheel','amount','mode','length','disobedience','punishment','location','fav_part','bonus');
+  seq.push('breeding_gate','breeding_wheel','amount','mode');
 
-  // ── Roleplay (mode-specific) ──
-  if(mr==='Mother')seq.push('mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth');
-  else if(mr==='Sibling')seq.push('sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth');
-  else if(mr==='Aunt/Cousin')seq.push('auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth');
-  else if(mr==='Teacher')seq.push('teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth');
+  // ── Roleplay (mode-specific sub-wheels, before length) ──
+  if(mr==='Mother'){
+    seq.push('mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth');
+    if(domLabels.includes(kr))seq.push('mother_a_abuse','mother_dark_acts','dark_psychology');
+  } else if(mr==='Sibling'){
+    seq.push('sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth');
+    if(domLabels.includes(kr))seq.push('sister_a_abuse','sister_dark_acts','dark_psychology');
+  } else if(mr==='Aunt/Cousin'){
+    seq.push('auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth');
+    if(domLabels.includes(kr))seq.push('aunt_a_abuse','auntcousin_dark_acts','dark_psychology');
+  } else if(mr==='Teacher'){
+    seq.push('teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth');
+    if(kr==='Super Dom'||kr==='Med Dom')seq.push('teacher_abuse_acts','teacher_abuse_sensation','teacher_abuse_psychology','college_abuse_acts','college_abuse_psychology');
+  }
+
+  seq.push('length');
+  // baby_talk fires after length if dom kink or roleplay mode
+  const roleplayModes=['Mother','Sibling','Aunt/Cousin','Teacher'];
+  if(domLabels.includes(kr)||roleplayModes.includes(mr))seq.push('baby_talk');
+  seq.push('disobedience','punishment');
+  // bonus only appears if punishment has already landed on Death
+  const punishResult=results.find(r=>r.wheelId==='punishment')?.label||'';
+  if(punishResult==='Death')seq.push('bonus');
+  seq.push('location','fav_part');
 
   // ── Setting ──
   seq.push('time_day','season','wildcard');
@@ -6725,6 +6758,8 @@ function storeDiff(l){
   updateDiffBadge();
 }
 function skipDifficulty(){diffMode='medium';document.getElementById('skipBtn').style.display='none';updateDiffBadge();currentWheelId='race';currentAngle=0;renderWheelUI();drawWheel(0);}
+function skipWildcard(){currentWheelId=null;showOutput();}
+function doSkip(){if(currentWheelId==='wildcard')skipWildcard();else skipDifficulty();}
 function updateDiffBadge(){const el=document.getElementById('diffBadge');if(diffMode==='medium'){el.style.display='none';return;}el.style.display='inline-flex';el.className='diff-badge '+diffMode;const m={easy:'★ Easy',hard:'⚡ Hard',extreme:'☠ Extreme',random:'🎲 Random'};el.textContent=m[diffMode]||diffMode;}
 
 function applyConsistencyMatrix(weights,segs,wid){
@@ -7033,7 +7068,8 @@ function renderWheelUI(){
   document.getElementById('wheelName').textContent=def.name;
   const seq=getSequence();const pos=seq.indexOf(currentWheelId);
   document.getElementById('wheelSubtitle').textContent=pos>=0?`Wheel ${pos+1} of ${seq.length}`:def.name;
-  document.getElementById('skipBtn').style.display=currentWheelId==='difficulty'?'block':'none';
+  document.getElementById('skipBtn').style.display=(currentWheelId==='difficulty'||currentWheelId==='wildcard')?'block':'none';
+  document.getElementById('skipBtn').textContent=currentWheelId==='wildcard'?'Skip Wildcard':'Skip';
   renderProgress();
 }
 
@@ -8327,7 +8363,7 @@ function renderFlowMap(){
     toggleBtn.type='button';
     toggleBtn.title=disabled?'Enable wheel':'Disable wheel';
     toggleBtn.textContent=disabled?'OFF':'ON';
-    toggleBtn.style.cssText='background:none;border:1px solid '+(disabled?'var(--border)':'var(--gold)')+';color:'+(disabled?'var(--text2)':'var(--gold)')+';font-size:.6rem;padding:1px 5px;cursor:pointer;font-family:inherit;letter-spacing:1px;flex-shrink:0';
+    toggleBtn.style.cssText='background:none;border:1px solid '+(disabled?'var(--border)':'var(--gold)')+';color:'+(disabled?'var(--text2)':'var(--gold)')+';font-size:.6rem;padding:4px 7px;cursor:pointer;font-family:inherit;letter-spacing:1px;flex-shrink:0;touch-action:manipulation';
     toggleBtn.onclick=(e)=>{
       e.stopPropagation(); // don't expand/collapse
       toggleWheelDisabled(id);
@@ -8662,8 +8698,8 @@ function saveDisabledWheels(){
   try{window.storage.set(DISABLED_KEY,JSON.stringify([...disabledWheels]));}catch(e){}
 }
 function toggleWheelDisabled(wid){
-  // Protect entry wheel and wildcard
-  if(wid==='difficulty'||wid==='wildcard'){alert('This wheel cannot be disabled.');return;}
+  // Protect entry wheel only
+  if(wid==='difficulty'){alert('This wheel cannot be disabled.');return;}
   if(disabledWheels.has(wid)) disabledWheels.delete(wid);
   else disabledWheels.add(wid);
   saveDisabledWheels();
