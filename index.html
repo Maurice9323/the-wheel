@@ -6289,6 +6289,76 @@ function nextEnabled(wid){
 }
 
 function computeNext(fromId,label,seg){
+  // ── LABEL ROUTING OVERRIDES ──
+  // These run before segment branch checks — immune to template system overwrites.
+
+  // breast_sensation_her_gland: negative segments should NOT skip to lactation_volume
+  if(fromId==='breast_sensation_her_gland'){
+    const fs=['Numbing Tissue Ache','Intense Internal Stretch','Sharp Painful Core Pinch','Complete Glandular Numbness'];
+    if(fs.some(l=>label.startsWith(l)))return nextEnabled('breast_sensation_her_nipple');
+  }
+  // breast_sensation_her_nipple: negative segments should NOT skip to lactation_volume
+  if(fromId==='breast_sensation_her_nipple'){
+    const fs=['Numbing Nerve Ache','Sharp Painful Nipple Pinch','Intense Localized Fire','Complete Nipple Revulsion'];
+    if(fs.some(l=>label.startsWith(l)))return nextEnabled('breast_enthusiasm');
+  }
+  // breast_enthusiasm: specific segments route to ass_size, reluctant/disliking continue normally
+  if(fromId==='breast_enthusiasm'){
+    if(label.startsWith('Actively Covering')||label.startsWith('Completely Unwilling'))return nextEnabled('ass_size');
+    if(label.startsWith('Reluctant Compliance')||label.startsWith('Strongly Disliking Core'))return nextEnabled('breast_anatomy');
+  }
+  // lactation_volume: 9 low-volume segments skip to ass_size
+  if(fromId==='lactation_volume'){
+    const sk=['Zero Volume','Minimal Induced Drops','Weak Gradual Ooze','Sparse Occasional Leak','No Let-Down Reflex','Atrophied Dry Glands','Colostrum-Like Thick Drops','Minimal Maintenance Flow','Intermittent Sparse Output'];
+    if(sk.some(l=>label.startsWith(l)))return nextEnabled('ass_size');
+  }
+  // anal: specific refusal segments skip to thighs
+  if(fromId==='anal_sensation_her'&&label.startsWith('Complete Anal Revulsion'))return nextEnabled('thigh_thickness');
+  if(fromId==='anal_enthusiasm'&&label.startsWith('Completely Unwilling'))return nextEnabled('thigh_thickness');
+  if(fromId==='anal_psychology'&&label.startsWith('Complete Psychological Refusal'))return nextEnabled('thigh_thickness');
+  // vaginal_enthusiasm: completely unwilling skips to shave; other negative labels continue normally
+  if(fromId==='vaginal_enthusiasm'){
+    if(label.startsWith('Completely Unwilling'))return nextEnabled('shave');
+    const fs=['Uncomfortable Resistance','Strongly Disliking','Actively Avoiding','Fearful Tension','Emotionally Detached','Physically Unresponsive'];
+    if(fs.some(l=>label.startsWith(l)))return nextEnabled('vaginal_anatomy');
+  }
+  // squirt_anatomy: 4 anatomical limit segments skip to shave
+  if(fromId==='squirt_anatomy'){
+    const sk=['Minimal Skene','Low Bladder Involvement','Sparse Vascular Network','Isolated Glandular Only'];
+    if(sk.some(l=>label.startsWith(l)))return nextEnabled('shave');
+  }
+  // squirt_sensation_her: negative segments should NOT skip — continue normally
+  if(fromId==='squirt_sensation_her'){
+    const fs=['Irritating Urethral Burn','Shame-Linked Revulsion','Complete Internal Deadness'];
+    if(fs.some(l=>label.startsWith(l)))return nextEnabled('squirt_enthusiasm');
+  }
+  // squirt_enthusiasm: resistance segments skip to shave
+  if(fromId==='squirt_enthusiasm'){
+    if(label.startsWith('Actively Holding Back')||label.startsWith('Physically Resistant'))return nextEnabled('shave');
+  }
+  // squirt_threshold: no trigger skips to shave
+  if(fromId==='squirt_threshold'&&label.startsWith('No Trigger Possible'))return nextEnabled('shave');
+  // squirt_psychology: trauma block skips to shave
+  if(fromId==='squirt_psychology'&&label.startsWith('Trauma-Linked Block'))return nextEnabled('shave');
+  // oral: refusal segments skip to hair
+  if(fromId==='oral_enthusiasm'&&label.startsWith('Completely Unwilling'))return nextEnabled(hairW());
+  if(fromId==='oral_psychology'&&label.startsWith('Complete Psychological Refusal'))return nextEnabled(hairW());
+  // kink: ALL dom labels → pegging_enthusiasm (overrides any old branch:'general_abuse' from template)
+  if(fromId==='kink'){
+    const _dom=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
+    if(_dom.includes(label))return nextEnabled('pegging_enthusiasm');
+    return nextEnabled('mode');
+  }
+  // general_abuse: ALWAYS → mode (overrides any old branch:'pegging_enthusiasm' from template)
+  if(fromId==='general_abuse')return nextEnabled('mode');
+  // pegging_sensation: ALL segments → mode or general_abuse depending on kink
+  // (overrides any old branch:'amount' from template)
+  if(fromId==='pegging_sensation'){
+    const _kr=results.find(r=>r.wheelId==='kink')?.label||'';
+    if(_kr==='Super Dom')return nextEnabled('general_abuse');
+    return nextEnabled('mode');
+  }
+  // ── END LABEL OVERRIDES ──
   if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
   if(fromId==='amount'&&label==='Start over')return'RESTART';
   if(fromId==='wildcard'){
@@ -6513,7 +6583,7 @@ function computeNext(fromId,label,seg){
     if(kinkResult==='Super Dom')return nextEnabled('general_abuse');
     return nextEnabled('mode'); // Med/Light/Gentle Dom
   }
-  if(fromId==='general_abuse')return nextEnabled('pegging_enthusiasm');
+  if(fromId==='general_abuse')return nextEnabled('mode');
   if(fromId==='baby_talk')return nextEnabled('breeding_gate');
   if(fromId==='breeding_gate'){
     if(label==='Yes')return nextEnabled('breeding_wheel');
