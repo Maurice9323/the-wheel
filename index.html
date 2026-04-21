@@ -3438,7 +3438,7 @@ oral_enthusiasm:{name:"Oral Enthusiasm (Perform)",segments:[
   {label:'Emotionally Detached - Performs shallow only blank inside.',weight:10},
   {label:'Physically Repulsed - Gags involuntarily at depth.',weight:10},
   {label:'Limp Unresponsive - No effort beyond lips.',weight:10},
-  {label:'Completely Unwilling - Refuses to open or take any use.',weight:10},
+  {label:'Completely Unwilling - Refuses to open or take any use.',weight:10,branch:'CAT:Hair'},
 ]},
 oral_anatomy:{name:"Oral Make Up",segments:[
   {label:'Long Flexible Tongue - Extended muscle reaches full 7-inch depth easily.',weight:10},
@@ -3492,7 +3492,7 @@ oral_psychology:{name:"Oral Psychological Aspects",segments:[
   {label:'Trauma-Linked Panic - Unwanted memory causes freeze.',weight:10},
   {label:'Emotionally Numb Detachment - Complete mental disconnection.',weight:10},
   {label:'Physically Present Mentally Absent - Body performs mind elsewhere.',weight:10},
-  {label:'Complete Psychological Refusal - Mind rejects performing entirely.',weight:10},
+  {label:'Complete Psychological Refusal - Mind rejects performing entirely.',weight:10,branch:'CAT:Hair'},
 ]},
 oral_depth:{name:"Oral Depth & Capacity",segments:[
   {label:'2-Inch Tongue-Only - No throat entry;.',weight:10},
@@ -3865,7 +3865,7 @@ anal_sensation_her:{name:"Anal Sensation (For Her)",segments:[
   {label:'Numbing Dead Feel - Any depth lifeless and uninteresting.',weight:10},
   {label:'Rhythmic Internal Orgasms - 6.5-inch waves peak her repeatedly.',weight:10},
   {label:'Tearing Stretch - Excessive 7-inch expansion real pain.',weight:10},
-  {label:'Complete Anal Revulsion - Any use disgusting and unwilling.',weight:10,branch:'cup_size'},
+  {label:'Complete Anal Revulsion - Any use disgusting and unwilling.',weight:10,branch:'thigh_thickness'},
 ]},
 anal_enthusiasm:{name:"Anal Enthusiasm (Receive)",segments:[
   {label:'Free-Use Rectal - Offers unlimited depth any time.',weight:10},
@@ -3887,7 +3887,7 @@ anal_enthusiasm:{name:"Anal Enthusiasm (Receive)",segments:[
   {label:'Fearful Of Curve - Panics at deeper attempts.',weight:10},
   {label:'Emotionally Closed - Allows shallow only.',weight:10},
   {label:'Physically Limp Refusal - Motionless beyond entry.',weight:10},
-  {label:'Completely Unwilling - Verbal/physical block of any anal use.',weight:10,branch:'cup_size'},
+  {label:'Completely Unwilling - Verbal/physical block of any anal use.',weight:10,branch:'thigh_thickness'},
 ]},
 anal_anatomy:{name:"Anal Make Up",segments:[
   {label:'Strong Dual Sphincter Rings - Two tight bands for layered grip.',weight:10},
@@ -3931,7 +3931,7 @@ anal_psychology:{name:"Anal Psychological Aspects",segments:[
   {label:'Trauma-Linked Panic - Unwanted memory causes freeze.',weight:10},
   {label:'Emotionally Numb Detachment - Complete mental disconnection.',weight:10},
   {label:'Physically Present Mentally Absent - Body used mind elsewhere.',weight:10},
-  {label:'Complete Psychological Refusal - Mind rejects any anal use.',weight:10,branch:'cup_size'},
+  {label:'Complete Psychological Refusal - Mind rejects any anal use.',weight:10,branch:'thigh_thickness'},
 ]},
 anal_depth:{name:"Anal Depth & Capacity",segments:[
   {label:'2-Inch Sphincter Lock - Tight ring only',weight:10},
@@ -4011,15 +4011,11 @@ breast_shape:{name:"Breast Shape",segments:[
   {label:'Pillow — very soft, spreads wide when lying down, loses shape without support',weight:14},
   {label:'Lateral spread — spreads dramatically to the sides when lying down',weight:12},
   {label:'Overflow — so large they spill over the sides of the chest and downward',weight:8},
-  {label:'Athletic — small and firm, sits high on developed pectoral, minimal tissue',weight:10,branch:'nipple_size'},
-  {label:'Perky — firm, upward-pointing regardless of size, defies gravity',weight:14,branch:'nipple_size'},
   {label:'Buoyant — larger than expected but sits higher than their size would suggest',weight:10},
   {label:'Stuck on — very round and firm, unnaturally high and rigid, implant aesthetic',weight:8},
-  {label:'Deflated — skin without much volume, stretched, like after weight loss',weight:8,branch:'nipple_size'},
   {label:'Post-feeding — deflated and stretched with larger areola, lost volume but kept skin',weight:6},
   {label:'Stretch marked — stretch marks across the breast tissue itself from growth',weight:8},
   {label:'Veiny — veins visibly present through the skin especially toward the top',weight:8},
-  {label:'Barely there — almost flat, just a slight mound with nipple present',weight:8,branch:'nipple_size'},
 ]},
 breast_position:{name:"Breast Position",segments:[
   {label:'High on chest — sit near the collarbone, well above where average sits',weight:14},
@@ -4176,11 +4172,11 @@ breast_sensation_her_gland:{name:"Breast Sensation (For Her — Glandular)",segm
   {label:'Delicate Nerve Overload - Every internal fiber amplified.',weight:10},
   {label:'Firm Grip Satisfaction - Deep compression deeply satisfying.',weight:10},
   {label:'Licking Gland Warmth - Moist strokes reach internal nerves orgasmically.',weight:10},
-  {label:'Numbing Tissue Ache - Complete loss of feel.',weight:10,branch:'lactation_volume'},
-  {label:'Intense Internal Stretch - Gland pressure feels borderline painful.',weight:10,branch:'lactation_volume'},
+  {label:'Numbing Tissue Ache - Complete loss of feel.',weight:10},
+  {label:'Intense Internal Stretch - Gland pressure feels borderline painful.',weight:10},
   {label:'Soothing Deep Massage - Rhythm eases her into peaks.',weight:10},
-  {label:'Sharp Painful Core Pinch - Rough glandular handling.',weight:10,branch:'lactation_volume'},
-  {label:'Complete Glandular Numbness - Any compression dead.',weight:10,branch:'lactation_volume'},
+  {label:'Sharp Painful Core Pinch - Rough glandular handling.',weight:10},
+  {label:'Complete Glandular Numbness - Any compression dead.',weight:10},
 ]},
 breast_sensation_her_nipple:{name:"Breast Sensation (For Her — Nipple)",segments:[
   {label:'Nipple Electric Zing - Internal bud spark shoots to pelvis orgasmically.',weight:10},
@@ -4196,12 +4192,12 @@ breast_sensation_her_nipple:{name:"Breast Sensation (For Her — Nipple)",segmen
   {label:'Delicate Bud Overload - Every lick amplified painfully.',weight:10},
   {label:'Firm Bud Satisfaction - Deep pinch deeply satisfying.',weight:10},
   {label:'Erect Bud Throb - Stiff nerve cluster peaks her.',weight:10},
-  {label:'Numbing Nerve Ache - Complete loss of nipple feel',weight:10,branch:'lactation_volume'},
-  {label:'Sharp Painful Nipple Pinch - Rough handling agonizing.',weight:10,branch:'lactation_volume'},
+  {label:'Numbing Nerve Ache - Complete loss of nipple feel',weight:10},
+  {label:'Sharp Painful Nipple Pinch - Rough handling agonizing.',weight:10},
   {label:'Soothing Circular Glow - Steady tongue circles calm her nerves.',weight:10},
-  {label:'Intense Localized Fire - Pinpoint nerve pressure borderline painful.',weight:10,branch:'lactation_volume'},
+  {label:'Intense Localized Fire - Pinpoint nerve pressure borderline painful.',weight:10},
   {label:'Gentle Nerve Tingling - Light strokes cause goosebump waves.',weight:10},
-  {label:'Complete Nipple Revulsion - Any nerve contact.',weight:10,branch:'lactation_volume'},
+  {label:'Complete Nipple Revulsion - Any nerve contact.',weight:10},
 ]},
 breast_enthusiasm:{name:"Breast Enthusiasm (Receive)",segments:[
   {label:'Free-Use Gland Play - Offers unlimited squeezing/suckling depth.',weight:10},
@@ -4215,15 +4211,15 @@ breast_enthusiasm:{name:"Breast Enthusiasm (Receive)",segments:[
   {label:'Mildly Enjoying Light - Accepts shallow massage only.',weight:10},
   {label:'Neutral Acceptance - Still during any depth.',weight:10},
   {label:'Slightly Hesitant - Flinches at deep pressure.',weight:10},
-  {label:'Reluctant Compliance - Allows but unenthused.',weight:10,branch:'lactation_volume'},
+  {label:'Reluctant Compliance - Allows but unenthused.',weight:10},
   {label:'Mildly Averse Squeeze - Tension at firm compression.',weight:10},
   {label:'Uncomfortable Resistance - Pulls away from deep use.',weight:10},
-  {label:'Strongly Disliking Core - Grimaces at nipple depth.',weight:10,branch:'lactation_volume'},
-  {label:'Actively Covering - Arms block gland use.',weight:10,branch:'lactation_volume'},
+  {label:'Strongly Disliking Core - Grimaces at nipple depth.',weight:10},
+  {label:'Actively Covering - Arms block gland use.',weight:10,branch:'ass_size'},
   {label:'Fearful Sensitivity - Anxious about internal pressure.',weight:10},
-  {label:'Emotionally Detached - Blank during any handling.',weight:10,branch:'lactation_volume'},
-  {label:'Physically Unresponsive - No reaction to depth.',weight:10,branch:'lactation_volume'},
-  {label:'Completely Unwilling - Refuses any breast use.',weight:10,branch:'lactation_volume'},
+  {label:'Emotionally Detached - Blank during any handling.',weight:10},
+  {label:'Physically Unresponsive - No reaction to depth.',weight:10},
+  {label:'Completely Unwilling - Refuses any breast use.',weight:10,branch:'ass_size'},
 ]},
 breast_anatomy:{name:"Breast Anatomical Variations",segments:[
   {label:'Dense Glandular Lobes - Thick packed tissue for deep compression feel.',weight:10},
@@ -4290,7 +4286,7 @@ breast_compression:{name:"Breast Compression Depth & Response",segments:[
   {label:'Free-Use Unlimited Depth - Offers maximum glandular play anyway.',weight:10},
 ]},
 lactation_volume:{name:"Lactation Milk Volume",segments:[
-  {label:'Zero Volume - Completely dry, no milk at all.',weight:10,branch:'labia_size'},
+  {label:'Zero Volume - Completely dry, no milk at all.',weight:10,branch:'ass_size'},
   {label:'Tiny Droplets - 1-2 drops per session, minimal leakage.',weight:10},
   {label:'Light Dribble - Small trickle, under 0.5 oz total.',weight:10},
   {label:'Moderate Stream - Steady flow, 0.5-1 oz per breast.',weight:10},
@@ -4298,27 +4294,27 @@ lactation_volume:{name:"Lactation Milk Volume",segments:[
   {label:'Abundant Flow - 2-4 oz continuous during suckling.',weight:10},
   {label:'Flooding Volume - 4-6 oz per session, soaking.',weight:10},
   {label:'Pulsing Sprays - Intermittent jets totaling 3-5 oz.',weight:10},
-  {label:'Minimal Induced Drops - Hormone-triggered tiny amounts only.',weight:10,branch:'labia_size'},
+  {label:'Minimal Induced Drops - Hormone-triggered tiny amounts only.',weight:10,branch:'ass_size'},
   {label:'Balanced Nursing Volume - Ideal 1-3 oz for feeding feel.',weight:10},
   {label:'Excessive Over-Production - 6+ oz uncontrollable flood.',weight:10},
-  {label:'Weak Gradual Ooze - Slow build to 0.5 oz max.',weight:10,branch:'labia_size'},
+  {label:'Weak Gradual Ooze - Slow build to 0.5 oz max.',weight:10,branch:'ass_size'},
   {label:'Explosive Let-Down - Sudden high volume burst 4+ oz.',weight:10},
-  {label:'Sparse Occasional Leak - Random drops, low total.',weight:10,branch:'labia_size'},
+  {label:'Sparse Occasional Leak - Random drops, low total.',weight:10,branch:'ass_size'},
   {label:'Full Engorged Release - 5-7 oz when stimulated heavily.',weight:10},
   {label:'Light Sustained Drip - Continuous low volume over time.',weight:10},
-  {label:'No Let-Down Reflex - Volume stays internal, zero external.',weight:10,branch:'labia_size'},
+  {label:'No Let-Down Reflex - Volume stays internal, zero external.',weight:10,branch:'ass_size'},
   {label:'Variable Per Breast - One side heavy, other light.',weight:10},
   {label:'Over-Stimulated Gush - Excessive 7+ oz messy volume.',weight:10},
-  {label:'Atrophied Dry Glands - Permanently zero volume.',weight:10,branch:'labia_size'},
-  {label:'Colostrum-Like Thick Drops - Small viscous early-lactation style output, low volume.',weight:10,branch:'labia_size'},
+  {label:'Atrophied Dry Glands - Permanently zero volume.',weight:10,branch:'ass_size'},
+  {label:'Colostrum-Like Thick Drops - Small viscous early-lactation style output, low volume.',weight:10,branch:'ass_size'},
   {label:'Steady Mid-Range Supply - Consistent 2-3 oz per breast with strong let-down.',weight:10},
   {label:'Oversupply Flood - 8-10 oz rapid release causing constant leakage.',weight:10},
   {label:'Weak One-Sided Production - Only one breast yields noticeable volume (1-2 oz).',weight:10},
   {label:'Pulsed Let-Down Bursts - Multiple rhythmic releases totaling 4-6 oz.',weight:10},
-  {label:'Minimal Maintenance Flow - Barely enough to sustain, under 1 oz total.',weight:10,branch:'labia_size'},
+  {label:'Minimal Maintenance Flow - Barely enough to sustain, under 1 oz total.',weight:10,branch:'ass_size'},
   {label:'Engorgement Pressure Surge - Painful heavy 6-8 oz release upon stimulation.',weight:10},
   {label:'Gradual Build to Peak - Starts low then reaches 5+ oz mid-session.',weight:10},
-  {label:'Intermittent Sparse Output - Unpredictable tiny amounts with long dry periods.',weight:10,branch:'labia_size'},
+  {label:'Intermittent Sparse Output - Unpredictable tiny amounts with long dry periods.',weight:10,branch:'ass_size'},
   {label:'Hyper-Production Overflow - Extreme 10+ oz uncontrollable soaking flood.',weight:10},
 ]},
 lactation_taste:{name:"Lactation Milk Taste",segments:[
@@ -4505,13 +4501,13 @@ vaginal_enthusiasm:{name:"Vaginal Enthusiasm (Receive)",segments:[
   {label:'Hesitant but Willing - Slow cautious opening despite doubts.',weight:10},
   {label:'Reluctant Compliance - Goes along while clearly unenthused.',weight:10},
   {label:'Mildly Averse - Visible tension and minimal participation.',weight:10},
-  {label:'Uncomfortable Resistance - Body pulls away slightly during use.',weight:10,branch:'squirt_anatomy'},
-  {label:'Strongly Disliking - Grimacing and verbal protests.',weight:10,branch:'squirt_anatomy'},
-  {label:'Actively Avoiding - Twists hips to limit or escape use.',weight:10,branch:'squirt_anatomy'},
-  {label:'Fearful Tension - Rigid muscles and anxious breathing.',weight:10,branch:'squirt_anatomy'},
-  {label:'Emotionally Detached - Blank expression with zero reaction.',weight:10,branch:'squirt_anatomy'},
-  {label:'Physically Unresponsive - Limp and motionless during entire act.',weight:10,branch:'squirt_anatomy'},
-  {label:'Completely Unwilling - Verbal and physical refusal of any vaginal use.',weight:10,branch:'squirt_anatomy'},
+  {label:'Uncomfortable Resistance - Body pulls away slightly during use.',weight:10},
+  {label:'Strongly Disliking - Grimacing and verbal protests.',weight:10},
+  {label:'Actively Avoiding - Twists hips to limit or escape use.',weight:10},
+  {label:'Fearful Tension - Rigid muscles and anxious breathing.',weight:10},
+  {label:'Emotionally Detached - Blank expression with zero reaction.',weight:10},
+  {label:'Physically Unresponsive - Limp and motionless during entire act.',weight:10},
+  {label:'Completely Unwilling - Verbal and physical refusal of any vaginal use.',weight:10,branch:'shave'},
 ]},
 vaginal_anatomy:{name:"Vaginal Make Up",segments:[
   {label:'Dense Rugae Forest - Thick packed folds throughout canal for max texture.',weight:10},
@@ -4578,11 +4574,11 @@ vaginal_depth:{name:"Vaginal Depth & Capacity",segments:[
 ]},
 squirt_anatomy:{name:"Squirting Anatomical Variations",segments:[
   {label:'Prominent Skene’s Glands - Larger paraurethral glands produce noticeable milky fluid.',weight:10},
-  {label:'Minimal Skene’s Glands - Small glands contribute little to no ejaculate.',weight:10,branch:'squirt_fluid'},
+  {label:'Minimal Skene’s Glands - Small glands contribute little to no ejaculate.',weight:10,branch:'shave'},
   {label:'Thick Urethral Sponge - Swollen anterior wall tissue highly responsive to pressure.',weight:10},
   {label:'Thin Urethral Sponge - Subtle sponge with lower fluid potential.',weight:10},
   {label:'High Bladder Neck Sensitivity - Easy transudate release during intense contractions.',weight:10},
-  {label:'Low Bladder Involvement - Fluid stays mostly glandular with minimal urine mix.',weight:10,branch:'squirt_fluid'},
+  {label:'Low Bladder Involvement - Fluid stays mostly glandular with minimal urine mix.',weight:10,branch:'shave'},
   {label:'Elastic Urethral Ducts - Stretchable ducts allow strong expulsion streams.',weight:10},
   {label:'Narrow Urethral Opening - Tighter meatus creates pressurized spurts.',weight:10},
   {label:'Variable Gland Size - Skene’s glands enlarge significantly with arousal.',weight:10},
@@ -4590,12 +4586,12 @@ squirt_anatomy:{name:"Squirting Anatomical Variations",segments:[
   {label:'Deep G-Spot Connection - Anterior wall directly linked to strong glandular response.',weight:10},
   {label:'Shallow Sponge Placement - Easier surface-level triggering of fluid.',weight:10},
   {label:'Abundant Vascular Supply - Increased blood flow leads to heavier flooding.',weight:10},
-  {label:'Sparse Vascular Network - Lower fluid volume even at high arousal.',weight:10,branch:'squirt_fluid'},
+  {label:'Sparse Vascular Network - Lower fluid volume even at high arousal.',weight:10,branch:'shave'},
   {label:'Strong Pelvic Floor Link - Contractions easily force fluid expulsion.',weight:10},
   {label:'Weak Pelvic Floor - Reduced ability to build expulsion pressure.',weight:10},
   {label:'Asymmetrical Skene’s - One side gland more active than the other.',weight:10},
   {label:'Integrated Bladder Response - Heavy squirting with noticeable volume.',weight:10},
-  {label:'Isolated Glandular Only - Pure small-volume female ejaculation.',weight:10,branch:'squirt_fluid'},
+  {label:'Isolated Glandular Only - Pure small-volume female ejaculation.',weight:10,branch:'shave'},
 ]},
 squirt_sensation_me:{name:"Squirting Sensation (For Me)",segments:[
   {label:'Warm Gentle Flood - Mild warm trickle coating the penis pleasantly.',weight:10},
@@ -4630,10 +4626,10 @@ squirt_sensation_her:{name:"Squirting Sensation (For Her)",segments:[
   {label:'Pulsing Glandular Fire - Localized intense pleasure from Skene’s.',weight:10},
   {label:'Numbing Post-Squirt Ache - Loss of sensation after heavy release.',weight:10},
   {label:'Satisfying Internal Emptying - Deep relief and pleasure from expulsion.',weight:10},
-  {label:'Irritating Urethral Burn - Fluid passage feels stinging and disliked.',weight:10,branch:'squirt_fluid'},
+  {label:'Irritating Urethral Burn - Fluid passage feels stinging and disliked.',weight:10},
   {label:'Rhythmic Multi-Orgasm Flood - Repeated squirting waves force peaks.',weight:10},
-  {label:'Shame-Linked Revulsion - Psychological block makes release hatefully',weight:10,branch:'squirt_fluid'},
-  {label:'Complete Internal Deadness - No pleasurable feeling from squirting.',weight:10,branch:'squirt_fluid'},
+  {label:'Shame-Linked Revulsion - Psychological block makes release hatefully',weight:10},
+  {label:'Complete Internal Deadness - No pleasurable feeling from squirting.',weight:10},
 ]},
 squirt_enthusiasm:{name:"Squirting Enthusiasm",segments:[
   {label:'Desperately Craving Release - Begs to be made to squirt hard.',weight:10},
@@ -4651,10 +4647,10 @@ squirt_enthusiasm:{name:"Squirting Enthusiasm",segments:[
   {label:'Mildly Averse To Mess - Dislikes the wetness and cleanup.',weight:10},
   {label:'Uncomfortable With Force - Tenses during building pressure.',weight:10},
   {label:'Strongly Disliking - Grimaces at the loss of control.',weight:10},
-  {label:'Actively Holding Back - Clenches to prevent squirting.',weight:10},
+  {label:'Actively Holding Back - Clenches to prevent squirting.',weight:10,branch:'shave'},
   {label:'Fearful of Embarrassment - Anxious about the visible release.',weight:10},
   {label:'Emotionally Detached - Allows but feels nothing about it.',weight:10},
-  {label:'Physically Resistant - Body fights the expulsion reflex.',weight:10},
+  {label:'Physically Resistant - Body fights the expulsion reflex.',weight:10,branch:'shave'},
 ]},
 squirt_threshold:{name:"Squirting Trigger Threshold",segments:[
   {label:'Hyper-Responsive - Squirts from light G-spot pressure almost instantly.',weight:10},
@@ -4676,7 +4672,7 @@ squirt_threshold:{name:"Squirting Trigger Threshold",segments:[
   {label:'Minimal Fluid Always - Tiny dribble even at max stimulation.',weight:10},
   {label:'Explosive After Edging - Builds then erupts massively.',weight:10},
   {label:'Painfully High Threshold - Requires near-painful pressure to trigger.',weight:10},
-  {label:'No Trigger Possible - Anatomically unable or psychologically blocked.',weight:10},
+  {label:'No Trigger Possible - Anatomically unable or psychologically blocked.',weight:10,branch:'shave'},
 ]},
 squirt_psychology:{name:"Squirting Psychological Aspects",segments:[
   {label:'Euphoric Loss-of-Control High - Mentally thrilled by the powerful release.',weight:10},
@@ -4695,7 +4691,7 @@ squirt_psychology:{name:"Squirting Psychological Aspects",segments:[
   {label:'Strong Emotional Disgust - Feels degraded or unclean when squirting.',weight:10},
   {label:'Fear-Based Holding - Mind fights the reflex due to anxiety.',weight:10},
   {label:'Active Mental Avoidance - Tries to suppress the urge mentally.',weight:10},
-  {label:'Trauma-Linked Block - Past associations prevent release.',weight:10},
+  {label:'Trauma-Linked Block - Past associations prevent release.',weight:10,branch:'shave'},
   {label:'Emotionally Numb Detachment - Complete disconnection from the act.',weight:10},
   {label:'Physically Present but Mentally Absent - Body squirts while mind drifts.',weight:10},
 ]},
@@ -5193,7 +5189,7 @@ language:{name:"Language & Accent",segments:[
   {label:'Speaks casually — slang heavy, informal always',weight:14},
 ]},
 kink:{name:"Kink",segments:[
-  {label:'Super Dom',weight:10,branch:'general_abuse'},
+  {label:'Super Dom',weight:10,branch:'pegging_enthusiasm'},
   {label:'Med Dom',weight:10,branch:'pegging_enthusiasm'},
   {label:'Light Dom',weight:10,branch:'pegging_enthusiasm'},
   {label:'Gentle Dom',weight:10,branch:'pegging_enthusiasm'},
@@ -5318,49 +5314,49 @@ pegging_enthusiasm:{name:"Pegging Enthusiasm (Her Giving)",segments:[
   {label:'Completely Unwilling - Refuses to peg under any circumstances.',weight:10,branch:'amount'},
 ]},
 pegging_sensation:{name:"Pegging Sensation (For Her)",segments:[
-  {label:'Intense Clit Pressure Rush - Harness base grinds her clit with every thrust, building to orgasmic power.',weight:10,branch:'amount'},
-  {label:'Psychological Dominance High - Mental thrill of control sends waves of empowerment.',weight:10,branch:'amount'},
-  {label:'Firm Strap Tension - Tight harness pulls against her pelvis with satisfying resistance.',weight:10,branch:'amount'},
-  {label:'Deep Thrust Feedback - Partner’s reactions amplify her physical pleasure.',weight:10,branch:'amount'},
-  {label:'Subtle Anal Harness Tug - Base stimulates her own rear lightly.',weight:10,branch:'amount'},
-  {label:'Overwhelming Power Surge - Full psychological dominance feels euphoric.',weight:10,branch:'amount'},
-  {label:'Mild Harness Discomfort - Slight chafing but tolerable.',weight:10,branch:'amount'},
-  {label:'Clitoral Grinding Ecstasy - Every movement triggers her own peaks.',weight:10,branch:'amount'},
-  {label:'Detached Mechanical Feel - No strong sensation, just the act.',weight:10,branch:'amount'},
-  {label:'Strong Pelvic Rock - Harness rocks her hips pleasurably.',weight:10,branch:'amount'},
-  {label:'Empowering Rhythm - Matched thrusts give her physical and mental high.',weight:10,branch:'amount'},
-  {label:'Intense Psychological Bond - Feeling partner’s surrender deepens connection.',weight:10,branch:'amount'},
-  {label:'Nipple-Harness Tingle - Straps brush sensitive areas.',weight:10,branch:'amount'},
-  {label:'Building Orgasm From Dominance - Power alone brings her to climax.',weight:10,branch:'amount'},
-  {label:'Physical Fatigue Strain - Prolonged pegging tires her muscles.',weight:10,branch:'amount'},
-  {label:'Perfect Harness Fit - Ideal pressure and control feel amazing.',weight:10,branch:'amount'},
+  {label:'Intense Clit Pressure Rush - Harness base grinds her clit with every thrust, building to orgasmic power.',weight:10,branch:'mode'},
+  {label:'Psychological Dominance High - Mental thrill of control sends waves of empowerment.',weight:10,branch:'mode'},
+  {label:'Firm Strap Tension - Tight harness pulls against her pelvis with satisfying resistance.',weight:10,branch:'mode'},
+  {label:'Deep Thrust Feedback - Partner’s reactions amplify her physical pleasure.',weight:10,branch:'mode'},
+  {label:'Subtle Anal Harness Tug - Base stimulates her own rear lightly.',weight:10,branch:'mode'},
+  {label:'Overwhelming Power Surge - Full psychological dominance feels euphoric.',weight:10,branch:'mode'},
+  {label:'Mild Harness Discomfort - Slight chafing but tolerable.',weight:10,branch:'mode'},
+  {label:'Clitoral Grinding Ecstasy - Every movement triggers her own peaks.',weight:10,branch:'mode'},
+  {label:'Detached Mechanical Feel - No strong sensation, just the act.',weight:10,branch:'mode'},
+  {label:'Strong Pelvic Rock - Harness rocks her hips pleasurably.',weight:10,branch:'mode'},
+  {label:'Empowering Rhythm - Matched thrusts give her physical and mental high.',weight:10,branch:'mode'},
+  {label:'Intense Psychological Bond - Feeling partner’s surrender deepens connection.',weight:10,branch:'mode'},
+  {label:'Nipple-Harness Tingle - Straps brush sensitive areas.',weight:10,branch:'mode'},
+  {label:'Building Orgasm From Dominance - Power alone brings her to climax.',weight:10,branch:'mode'},
+  {label:'Physical Fatigue Strain - Prolonged pegging tires her muscles.',weight:10,branch:'mode'},
+  {label:'Perfect Harness Fit - Ideal pressure and control feel amazing.',weight:10,branch:'mode'},
 ]},
 general_abuse:{name:"General Extreme Dark Abuse Acts",segments:[
-  {label:'Ties partner down and beats their body black-and-blue while using them violently.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Edges and denies orgasm for days while laughing at their desperate crying.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Chokes partner to the edge of blackout repeatedly during sex.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Spits in partner’s face, mouth, and wounds while mocking their suffering.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Records every degrading act and uses constant blackmail threats.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Burns skin with hot wax or cigarettes while smiling at the screams.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Forces partner to thank them after every painful strike or thrust.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Isolates partner completely from the outside world.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Slaps partner’s face until they are a broken, sobbing mess.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Makes partner repeat humiliating mantras during violent use.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Denies food, water, or basic comfort until perfect obedience.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Laughs maniacally while partner cries and begs during abuse.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Uses partner as a combination punching bag and fuck toy.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Systematically destroys partner’s self-worth and identity.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Forces partner to clean every mess with their tongue after abuse.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Mixes brutal physical pain with long psychological lectures.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Reluctantly abuses while crying, but the power high forces continuation.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Gleefully watches partner dissociate, then slaps them back into awareness.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Escalates cruelty with no limits and pure sadistic enjoyment.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Brands partner mentally as worthless property through repeated trauma.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Threatens total life destruction (reputation, family, future) if any resistance occurs.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Forces partner into painful, humiliating positions for hours.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Enjoys the exact moment partner stops fighting and accepts their broken role.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Mixes cold emotional detachment with sudden explosive violence.',weight:10,branch:'pegging_enthusiasm'},
-  {label:'Turns partner into an empty, obedient shell with unrelenting abuse.',weight:10,branch:'pegging_enthusiasm'},
+  {label:'Ties partner down and beats their body black-and-blue while using them violently.',weight:10,branch:'mode'},
+  {label:'Edges and denies orgasm for days while laughing at their desperate crying.',weight:10,branch:'mode'},
+  {label:'Chokes partner to the edge of blackout repeatedly during sex.',weight:10,branch:'mode'},
+  {label:'Spits in partner’s face, mouth, and wounds while mocking their suffering.',weight:10,branch:'mode'},
+  {label:'Records every degrading act and uses constant blackmail threats.',weight:10,branch:'mode'},
+  {label:'Burns skin with hot wax or cigarettes while smiling at the screams.',weight:10,branch:'mode'},
+  {label:'Forces partner to thank them after every painful strike or thrust.',weight:10,branch:'mode'},
+  {label:'Isolates partner completely from the outside world.',weight:10,branch:'mode'},
+  {label:'Slaps partner’s face until they are a broken, sobbing mess.',weight:10,branch:'mode'},
+  {label:'Makes partner repeat humiliating mantras during violent use.',weight:10,branch:'mode'},
+  {label:'Denies food, water, or basic comfort until perfect obedience.',weight:10,branch:'mode'},
+  {label:'Laughs maniacally while partner cries and begs during abuse.',weight:10,branch:'mode'},
+  {label:'Uses partner as a combination punching bag and fuck toy.',weight:10,branch:'mode'},
+  {label:'Systematically destroys partner’s self-worth and identity.',weight:10,branch:'mode'},
+  {label:'Forces partner to clean every mess with their tongue after abuse.',weight:10,branch:'mode'},
+  {label:'Mixes brutal physical pain with long psychological lectures.',weight:10,branch:'mode'},
+  {label:'Reluctantly abuses while crying, but the power high forces continuation.',weight:10,branch:'mode'},
+  {label:'Gleefully watches partner dissociate, then slaps them back into awareness.',weight:10,branch:'mode'},
+  {label:'Escalates cruelty with no limits and pure sadistic enjoyment.',weight:10,branch:'mode'},
+  {label:'Brands partner mentally as worthless property through repeated trauma.',weight:10,branch:'mode'},
+  {label:'Threatens total life destruction (reputation, family, future) if any resistance occurs.',weight:10,branch:'mode'},
+  {label:'Forces partner into painful, humiliating positions for hours.',weight:10,branch:'mode'},
+  {label:'Enjoys the exact moment partner stops fighting and accepts their broken role.',weight:10,branch:'mode'},
+  {label:'Mixes cold emotional detachment with sudden explosive violence.',weight:10,branch:'mode'},
+  {label:'Turns partner into an empty, obedient shell with unrelenting abuse.',weight:10,branch:'mode'},
 ]},
 baby_talk:{name:"Baby Talk",segments:[
   {label:'None – Normal adult speech only.',weight:10},
@@ -6293,7 +6289,7 @@ function nextEnabled(wid){
 }
 
 function computeNext(fromId,label,seg){
-  if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(WHEEL_DEFS[seg.branch])return seg.branch;}
+  if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
   if(fromId==='amount'&&label==='Start over')return'RESTART';
   if(fromId==='wildcard'){
     const wcRerollMap={'reroll body wheel':'body','reroll kink wheel':'kink','reroll location wheel':'location','reroll face rating':'face','reroll ass':'ass_size','reroll breast':'cup_size','reroll lower':'labia_size'};
@@ -6509,34 +6505,31 @@ function computeNext(fromId,label,seg){
   if(fromId==='kink'){
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(label))return nextEnabled('pegging_enthusiasm');
-    return nextEnabled('breeding_gate');
+    return nextEnabled('mode');
   }
   if(fromId==='pegging_enthusiasm')return nextEnabled('pegging_sensation');
   if(fromId==='pegging_sensation'){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
-    if(kinkResult==='Super Dom'||kinkResult==='Med Dom')return nextEnabled('general_abuse');
-    return nextEnabled('breeding_gate'); // Light Dom, Gentle Dom — baby_talk fires at length
+    if(kinkResult==='Super Dom')return nextEnabled('general_abuse');
+    return nextEnabled('mode'); // Med/Light/Gentle Dom
   }
-  if(fromId==='general_abuse')return nextEnabled('breeding_gate');
-  if(fromId==='baby_talk'){
-    return nextEnabled('disobedience');
-  }
+  if(fromId==='general_abuse')return nextEnabled('pegging_enthusiasm');
+  if(fromId==='baby_talk')return nextEnabled('breeding_gate');
   if(fromId==='breeding_gate'){
     if(label==='Yes')return nextEnabled('breeding_wheel');
     return nextEnabled('amount');
   }
-  if(fromId==='breeding_wheel'){
-    const modeResult=results.find(r=>r.wheelId==='mode')?.label||'';
-    if(['Mother','Sibling','Aunt/Cousin','Teacher'].includes(modeResult))return nextEnabled('length');
-    return nextEnabled('amount');
-  }
-  if(fromId==='amount')return nextEnabled('mode');
+  if(fromId==='breeding_wheel')return nextEnabled('amount');
+  if(fromId==='amount')return nextEnabled('length');
   if(fromId==='mode'){
     if(label==='Mother')return nextEnabled('mothering_enthusiasm');
     if(label==='Sibling')return nextEnabled('sibling_enthusiasm');
     if(label==='Aunt/Cousin')return nextEnabled('auntcousin_enthusiasm');
     if(label==='Teacher')return nextEnabled('teacher_enthusiasm');
-    return nextEnabled('length');
+    const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
+    const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
+    if(domLabels.includes(kinkResult))return nextEnabled('baby_talk');
+    return nextEnabled('breeding_gate');
   }
   // ── Mothering roleplay wheels ──
   if(fromId==='mothering_enthusiasm')return nextEnabled('mothering_sensation_me');
@@ -6547,7 +6540,7 @@ function computeNext(fromId,label,seg){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(kinkResult))return nextEnabled('mother_a_abuse');
-    return nextEnabled('length');
+    return nextEnabled('baby_talk');
   }
   if(fromId==='mother_a_abuse')return nextEnabled('mother_dark_acts');
   if(fromId==='mother_dark_acts')return nextEnabled('dark_psychology');
@@ -6560,7 +6553,7 @@ function computeNext(fromId,label,seg){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(kinkResult))return nextEnabled('sister_a_abuse');
-    return nextEnabled('length');
+    return nextEnabled('breeding_gate');
   }
   if(fromId==='sister_a_abuse')return nextEnabled('sister_dark_acts');
   if(fromId==='sister_dark_acts')return nextEnabled('dark_psychology');
@@ -6573,12 +6566,16 @@ function computeNext(fromId,label,seg){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
     if(domLabels.includes(kinkResult))return nextEnabled('aunt_a_abuse');
-    return nextEnabled('length');
+    return nextEnabled('breeding_gate');
   }
   if(fromId==='aunt_a_abuse')return nextEnabled('auntcousin_dark_acts');
   if(fromId==='auntcousin_dark_acts')return nextEnabled('dark_psychology');
   // ── Dark psychology (shared endpoint) ──
-  if(fromId==='dark_psychology')return nextEnabled('length');
+  if(fromId==='dark_psychology'){
+    const modeResult=results.find(r=>r.wheelId==='mode')?.label||'';
+    if(modeResult==='Mother')return nextEnabled('baby_talk');
+    return nextEnabled('breeding_gate');
+  }
   // ── Teacher roleplay wheels ──
   if(fromId==='teacher_enthusiasm')return nextEnabled('teacher_sensation_me');
   if(fromId==='teacher_sensation_me')return nextEnabled('teacher_sensation_her');
@@ -6587,19 +6584,17 @@ function computeNext(fromId,label,seg){
   if(fromId==='teacher_depth'){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
     if(kinkResult==='Super Dom'||kinkResult==='Med Dom')return nextEnabled('teacher_abuse_acts');
-    return nextEnabled('length');
+    return nextEnabled('breeding_gate');
   }
   if(fromId==='teacher_abuse_acts')return nextEnabled('teacher_abuse_sensation');
   if(fromId==='teacher_abuse_sensation')return nextEnabled('teacher_abuse_psychology');
   if(fromId==='teacher_abuse_psychology')return nextEnabled('college_abuse_acts');
   if(fromId==='college_abuse_acts')return nextEnabled('college_abuse_psychology');
-  if(fromId==='college_abuse_psychology')return nextEnabled('length');
+  if(fromId==='college_abuse_psychology')return nextEnabled('breeding_gate');
   if(fromId==='length'){
     const kinkResult=results.find(r=>r.wheelId==='kink')?.label||'';
-    const modeResult=results.find(r=>r.wheelId==='mode')?.label||'';
     const domLabels=['Super Dom','Med Dom','Light Dom','Gentle Dom'];
-    const roleplayModes=['Mother','Sibling','Aunt/Cousin','Teacher'];
-    if(domLabels.includes(kinkResult)||roleplayModes.includes(modeResult))return nextEnabled('baby_talk');
+    if(domLabels.includes(kinkResult))return nextEnabled('location');
     return nextEnabled('disobedience');
   }
   if(fromId==='disobedience')return nextEnabled('punishment');
@@ -6710,13 +6705,14 @@ function getSequence(){
   // ── Scenario ──
   seq.push('kink');
   if(domLabels.includes(kr))seq.push('pegging_enthusiasm','pegging_sensation');
-  if(kr==='Super Dom'||kr==='Med Dom')seq.push('general_abuse');
-  seq.push('breeding_gate','breeding_wheel','amount','mode');
+  if(kr==='Super Dom')seq.push('general_abuse');
+  seq.push('mode');
 
-  // ── Roleplay (mode-specific sub-wheels, before length) ──
+  // ── Roleplay (mode-specific sub-wheels) ──
   if(mr==='Mother'){
     seq.push('mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth');
     if(domLabels.includes(kr))seq.push('mother_a_abuse','mother_dark_acts','dark_psychology');
+    seq.push('baby_talk');
   } else if(mr==='Sibling'){
     seq.push('sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth');
     if(domLabels.includes(kr))seq.push('sister_a_abuse','sister_dark_acts','dark_psychology');
@@ -6726,17 +6722,20 @@ function getSequence(){
   } else if(mr==='Teacher'){
     seq.push('teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth');
     if(kr==='Super Dom'||kr==='Med Dom')seq.push('teacher_abuse_acts','teacher_abuse_sensation','teacher_abuse_psychology','college_abuse_acts','college_abuse_psychology');
+  } else if(domLabels.includes(kr)){
+    seq.push('baby_talk');
   }
 
-  seq.push('length');
-  // baby_talk fires after length if dom kink or roleplay mode
-  const roleplayModes=['Mother','Sibling','Aunt/Cousin','Teacher'];
-  if(domLabels.includes(kr)||roleplayModes.includes(mr))seq.push('baby_talk');
-  seq.push('disobedience','punishment');
-  // bonus only appears if punishment has already landed on Death
-  const punishResult=results.find(r=>r.wheelId==='punishment')?.label||'';
-  if(punishResult==='Death')seq.push('bonus');
-  seq.push('location','fav_part');
+  seq.push('breeding_gate','breeding_wheel','amount','length');
+  if(domLabels.includes(kr)){
+    seq.push('location');
+  } else {
+    seq.push('disobedience','punishment');
+    const punishResult=results.find(r=>r.wheelId==='punishment')?.label||'';
+    if(punishResult==='Death')seq.push('bonus');
+    seq.push('location');
+  }
+  seq.push('fav_part');
 
   // ── Setting ──
   seq.push('time_day','season','wildcard');
