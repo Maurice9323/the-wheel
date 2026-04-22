@@ -6894,6 +6894,23 @@ const SS_PROJ_WHEEL={'Deep set — recessed, sits close to the body':-2,'Tucked 
 const SS_PROJ_SHAPE={'Pancake — wide but very thin, no projection':-2,'Wide — spreads laterally more than it projects':-2,'Runner — flat and toned, minimal projection, clearly trained':-2,'Hip dominant — hips much wider than ass, ass looks smaller by comparison':-1,'Mommy — softer, lower set, spread wider, lost its shape':-1,'Saddlebag — outer thigh fat connects into ass, no clear boundary':-1,'Wedge — wider at top near lower back, narrows toward thighs':-1,'Ski slope — flat across top, curves dramatically outward toward bottom':-1,'Bubble — round with more pop and lift':1,'Apple — round and full, projects evenly in all directions':1,'Onion — extremely round and symmetrical, almost perfect sphere':1,'Cantaloupe — very round and dense, firm':1,'Booty shelf — flat on top, strong outward projection below':1,'Double bubble — two very distinct cheeks, defined split down center':1,'Narrow — more depth than width, small side-to-side':1,'Sprinter — muscular and round, athletic but with significant projection':1,'Stacked — so much mass it creates visible folds or shelves':1,'Disproportionate — much larger than the body would suggest':1,'Cakes — very full, very round, stacked, the whole package':2};
 const SS_PROJ_BODY={'Bulimic':-1,'Anorexic':-1,'Thin':-0.5,'Slim':-0.5,'Petite':-0.5,'Slim Thick':0,'Average':0,'Curvy':0,'Upside Down Triangle':0,'Mid Size':0,'Mid Thick':0.5,'Thick':0.5,'Chubby':0.5,'Thicker':1,'Meatball':1,'Thickest':1,'Chunky':1,'BBW':1.5,'SSBBW':2,'USSBBW':3};
 
+const SS_BACK_BUST={
+  'Narrow shoulders — shoulder width is small relative to hips':-1,
+  'Average shoulders — proportionate width':0,
+  'Broad shoulders — wider than average, commands presence':1
+};
+
+// Cache locked-in specific values so they don't re-randomize on every spin
+const ssCache={};
+
+function ssCacheClear(){Object.keys(ssCache).forEach(k=>delete ssCache[k]);}
+
+function ssLock(key,lo,hi){
+  if(ssCache[key]!==undefined)return ssCache[key];
+  ssCache[key]=Math.round(lo+Math.random()*(hi-lo));
+  return ssCache[key];
+}
+
 function ssGet(wid){const r=results.find(x=>x.wheelId===wid);return r?r.label:null;}
 function ssGetAny(...wids){for(const w of wids){const r=ssGet(w);if(r)return r;}return null;}
 
@@ -6902,12 +6919,12 @@ function calcStatStrip(){
   const body=ssGet('body');
   const cup=ssGet('cup_size');
   const thickL=ssGet('thigh_thickness');
-  const shapeL=ssGet('thigh_shape');
   const ageL=ssGet('age');
   const assL=ssGet('ass_size');
   const assShapeL=ssGet('ass_shape');
   const assProjL=ssGet('ass_projection');
   const stomachL=ssGet('stomach');
+  const backL=ssGet('back');
   const muscleL=ssGetAny('muscle_thin','muscle_mid','muscle_bbw');
   const waistWheelL=ssGetAny('waist_thin','waist_mid','waist_bbw');
   const bg=body?detectBodyGroup(body):'mid';
@@ -6921,15 +6938,13 @@ function calcStatStrip(){
       if(height){const hm=SS_HEIGHT_W[height]??0;lo+=hm;hi+=hm;}
       if(cup){const cm=SS_CUP_W[cup]??0;lo+=cm;hi+=cm;}
       if(thickL){const tm=SS_THICKW_MAP[thickL]??0;lo+=tm;hi+=tm;}
-      let shapeMod=shapeL?(SS_TSHAPE_MAP[shapeL]??0):0;
-      let muscleMod=muscleL?(SS_MUSCLE_MAP[muscleL]??0):0;
-      if(shapeMod+muscleMod>12){const tot=shapeMod+muscleMod;const ratio=shapeMod/tot;shapeMod=Math.round(shapeMod-(tot-12)*ratio);muscleMod=12-shapeMod;}
-      lo+=shapeMod+muscleMod;hi+=shapeMod+muscleMod;
+      const muscleMod=muscleL?(SS_MUSCLE_MAP[muscleL]??0):0;
+      lo+=muscleMod;hi+=muscleMod;
       if(ageL){const am=SS_AGE_MAP[ageL]??0;lo+=am;hi+=am;}
       if(assL){const am2=SS_ASS_W_MAP[assL]??0;lo+=am2;hi+=am2;}
       lo=Math.max(70,Math.round(lo));hi=Math.min(620,Math.round(hi));
-      const allKnown=height&&cup&&thickL&&shapeL&&ageL&&assL&&muscleL;
-      weightStr=allKnown?`~${Math.round(lo+Math.random()*(hi-lo))} lbs`:`~${lo}–${hi} lbs`;
+      const allKnown=height&&cup&&thickL&&ageL&&assL&&muscleL;
+      weightStr=allKnown?`~${ssLock('weight',lo,hi)} lbs`:`~${lo}–${hi} lbs`;
     }
   }
 
@@ -6940,7 +6955,8 @@ function calcStatStrip(){
     if(height)band+=(SS_BAND_H[height]??0);
     band=Math.round(band/2)*2;
     braStr=body==='USSBBW'?'60+'+cup:band+cup;
-    bustStr=(band+(SS_CUP_PROJ[cup]??0))+'"';
+    const shoulderMod=backL?(SS_BACK_BUST[backL]??0):0;
+    bustStr=(band+(SS_CUP_PROJ[cup]??0)+shoulderMod)+'"';
   }
 
   // ── Waist ──
@@ -6956,7 +6972,7 @@ function calcStatStrip(){
       if(stomachL){const sm=SS_STOMACH_MAP[stomachL]??0;lo+=sm;hi+=sm;}
       lo=Math.max(16,Math.round(lo));hi=Math.min(90,Math.round(hi));
       const allKnown=waistWheelL&&stomachL;
-      waistStr=allKnown?`~${Math.round(lo+Math.random()*(hi-lo))}"`:`~${lo}–${hi}"`;
+      waistStr=allKnown?`~${ssLock('waist',lo,hi)}"`:`~${lo}–${hi}"`;
     }
   }
 
@@ -6970,7 +6986,7 @@ function calcStatStrip(){
       if(thickL){const tm=SS_THICK_HIP_MAP[thickL]??0;lo+=tm;hi+=tm;}
       lo=Math.max(24,Math.round(lo));hi=Math.min(130,Math.round(hi));
       const allKnown=assL&&thickL;
-      hipsStr=allKnown?`~${Math.round(lo+Math.random()*(hi-lo))}"`:`~${lo}–${hi}"`;
+      hipsStr=allKnown?`~${ssLock('hips',lo,hi)}"`:`~${lo}–${hi}"`;
     }
   }
 
@@ -6992,7 +7008,7 @@ function calcStatStrip(){
     if(body){const bm=SS_PROJ_BODY[body]??0;lo+=bm;hi+=bm;}
     lo=Math.max(1,Math.round(lo));hi=Math.min(16,Math.round(hi));
     const allKnown=assProjL&&assShapeL&&body;
-    projStr=allKnown?`~${Math.round(lo+Math.random()*(hi-lo))}"`:`~${lo}–${hi}"`;
+    projStr=allKnown?`~${ssLock('proj',lo,hi)}"`:`~${lo}–${hi}"`;
   }
 
   return{height:height||'—',weight:weightStr,bra:braStr,bust:bustStr,waist:waistStr,hips:hipsStr,foot:footStr,proj:projStr};
@@ -7223,6 +7239,7 @@ function restartAll(){
   document.getElementById('diffBadge').style.display='none';
   renderWheelUI();drawWheel(0);
   resetStatStrip();
+  ssCacheClear();
 }
 
 // ═══════════════ OUTPUT ═══════════════
