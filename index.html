@@ -635,6 +635,21 @@ Clip Skip: 2</div>
     </div>
   </div>
 </div>
+
+    <!-- Lustify V8 Prompt Section -->
+    <div class="output-section" style="margin-top:12px">
+      <div class="output-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>⚡ Lustify V8 (Apex) Prompt</span>
+        <button type="button" class="btn-regen" onclick="buildLustifyPrompt()">↺ Regenerate</button>
+      </div>
+      <div style="font-size:.62rem;color:var(--text2);margin-bottom:6px;padding:0 2px">
+        iPhone candid aesthetic · natural language · for Venice.ai
+      </div>
+      <div class="output-text" id="lustifyText" style="font-size:.78rem;color:var(--text);line-height:1.7;word-break:break-word;user-select:all;white-space:pre-wrap;background:rgba(255,255,255,.02);padding:8px;border:1px solid var(--border);min-height:60px"></div>
+      <div class="output-actions" style="margin-top:6px">
+        <button type="button" class="btn-copy" onclick="navigator.clipboard?.writeText(document.getElementById('lustifyText').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy Lustify Prompt',1200)}).catch(()=>{})">Copy Lustify Prompt</button>
+      </div>
+    </div>
 <!-- TEMPLATE PANEL -->
 <div class="tpl-overlay" id="tplOverlay" onclick="closeTemplatePanel()"></div>
 <div class="tpl-panel" id="tplPanel">
@@ -7465,11 +7480,186 @@ function showWildcardBanner(msg){
   setTimeout(()=>banner.remove(),2200);
 }
 
+function buildLustifyPrompt(){
+  const race=gv('race');
+  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub');
+  const body=gv('body'),age=gv('age'),height=gv('height');
+  const skin=ga('skin_light','skin_medium','skin_dark');
+  const eyes=ga('eyes_light','eyes_medium','eyes_dark');
+  const hair=ga('hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark');
+  const hairCol=ga('hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark');
+  const faceShape=gv('face_shape'),faceRating=gv('face');
+  const lips=ga('lips_light','lips_medium','lips_dark');
+  const nose=ga('nose_light','nose_medium','nose_dark');
+  const cup=gv('cup_size'),breastShape=gv('breast_shape'),breastFirm=gv('breast_firmness'),breastProj=gv('breast_projection');
+  const nipSize=gv('nipple_size'),nipType=gv('nipple_type'),nipCol=ga('nipple_col_light','nipple_col_medium','nipple_col_dark');
+  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture');
+  const assSize=gv('ass_size'),assShape=gv('ass_shape'),assProj=gv('ass_projection'),assFirm=gv('ass_firmness');
+  const labiaSize=gv('labia_size');
+  const thighThick=gv('thigh_thickness'),thighInner=gv('thigh_inner');
+  const stomachW=gv('stomach'),legsW=gv('legs');
+  const waist=ga('waist_thin','waist_mid','waist_bbw');
+  const shave=gv('shave');
+  const muscle=ga('muscle_thin','muscle_mid','muscle_bbw');
+  const freckles=gv('freckles');
+  const stretch=ga('stretch_thin','stretch_mid','stretch_bbw');
+  const cellulite=ga('cellulite_thin','cellulite_mid','cellulite_bbw');
+  const position=gv('position'),location=gv('location'),timeDay=gv('time_day');
+  const amount=gv('amount');
+
+  const ethnic=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||race.toLowerCase();
+  const cl=s=>s?s.split(',')[0].replace(/\s{2,}/g,' ').trim():'';
+  const fw=s=>s?s.split(/[—,]/)[0].trim():'';
+  const lc=s=>s?s.toLowerCase():'';
+
+  // Age map
+  const ageMap={'18-19':'18 year old','20-24':'early 20s','25-29':'mid 20s','30-35':'early 30s',
+    '36-40':'late 30s','41-50':'40s','51-60':'50s','60+':'60s'};
+  const ageTag=ageMap[age]||'';
+
+  // Height map
+  const htMap={"<4'0\"":"very short","4'1\"-4'5\"":"short","4'6\"-4'10\"":"short",
+    "4'11\"-5'2\"":"5ft1","5'3\"-5'7\"":"5ft5","5'8\"-5'11\"":"tall","6'0\"-6'5\"":"very tall",">6'6\"":"extremely tall"};
+  const htTag=htMap[height]||'';
+
+  // Amount
+  const amtMap={'One':'solo','2-3':'two women','4-7':'group of women','8-10':'multiple women','11+':'many women'};
+  const amtTag=amtMap[amount]||'solo';
+
+  // Body type
+  const bodyMap={
+    'Bulimic':'extremely underweight','Anorexic':'very thin, gaunt',
+    'Thin':'lean slim figure','Slim':'slim','Petite':'petite, small frame',
+    'Slim Thick':'slim waist, thick thighs, hourglass','Average':'average build',
+    'Mid Size':'medium build, soft curves','Mid Thick':'medium thick, curvy',
+    'Thick':'thick curvy figure, full hips','Thicker':'very thick, wide hips',
+    'Thickest':'extremely thick','Chubby':'chubby, round figure',
+    'Meatball':'very chubby','Chunky':'heavyset','Curvy':'curvy hourglass',
+    'Upside Down Triangle':'broad shoulders, narrow hips',
+    'BBW':'bbw, plus size','SSBBW':'ssbbw, super plus size','USSBBW':'extremely plus size',
+  };
+  const bodyTag=bodyMap[body]||lc(body)||'';
+
+  // Breast
+  const cupMap={
+    'A':'small breasts, A cup','B':'small perky breasts, B cup','C':'medium breasts, C cup',
+    'D':'large breasts, D cup','DD':'large breasts, DD cup','DDD':'very large breasts, DDD cup',
+    'E':'huge breasts, E cup','F':'huge breasts, F cup','G':'massive breasts, G cup',
+    'H':'enormous breasts, H cup','I':'enormous breasts, I cup','J':'massive heavy breasts, J cup',
+    'K':'gigantic breasts, K cup','L':'gigantic breasts, L cup',
+    'M':'impossibly large breasts, M cup','N+':'cartoonishly large breasts',
+  };
+  const breastTag=cupMap[cup]||'';
+  const brShTag=breastShape?lc(fw(breastShape))+' shaped breasts':'';
+  const brFirmTag=breastFirm?lc(fw(breastFirm))+' breasts':'';
+
+  // Nipple
+  const nipSzTag=nipSize?lc(fw(nipSize)):'';
+  const nipTyTag=nipType?lc(fw(nipType)):'';
+  const nipClTag=nipCol?lc(fw(nipCol)).replace(/nipples?/gi,'').trim():'';
+  const arSzTag=areolaSize?lc(fw(areolaSize))+' areola':'';
+  const arTxTag=areolaText?lc(fw(areolaText))+' areola texture':'';
+
+  // Ass
+  const assSzMap={
+    'Barely there':'flat butt','Small':'small butt','Average':'average ass',
+    'Full':'full round ass','Large':'large ass','Huge':'huge ass',
+    'Obscene':'enormous ass','Flat':'flat butt','Inverted':'flat no ass',
+  };
+  const assTag=assSzMap[assSize]||'';
+  const assShTag=assShape?lc(fw(assShape))+' ass shape':'';
+  const assPjTag=assProj?lc(fw(assProj)):'';
+  const assFmTag=assFirm?lc(fw(assFirm)):'';
+
+  // Labia
+  const labTag=labiaSize?lc(fw(labiaSize))+' labia':'';
+
+  // Thighs
+  const thTag=thighThick?lc(fw(thighThick))+' thighs':'';
+  const thInTag=thighInner?lc(fw(thighInner)):'';
+
+  // Stomach
+  const stTag=stomachW?lc(fw(stomachW)):'';
+
+  // Shave
+  const shaveMap={'Waxed/No Hair':'shaved, bare','Landing Strip':'landing strip','Fuzzy':'lightly natural','Full Bush':'full bush'};
+  const shaveTag=shaveMap[shave]||'';
+
+  // Waist
+  const waistTag=waist?lc(cl(waist)).replace(/\b(ratio|distribution|pronounced|slight)\b/gi,'').trim():'';
+
+  // Skin
+  const skinTag=skin?lc(skin.split(',').slice(0,2).join(',').replace(/\b(undertones?|complexion)\b/gi,'').trim()):'';
+
+  // Face
+  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
+  const faceMap={7:'pretty face',8:'very pretty face',9:'striking face, beautiful',10:'gorgeous face, stunning beauty'};
+  const faceTag=faceMap[ratingNum]||'';
+  const eyeTag=eyes?lc(cl(eyes)):'';
+  const hairTag=[lc(cl(hairCol)),lc(cl(hair))].filter(Boolean).join(' ');
+  const freckTag=freckles&&!/^no freckles/i.test(freckles)?'freckles':'';
+  const muscleTag=muscle?lc(fw(muscle)).replace(/\b(despite|from|without effort)\b/gi,'').trim():'';
+
+  // Position/setting
+  const posMap={'Doggy Style':'doggy style, from behind','Missionary':'missionary','Cowgirl':'cowgirl, on top',
+    'Reverse Cowgirl':'reverse cowgirl','Prone Bone':'prone bone','Standing':'standing',
+    'On all fours':'on all fours','Bent over':'bent over','Laying down':'laying on back','Side':'laying on side'};
+  const posTag=posMap[position]||lc(position)||'';
+
+  // Location mood
+  const locMoodMap={
+    'City (Georgetown)':'urban interior','Basement (Mom's)':'basement, concrete walls',
+    'Dungeon (Castle)':'stone dungeon','Boat (Mini-yacht)':'boat interior',
+    'International (Airbnb)':'minimalist apartment','Secluded Ranch (WV)':'rustic interior',
+    'Secluded Mansion)':'mansion interior','Condo (Downtown)':'modern apartment, city view',
+    'Shitty Apartment':'messy apartment','Suburbs (Davidsonville)':'suburban bedroom',
+    'Townhouse (VA)':'townhouse interior','School (QAS)':'school setting','Church (Baptist)':'church interior',
+  };
+  const locTag=locMoodMap[location]||'';
+
+  // Build the prompt — natural language description + tags
+  const parts=[];
+
+  // Subject line
+  const subjectParts=[amtTag,ageTag,htTag,bodyTag,ethnic].filter(Boolean);
+  if(subjectParts.length) parts.push(subjectParts.join(', '));
+
+  // Physical
+  const physParts=[skinTag,freckTag,faceTag,eyeTag,hairTag].filter(Boolean);
+  if(physParts.length) parts.push(physParts.join(', '));
+
+  // Breasts
+  const brParts=[breastTag,brShTag,brFirmTag,nipSzTag,nipTyTag,nipClTag,arSzTag,arTxTag].filter(Boolean);
+  if(brParts.length) parts.push(brParts.join(', '));
+
+  // Lower body
+  const loParts=[assTag,assShTag,assPjTag,assFmTag,labTag,shaveTag].filter(Boolean);
+  if(loParts.length) parts.push(loParts.join(', '));
+
+  // Legs + body
+  const lgParts=[thTag,thInTag,stTag,waistTag,muscleTag].filter(Boolean);
+  if(lgParts.length) parts.push(lgParts.join(', '));
+
+  // Setting
+  if(posTag) parts.push(posTag);
+  if(locTag) parts.push(locTag);
+
+  // Lustify V8 (Apex) style tags — iPhone candid aesthetic
+  parts.push('nude, fully naked');
+  parts.push('candid photo, amateur photo, natural lighting, shot on iPhone 15 Pro, handheld, slightly imperfect, no phone visible, real photo');
+
+  // Quality
+  parts.push('photorealistic, sharp focus, detailed skin, 8k');
+
+  document.getElementById('lustifyText').textContent=parts.join(', ');
+}
+
+
 function showOutput(){
   recordSpin();
   document.getElementById('outputSection').classList.add('show');
   document.getElementById('spinBtn').disabled=true;
-  buildSDPrompt();generateNarrative();
+  buildSDPrompt();generateNarrative();buildLustifyPrompt();
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth'});
 }
 
@@ -7927,10 +8117,9 @@ function copyPart(p){
 }
 
 function generateNarrative(){
-  // ── Pull every wheel result ──
+  // ── Pull results ──
   const race=gv('race');
-  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian',
-    'persian_sub','indian_sub','native_sub','pacific_sub');
+  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub');
   const originKeys=Object.keys(WHEEL_DEFS).filter(k=>k.startsWith('origin_'));
   const origin=ga(...originKeys);
   const age=gv('age'),height=gv('height'),body=gv('body');
@@ -7941,1877 +8130,389 @@ function generateNarrative(){
   const nose=ga('nose_light','nose_medium','nose_dark');
   const eyebrows=ga('eyebrows_light','eyebrows_medium','eyebrows_dark');
   const lips=ga('lips_light','lips_medium','lips_dark');
-  const teeth=gv('teeth');
-  const ears=gv('ears');
-  const neck=gv('neck');
-  const faceShape=gv('face_shape');
-  const faceRating=gv('face');
+  const teeth=gv('teeth'),ears=gv('ears'),neck=gv('neck');
+  const faceShape=gv('face_shape'),faceRating=gv('face');
   const hair=ga('hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark');
   const hairCol=ga('hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark');
   const stretch=ga('stretch_thin','stretch_mid','stretch_bbw');
   const cellulite=ga('cellulite_thin','cellulite_mid','cellulite_bbw');
   const muscle=ga('muscle_thin','muscle_mid','muscle_bbw');
   const waist=ga('waist_thin','waist_mid','waist_bbw');
-  const shave=gv('shave');
-  const hands=gv('hands');
-  const feet=gv('feet');
-  const nipSize=gv('nipple_size');
-  const nipType=gv('nipple_type');
-  const personality=gv('personality'),financial=gv('financial'),sexExp=gv('sex_exp');
-  const acquired=gv('acquired'),mentalState=gv('mental_state');
-  const emotional=gv('emotional'),bondThreat=gv('bond_threat');
-  const mode=gv('mode'),kink=gv('kink'),length=gv('length');
-  const disobedience=gv('disobedience'),punishment=gv('punishment');
-  const skinSoft=gv('skin_soft'),natScent=gv('nat_scent');
-  const skinTemp=gv('skin_temp'),touchResp=gv('touch_resp');
-  const timeDay=gv('time_day'),season=gv('season'),location=gv('location');
-  const favPart=gv('fav_part'),kinkMode=gv('kink');
-
-  // ── Helpers ──
-  const ethnicLabel=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||`${race.toLowerCase()} woman`;
-  const ethnicShort=ethnicLabel.replace(' woman','');
-  const originCity=origin?origin.split('—')[0].trim().split(',')[0].trim():'';
-  const clean=s=>s?s.split(',')[0].replace(/\s{2,}/g,' ').trim():'';
-
-  // ── Acquisition map ──
-  const acqMap={
-    'met organically, mutual situation':'She came into your life the way these things sometimes do — mutual, unremarkable at first.',
-    'introduced through a mutual':'Someone you trusted made the introduction. You took it from there.',
-    'online, social media or app':'You found her online. The rest moved quickly.',
-    'work or school setting':'She was already in your orbit before you made your move.',
-    'purchased or traded':'She was acquired. A transaction. Nothing more, nothing less.',
-    'taken by force':'She did not come willingly. She had no say in it.',
-    'inherited from someone else':'She passed to you from someone else. Already broken in before she arrived.',
-    'she came to you':'She came to you on her own. Whether that was a choice or a trap depends on who you ask.',
-    'blackmailed into the situation':'She had something to lose. You made sure she understood that.',
-    'bet or won in a game':'She was the prize. You won.',
-    'was already in the household':'She was already there when the arrangement changed.',
-    'rescued and now dependent':'You pulled her out of something worse. Now she owes you everything.',
-    'arranged by family':'The arrangement was made before either of you had much say.',
-    'groomed over long period':'You were patient. It paid off.',
-    'wrong place wrong time':'She was simply there at the wrong moment.',
-  };
-
-  // ── Mode sentences ──
-  const modeMap={
-    'Wife':`She is your wife`,
-    'Lover':`She is your lover`,
-    'FWB':`The arrangement is casual — she is your FWB`,
-    'Pet':`She is your pet. Not a metaphor`,
-    'Slave':`She is your property`,
-    'Sub':`She is yours to shape`,
-    'Mother':`She is the mother of your children`,
-    'Sibling':`She is your sibling. The line was crossed`,
-    'Aunt/Cousin':`She is family. The kind you're not supposed to want`,
-    'Teacher':`She is your teacher. The dynamic shifted`,
-    'Spiteful Friend':`She calls herself your friend. The relationship is something else`,
-    'Superior':`She outranks you on paper. That stopped mattering`,
-    'Subordinate':`She works under you. In more ways than one`,
-  };
-
-  // ── Location/setting prose ──
-  const locProse={
-    'City (Georgetown)':'The city outside is moving the way it always does — indifferent.',
-    "Basement (Mom's)":'The basement is quiet. One bulb overhead. Concrete on all sides.',
-    'Dungeon (Castle)':'The torchlight is the only thing moving. Stone walls. No sound from outside.',
-    'Boat (Mini-yacht)':'The water shifts under you. Nowhere for her to go.',
-    'International (Airbnb)':'The apartment is clean and anonymous. No one knows you are here.',
-    'Secluded Ranch (WV)':'There is nothing out here for miles. That is the point.',
-    'Secluded Mansion':'The house is large enough that no one would hear anything.',
-    'Condo (Downtown)':'The city burns through the floor-to-ceiling glass. Everything looks small from up here.',
-    'Shitty Apartment':'The apartment is small and the walls are thin.',
-    'Suburbs (Davidsonville)':'The neighborhood is quiet. Lawns and driveways and nobody looking.',
-    'Townhouse (VA)':'The townhouse is ordinary. That is the cover.',
-    'School (QAS)':'The hallway is empty. Fluorescent lights. Everyone else is gone.',
-    'Church (Baptist)':'The pews are empty. Light comes through the stained glass at an angle.',
-  };
-  const timeProse={
-    'early morning, just before sunrise':'Not yet light.',
-    'morning, soft daylight':'Morning light through the window.',
-    'midday, harsh overhead sun':'Midday. Hard light.',
-    'golden hour, late afternoon':'Late afternoon. The light is gold and fading.',
-    'dusk, fading light':'Dusk. Everything going grey.',
-    'evening, blue hour':'Evening. That blue hour before the dark sets.',
-    'night, artificial light only':'Night. Whatever light there is is artificial.',
-    'late night, dim and dark':'Late. Dark except for what you bring to it.',
-    'middle of the night, near dark':'Middle of the night. Almost nothing.',
-  };
-  const seasonProse={
-    'summer, hot and humid':'It is hot. The air sits on everything.',
-    'summer, dry heat':'Dry heat outside.',
-    'spring, warm and breezy':'Spring. Still and warm.',
-    'fall, cool and overcast':'Fall. Grey.',
-    'winter, cold and dry':'Cold outside.',
-    'winter, heavy snow outside':'Snow outside. No one is going anywhere.',
-    'rainy, stormy':'It is raining. Has been for a while.',
-    'overcast, grey and dim':'Overcast. The light is flat.',
-  };
-
-  // ════════════════════════
-  // PARAGRAPH 1 — THE SITUATION
-  // ════════════════════════
-  const p1Parts=[];
-
-  // Acquisition
-  const acqSentence=acqMap[acquired]||'';
-  if(acqSentence) p1Parts.push(acqSentence);
-
-  // Mode + length
-  if(mode){
-    const modeBase=modeMap[mode]||`She is your ${mode.toLowerCase()}`;
-    const lengthStr=length?` — ${length}.`:'.';
-    p1Parts.push(modeBase+lengthStr);
-  }
-
-  // Disobedience + punishment if present
-  if(disobedience&&punishment){
-    p1Parts.push(`She ${disobedience.toLowerCase()}. The punishment was ${punishment.toLowerCase()}.`);
-  }
-
-  // Setting — location then time then weather, each as its own sentence
-  if(location&&locProse[location]) p1Parts.push(locProse[location]);
-  if(timeDay&&timeProse[timeDay]) p1Parts.push(timeProse[timeDay]);
-  if(season&&seasonProse[season]) p1Parts.push(seasonProse[season]);
-  else if(timeDay&&!timeProse[timeDay]) p1Parts.push(timeDay+'.');
-
-  const para1=p1Parts.filter(Boolean).join(' ');
-
-  // ════════════════════════
-  // PARAGRAPH 2 — THE PORTRAIT
-  // ════════════════════════
-  const p2Parts=[];
-
-  // ── Opening: ethnicity + age + height + body ──
-  const bodyParts=[];
-  if(age) bodyParts.push(age);
-  if(height) bodyParts.push(height);
-  if(body) bodyParts.push(body.toLowerCase());
-  const openDesc=bodyParts.join(', ');
-  if(ethnicShort&&openDesc) p2Parts.push(`She is ${ethnicShort}, ${openDesc}.`);
-  else if(ethnicShort) p2Parts.push(`She is ${ethnicShort}.`);
-  if(originCity) p2Parts.push(`She is from ${originCity}.`);
-
-  // ── Skin ──
-  const skinCore=skin?clean(skin):'';
-  const skinGlowCore=skinGlow?clean(skinGlow).replace(/\b(skin|across|especially)\b/gi,'').trim():'';
-  if(skinCore&&skinGlowCore) p2Parts.push(`Her skin is ${skinCore}, ${skinGlowCore}.`);
-  else if(skinCore) p2Parts.push(`Her skin is ${skinCore}.`);
-  if(freckles&&!freckles.startsWith('no freckles')) p2Parts.push(`${clean(freckles)}.`);
-
-  // ── Hair ──
-  const hairStyleCore=hair?clean(hair):'';
-  const hairColorCore=hairCol?clean(hairCol):'';
-  if(hairColorCore&&hairStyleCore) p2Parts.push(`Her hair is ${hairColorCore}, ${hairStyleCore}.`);
-  else if(hairStyleCore) p2Parts.push(`Her hair is ${hairStyleCore}.`);
-
-  // ── Face — shape, rating, eyes, eyebrows, nose, lips, teeth ──
-  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
-  const ratingProse={1:'plain-faced, unremarkable',2:'plain-faced, ordinary',3:'below average',4:'below average, plain features',5:'average',6:'average, pleasant enough',7:'pretty',8:'very pretty',9:'striking',10:'beautiful'};
-  const faceProse=ratingProse[ratingNum]||'';
-  const faceShapeCore=faceShape?clean(faceShape).replace(/\bface\b/gi,'').trim():'';
-  const eyesCore=eyes?clean(eyes).replace(/\b(round and wide|soft and distant|sharp and intense|warm and soft|deep and round|golden tone|smooth lid|subtle fold|heavy lid|doe-like|catlike|sad expression|sleepy look)\b/gi,'').trim():'';
-  const eyebrowsCore=eyebrows?clean(eyebrows).replace(/\b(East Asian style|tendency|overgroomed)\b/gi,'').trim():'';
-  const noseCore=nose?clean(nose).replace(/\b(broad and soft|rounded full tip|prominent nostrils|rounded tip|low bridge|slightly upturned|defined bridge|soft tip)\b/gi,'').trim():'';
-  const lipsCore=lips?clean(lips).replace(/\blips?\b/gi,'').trim():'';
-  const teethCore=teeth?clean(teeth).replace(/\b(charming|naturally imperfect|clearly treated|natural wear)\b/gi,'').trim():'';
-  const earsCore=ears?clean(ears).replace(/\b(small and|large and|slightly|notable)\b/gi,'').trim():'';
-  const neckCore=neck?clean(neck).replace(/\b(elegant|strong looking|prominent)\b/gi,'').trim():'';
-
-  // Face sentence: shape + rating
-  if(faceShapeCore&&faceProse) p2Parts.push(`Her face is ${faceShapeCore}, ${faceProse}.`);
-  else if(faceProse) p2Parts.push(`She is ${faceProse}.`);
-
-  // Eyes + eyebrows
-  if(eyesCore&&eyebrowsCore) p2Parts.push(`Her eyes are ${eyesCore}. Her brows are ${eyebrowsCore}.`);
-  else if(eyesCore) p2Parts.push(`Her eyes are ${eyesCore}.`);
-
-  // Nose + lips together
-  if(noseCore&&lipsCore) p2Parts.push(`Her nose is ${noseCore}. Her lips are ${lipsCore}.`);
-  else if(lipsCore) p2Parts.push(`Her lips are ${lipsCore}.`);
-
-  // Teeth + ears + neck if notable
-  if(teethCore&&teethCore!=='perfect straight white') p2Parts.push(`Her teeth are ${teethCore}.`);
-  if(earsCore&&!/small.*close|normal|average/i.test(earsCore)) p2Parts.push(`Her ears are ${earsCore}.`);
-  if(neckCore) p2Parts.push(`Her neck is ${neckCore}.`);
-
-  // ── Pull new wheel results ──
+  const shave=gv('shave'),hands=gv('hands'),feet=gv('feet');
+  const nipSize=gv('nipple_size'),nipType=gv('nipple_type'),nipPlacement=gv('nipple_placement');
+  const nipCol=ga('nipple_col_light','nipple_col_medium','nipple_col_dark');
+  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture'),areolaShape=gv('areola_shape');
   const assSize=gv('ass_size'),assShape=gv('ass_shape'),assProj=gv('ass_projection'),assFirm=gv('ass_firmness');
-  const assTransition=gv('ass_transition'),assSkinTex=gv('ass_skin_texture'),assHair=gv('ass_body_hair');
+  const assTransition=gv('ass_transition'),assSkinTex=gv('ass_skin_texture'),assBodyHair=gv('ass_body_hair');
   const cup=gv('cup_size'),breastShape=gv('breast_shape'),breastPos=gv('breast_position');
   const breastFirm=gv('breast_firmness'),breastProj=gv('breast_projection');
-  const nipPlacement=gv('nipple_placement');
-  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture'),areolaShape=gv('areola_shape');
-  const thighThick=gv('thigh_thickness'),thighShapeW=gv('thigh_shape'),thighInner=gv('thigh_inner'),thighTex=gv('thigh_texture');
+  const thighThick=gv('thigh_thickness'),thighShape=gv('thigh_shape'),thighInner=gv('thigh_inner'),thighTex=gv('thigh_texture');
   const stomachW=gv('stomach'),legsW=gv('legs'),backW=gv('back'),collarboneW=gv('collarbone');
   const cleavageW=gv('cleavage'),bodyHairW=gv('body_hair');
-  const education=gv('education'),intelligence=gv('intelligence'),streetSmarts=gv('street_smarts');
+  const labiaSize=gv('labia_size'),labiaCol=ga('labia_col_light','labia_col_medium','labia_col_dark');
+  const vagMoisture=gv('vaginal_moisture'),vagDepth=gv('vaginal_depth');
+  const personality=gv('personality'),financial=gv('financial'),sexExp=gv('sex_exp');
+  const acquired=gv('acquired'),mentalState=gv('mental_state'),emotional=gv('emotional'),bondThreat=gv('bond_threat');
+  const mode=gv('mode'),kink=gv('kink'),length=gv('length');
+  const disobedience=gv('disobedience'),punishment=gv('punishment');
+  const skinSoft=gv('skin_soft'),natScent=gv('nat_scent'),skinTemp=gv('skin_temp'),touchResp=gv('touch_resp');
+  const timeDay=gv('time_day'),season=gv('season'),location=gv('location');
+  const favPart=gv('fav_part'),education=gv('education'),intelligence=gv('intelligence'),streetSmarts=gv('street_smarts');
   const voiceW=gv('voice'),languageW=gv('language');
 
-  // ── Ass ──
-  const assSizeCore=assSize?clean(assSize):'';
-  const assShapeCore=assShape?assShape.split(' —')[0].trim():'';
-  const assProjCore=assProj?assProj.split(' —')[0].trim():'';
-  const assFirmCore=assFirm?assFirm.split(' —')[0].trim():'';
-  if(assSizeCore&&assShapeCore) p2Parts.push(`Her ass is ${assSizeCore.toLowerCase()}, ${assShapeCore.toLowerCase()}.`);
-  else if(assSizeCore) p2Parts.push(`Her ass is ${assSizeCore.toLowerCase()}.`);
-  if(assProjCore) p2Parts.push(`${assProjCore}.`);
-  if(assFirmCore) p2Parts.push(`${assFirmCore}.`);
-  if(assTransition&&!assTransition.startsWith('Smooth')) p2Parts.push(`${clean(assTransition)}.`);
+  // ── Helpers ──
+  const ethnicLabel=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||race.toLowerCase();
+  const ethnicShort=ethnicLabel.replace(/ woman$/,'');
+  const originCity=origin?origin.split('—')[0].trim().split(',')[0].trim():'';
+  const cl=s=>s?s.split(',')[0].replace(/\s{2,}/g,' ').trim():'';
+  const firstWord=s=>s?s.split(/[—,]/)[0].trim():'';
+  const lc=s=>s?s.toLowerCase():'';
 
-  // ── Breast ──
-  const cupCore=cup?cup+' cup':'';
-  const breastShapeCore=breastShape?breastShape.split(' —')[0].trim():'';
-  const breastFirmCore=breastFirm?breastFirm.split(' —')[0].trim():'';
-  const breastProjCore=breastProj?breastProj.split(' —')[0].trim():'';
-  if(cupCore&&breastShapeCore) p2Parts.push(`She is ${cupCore} — ${breastShapeCore.toLowerCase()}.`);
-  else if(cupCore) p2Parts.push(`She is ${cupCore}.`);
-  if(breastFirmCore) p2Parts.push(`${breastFirmCore}.`);
-  if(breastProjCore) p2Parts.push(`${breastProjCore} projection.`);
+  // ── Rating to prose ──
+  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
+  const ratingProse={1:'plain',2:'plain',3:'ordinary',4:'ordinary',5:'unremarkable',
+    6:'pleasant enough',7:'pretty',8:'very pretty',9:'striking',10:'beautiful'};
+  const faceProse=ratingProse[ratingNum]||'';
 
-  // ── Collarbone + back ──
-  const collarboneCore=collarboneW?collarboneW.split(' —')[0].trim():'';
-  const backCore=backW?backW.split(' —')[0].trim():'';
-  if(collarboneCore) p2Parts.push(`${collarboneCore} collarbone.`);
-  if(backCore) p2Parts.push(`${backCore}.`);
-
-  // ── Stomach + legs ──
-  const stomachCore=stomachW?stomachW.split(' —')[0].trim():'';
-  const legsCore=legsW?legsW.split(' —')[0].trim():'';
-  if(stomachCore) p2Parts.push(`${stomachCore}.`);
-  if(legsCore) p2Parts.push(`Her legs are ${legsCore.toLowerCase()}.`);
-
-  // ── Thighs ──
-  const thighThickCore=thighThick?thighThick.split(' —')[0].trim():'';
-  const thighInnerCore=thighInner?thighInner.split(' —')[0].trim():'';
-  if(thighThickCore&&thighInnerCore) p2Parts.push(`${thighThickCore} thighs, ${thighInnerCore.toLowerCase()}.`);
-  else if(thighThickCore) p2Parts.push(`${thighThickCore} thighs.`);
-
-  // ── Body detail ──
-  const waistCore=waist?clean(waist).replace(/\b(ratio|distribution|pronounced|slight)\b/gi,'').trim():'';
-  const muscleCore=muscle?clean(muscle).replace(/\b(despite small frame|from carrying weight|without effort)\b/gi,'').trim():'';
-  if(waistCore) p2Parts.push(`${waistCore.charAt(0).toUpperCase()+waistCore.slice(1)}.`);
-  if(muscleCore) p2Parts.push(`${muscleCore.charAt(0).toUpperCase()+muscleCore.slice(1)}.`);
-  const stretchCore=stretch&&!stretch.startsWith('no stretch')?clean(stretch):'';
-  const celluliteCore=cellulite&&!cellulite.startsWith('no cellulite')?clean(cellulite):'';
-  if(stretchCore) p2Parts.push(`${stretchCore}.`);
-  if(celluliteCore) p2Parts.push(`${celluliteCore}.`);
-
-  // ── Lower detail ──
-  const labiaSize=gv('labia_size');
-  const labiaCol=ga('labia_col_light','labia_col_medium','labia_col_dark');
-  const labiaCore=labiaSize?labiaSize.split(' —')[0].trim():'';
-  const labiaColCore=labiaCol?labiaCol.split(',')[0].trim():'';
-  if(labiaCore) p2Parts.push(`Her labia are ${labiaCore.toLowerCase()}${labiaColCore?', '+labiaColCore.toLowerCase():''}.`);
-
-  // ── Detail ──
-  const shaveMap={'Waxed/No Hair':'She is completely bare.','Landing Strip':'Landing strip.','Fuzzy':'Lightly natural.','Full Bush':'Full natural bush.'};
-  if(shave&&shaveMap[shave]) p2Parts.push(shaveMap[shave]);
-  if(cleavageW) p2Parts.push(`${clean(cleavageW)}.`);
-  if(hands&&clean(hands)) p2Parts.push(`Her hands are ${clean(hands)}.`);
-  if(feet&&clean(feet)) p2Parts.push(`Her feet — ${clean(feet)}.`);
-
-  // ── Voice + Language ──
-  const voiceCore=voiceW?voiceW.split(' —')[0].trim():'';
-  const langCore=languageW?languageW.split(' —')[0].trim():'';
-  if(voiceCore&&langCore) p2Parts.push(`Her voice is ${voiceCore.toLowerCase()}. ${langCore}.`);
-  else if(voiceCore) p2Parts.push(`Her voice is ${voiceCore.toLowerCase()}.`);
-
-  // ── Psychology ──
-  const finCore=financial?clean(financial):'';
-  const persCore=personality?clean(personality):'';
-  const sexCore=sexExp?clean(sexExp):'';
-  const eduCore=education?education.split('—')[0].trim():'';
-  const intCore=intelligence?intelligence.split('—')[0].trim():'';
-  const streetCore=streetSmarts?streetSmarts.split('—')[0].trim():'';
-  if(finCore&&persCore) p2Parts.push(`She grew up ${finCore}. She is ${persCore}.`);
-  else if(persCore) p2Parts.push(`She is ${persCore}.`);
-  if(eduCore) p2Parts.push(`${eduCore}.`);
-  if(intCore&&streetCore) p2Parts.push(`${intCore}. ${streetCore}.`);
-  if(sexCore) p2Parts.push(`${sexCore.charAt(0).toUpperCase()+sexCore.slice(1)}.`);
-
-  // Mental state + emotional
-  const mentalCore=mentalState?clean(mentalState):'';
-  const emotCore=emotional?clean(emotional):'';
-  if(mentalCore&&emotCore) p2Parts.push(`Right now she is ${mentalCore}. ${emotCore.charAt(0).toUpperCase()+emotCore.slice(1)}.`);
-  else if(mentalCore) p2Parts.push(`Right now she is ${mentalCore}.`);
-  else if(emotCore) p2Parts.push(`${emotCore.charAt(0).toUpperCase()+emotCore.slice(1)}.`);
-
-  // Bond & threat
-  if(bondThreat) p2Parts.push(`${clean(bondThreat).charAt(0).toUpperCase()+clean(bondThreat).slice(1)}.`);
-
-  // ── Sensory ──
-  const softCore=skinSoft?clean(skinSoft):'';
-  const scentCore=natScent?clean(natScent):'';
-  const tempCore=skinTemp?clean(skinTemp):'';
-  const touchCore=touchResp?clean(touchResp):'';
-  if(softCore&&scentCore) p2Parts.push(`Her skin is ${softCore}. She smells ${scentCore}.`);
-  else if(softCore) p2Parts.push(`Her skin is ${softCore}.`);
-  else if(scentCore) p2Parts.push(`She smells ${scentCore}.`);
-  if(tempCore) p2Parts.push(`She runs ${tempCore}.`);
-  if(touchCore) p2Parts.push(`When you touch her, she ${touchCore}.`);
-
-  const para2=p2Parts.filter(Boolean).join(' ');
-
-  document.getElementById('narrativeText').textContent=[para1,para2].filter(Boolean).join('\n\n');
-}
-
-function copyNarrative(){
-  const txt=document.getElementById('narrativeText').textContent;
-  const doCopy=()=>{const btn=document.querySelector('#outputSection .output-actions .btn-copy');if(btn){btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='Copy Narrative',2000);}};
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(doCopy).catch(()=>{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);doCopy();});
-  } else {const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);doCopy();}
-}
-
-function copyAll(){
-  const posEl=document.getElementById('posText');
-  const negEl=document.getElementById('negText');
-  const narEl=document.getElementById('narrativeText');
-  const pos=(posEl?.innerText||posEl?.textContent||'').replace(/\s+/g,' ').trim();
-  const neg=(negEl?.innerText||negEl?.textContent||'').replace(/\s+/g,' ').trim();
-  const nar=(narEl?.innerText||narEl?.textContent||'').trim();
-  const txt=`=== STABLE DIFFUSION PROMPT ===\n\nPositive:\n${pos}\n\nNegative:\n${neg}\n\n=== CHARACTER NARRATIVE ===\n\n${nar}`;
-  const doCopy=()=>{
-    const btn=document.querySelector('.btn-copy[onclick="copyAll()"]');
-    if(btn){btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='✦ Copy All',2000);}
-  };
-  if(navigator.clipboard?.writeText){
-    navigator.clipboard.writeText(txt).then(doCopy).catch(()=>{
-      const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';
-      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);doCopy();
-    });
-  } else {
-    const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';
-    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);doCopy();
-  }
-}
-
-
-// ═══════════════ EDIT PANEL ═══════════════
-// Track which wheel is being previewed in edit mode
-let editPreviewWid = null;
-
-
-// ── WHEEL CATEGORIES ──
-const WHEEL_CATEGORIES = {
-  'Race':['difficulty','race','white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub'],
-  'Origins':[],
-  'Body':['age','height','body','stretch_thin','stretch_mid','stretch_bbw','cellulite_thin','cellulite_mid','cellulite_bbw','muscle_thin','muscle_mid','muscle_bbw','waist_thin','waist_mid','waist_bbw'],
-  'Face':['skin_light','skin_medium','skin_dark','freckles','eyes_light','eyes_medium','eyes_dark','nose_light','nose_medium','nose_dark','eyebrows_light','eyebrows_medium','eyebrows_dark','skin_glow_light','skin_glow_medium','skin_glow_dark','lips_light','lips_medium','lips_dark','face','face_shape','teeth','ears','neck','oral_saliva','oral_sensation_me','oral_sensation_her','oral_enthusiasm','oral_anatomy','oral_psychology','oral_depth'],
-  'Hair':['hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark','hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark'],
-  'Breast':['cup_size','breast_shape','breast_position','breast_firmness','breast_projection'],
-  'Nipple':['nipple_size','nipple_type','nipple_placement','nipple_col_light','nipple_col_medium','nipple_col_dark'],
-  'Areola':['areola_size','areola_texture','areola_shape'],
-  'Breast Response':['breast_sensation_her_gland','breast_sensation_her_nipple','breast_enthusiasm','breast_anatomy','breast_psychology','breast_compression','lactation_volume','lactation_taste','milk_play'],
-  'Ass':['ass_size','ass_shape','ass_projection','ass_firmness','ass_transition','ass_skin_texture','ass_body_hair','anal_appearance','anal_sensation_me','anal_sensation_her','anal_enthusiasm','anal_anatomy','anal_psychology','anal_depth'],
-  'Thighs':['thigh_thickness','thigh_shape','thigh_inner','thigh_texture'],
-  'Full Body':['stomach','legs','back','collarbone'],
-  'Lower':['labia_size','labia_col_light','labia_col_medium','labia_col_dark','vaginal_moisture','vaginal_sensation_me','vaginal_sensation_her','vaginal_enthusiasm','vaginal_anatomy','vaginal_psychology','vaginal_depth','squirt_anatomy','squirt_sensation_me','squirt_sensation_her','squirt_enthusiasm','squirt_threshold','squirt_psychology','squirt_fluid'],
-  'Physical Detail':['shave','cleavage','body_hair','hands','position','feet'],
-  'Sensory':['skin_soft','nat_scent','skin_temp','touch_resp'],
-  'Character':['financial','personality','education','intelligence','street_smarts','sex_exp','acquired','mental_state','emotional','bond_threat','voice','language'],
-  'Scenario':['kink','amount','mode','length','disobedience','punishment','location','fav_part','bonus','pegging_enthusiasm','pegging_sensation','general_abuse','baby_talk','breeding_gate','breeding_wheel'],
-  'Roleplay':['mothering_enthusiasm','mothering_sensation_me','mothering_sensation_her','mothering_psychology','mothering_depth','mother_a_abuse','mother_dark_acts','sibling_enthusiasm','sibling_sensation_me','sibling_sensation_her','sibling_psychology','sibling_depth','sister_a_abuse','sister_dark_acts','auntcousin_enthusiasm','auntcousin_sensation_me','auntcousin_sensation_her','auntcousin_psychology','auntcousin_depth','aunt_a_abuse','auntcousin_dark_acts','dark_psychology','teacher_enthusiasm','teacher_sensation_me','teacher_sensation_her','teacher_psychology','teacher_depth','teacher_abuse_acts','teacher_abuse_sensation','teacher_abuse_psychology','college_abuse_acts','college_abuse_psychology'],
-  'Setting':['time_day','season','wildcard']
-};
-
-let currentEditCat = 'flow';
-let currentCatWheelIndex = 0;
-
-function getOriginWheelIds(){
-  if(!WHEEL_CATEGORIES['Origins']||!WHEEL_CATEGORIES['Origins'].length){
-    WHEEL_CATEGORIES['Origins']=Object.keys(WHEEL_DEFS).filter(k=>k.startsWith('origin_'));
-  }
-  return WHEEL_CATEGORIES['Origins'];
-}
-
-function getCatWheels(cat){
-  if(cat==='all'){
-    // Start with WHEEL_ORDER, then append any WHEEL_DEFS not in order
-    const ordered=WHEEL_ORDER.filter(id=>WHEEL_DEFS[id]);
-    const inOrder=new Set(ordered);
-    const extras=Object.keys(WHEEL_DEFS).filter(id=>!inOrder.has(id));
-    return [...ordered,...extras];
-  }
-  if(cat==='Origins') return getOriginWheelIds().filter(id=>WHEEL_DEFS[id]);
-  const ids = WHEEL_CATEGORIES[cat]||[];
-  return ids.filter(id=>WHEEL_DEFS[id]);
-}
-
-function setEditCat(cat){
-  currentEditCat = cat;
-  document.querySelectorAll('.cat-tab').forEach(t=>{
-    const label=t.textContent.trim();
-    const isFlow=cat==='flow'&&label.includes('Flow');
-    const isAll=cat==='all'&&label.includes('All');
-    const isMatch=label===cat;
-    t.classList.toggle('active', isFlow||isAll||isMatch);
-  });
-  if(cat==='flow'){
-    document.getElementById('editFlowMap').style.display='block';
-    document.getElementById('editWheelEditor').style.display='none';
-    renderFlowMap();
-  } else {
-    document.getElementById('editFlowMap').style.display='none';
-    document.getElementById('editWheelEditor').style.display='block';
-    const ids = getCatWheels(cat);
-    if(ids.length>0){
-      currentCatWheelIndex=0;
-      refreshWheelSelectForCat(cat);
-      document.getElementById('editWheelSelect').value=ids[0];
-      renderEditPanel();
-    }
-  }
-}
-
-function refreshWheelSelectForCat(cat){
-  const sel=document.getElementById('editWheelSelect');
-  const prev=sel.value;
-  sel.innerHTML='';
-  if(cat==='all'){
-    const shown=new Set();
-    WHEEL_ORDER.forEach(id=>{if(!WHEEL_DEFS[id])return;const o=document.createElement('option');o.value=id;o.textContent=WHEEL_DEFS[id].name;sel.appendChild(o);shown.add(id);});
-    Object.entries(WHEEL_DEFS).forEach(([id,def])=>{if(shown.has(id))return;const o=document.createElement('option');o.value=id;o.textContent=def.name;sel.appendChild(o);});
-  } else {
-    const ids=getCatWheels(cat);
-    ids.forEach(id=>{const o=document.createElement('option');o.value=id;o.textContent=WHEEL_DEFS[id].name;sel.appendChild(o);});
-  }
-  if(prev&&WHEEL_DEFS[prev])sel.value=prev;
-}
-
-function editNavPrev(){
-  const ids=getCatWheels(currentEditCat);
-  if(!ids.length)return;
-  const cur=document.getElementById('editWheelSelect').value;
-  const idx=ids.indexOf(cur);
-  const prev=idx>0?idx-1:ids.length-1;
-  document.getElementById('editWheelSelect').value=ids[prev];
-  renderEditPanel();
-}
-
-function editNavNext(){
-  const ids=getCatWheels(currentEditCat);
-  if(!ids.length)return;
-  const cur=document.getElementById('editWheelSelect').value;
-  const idx=ids.indexOf(cur);
-  const next=idx<ids.length-1?idx+1:0;
-  document.getElementById('editWheelSelect').value=ids[next];
-  renderEditPanel();
-}
-
-function renderFlowMap(){
-  const grid=document.getElementById('flowMapGrid');
-  if(!grid)return;
-  grid.innerHTML='';
-
-  let expandedWid=null; // track which wheel is open
-
-  const catOf=id=>{
-    for(const[cat,ids] of Object.entries(WHEEL_CATEGORIES)){
-      if(ids&&ids.includes&&ids.includes(id))return cat;
-    }
-    if(id.startsWith('origin_'))return'Origins';
-    return'Other';
+  // ── Acquisition ──
+  const acqMap={
+    'met organically, mutual situation':'They came together the way people do — by circumstance.',
+    'introduced through a mutual':'Someone made the introduction. That was all it took.',
+    'online, social media or app':'She came to him through a screen. The distance collapsed quickly.',
+    'work or school setting':'She was already in his orbit before anything started.',
+    'purchased or traded':'She was acquired. A transaction, uncomplicated.',
+    'taken by force':'She had no say in it.',
+    'inherited from someone else':'She passed to him from someone else. Already changed before she arrived.',
+    'she came to you':'She came on her own. Whether that was freedom or a trap is not clear.',
+    'blackmailed into the situation':'She had something to lose. He made sure she understood that.',
+    'bet or won in a game':'She was the prize. He won.',
+    'was already in the household':'She was already there when the arrangement shifted.',
+    'rescued and now dependent':'He pulled her out of something worse. That debt does not expire.',
+    'arranged by family':'The arrangement was made before either of them had much say.',
+    'groomed over long period':'He was patient about it. Patience is its own kind of violence.',
+    'wrong place wrong time':'She was simply in the wrong place.',
   };
 
-  // Build ordered list: all wheels in WHEEL_ORDER that exist
-  const allIds=WHEEL_ORDER.filter(id=>WHEEL_DEFS[id]);
+  // ── Mode ──
+  const modeMap={
+    'Wife':'She is his wife.',
+    'Lover':'She is his lover.',
+    'FWB':'The arrangement has no name. They call it casual.',
+    'Pet':'She is his pet. Not as metaphor.',
+    'Slave':'She belongs to him.',
+    'Sub':'She is his to shape.',
+    'Mother':'She is the mother of his children.',
+    'Sibling':'She is his sibling. The line was crossed some time ago.',
+    'Aunt/Cousin':'She is family. The kind you are not supposed to want.',
+    'Teacher':'She was his teacher. The dynamic shifted.',
+    'Spiteful Friend':'She calls herself his friend.',
+    'Superior':'She outranked him on paper.',
+    'Subordinate':'She works under him. In more than one sense.',
+  };
 
-  // Group into category blocks preserving order
-  const blocks=[]; // [{cat, ids:[]}]
-  allIds.forEach(id=>{
-    const cat=catOf(id);
-    if(!blocks.length||blocks[blocks.length-1].cat!==cat){
-      blocks.push({cat,ids:[id]});
-    } else {
-      blocks[blocks.length-1].ids.push(id);
-    }
-  });
+  // ── Location ──
+  const locProse={
+    'City (Georgetown)':'The city moves outside, indifferent.',
+    "Basement (Mom's)":'A basement. One bulb. Concrete on all sides.',
+    'Dungeon (Castle)':'Stone walls. Torchlight. No sound from outside.',
+    'Boat (Mini-yacht)':'The water moves under everything. Nowhere to go.',
+    'International (Airbnb)':'A clean, anonymous apartment. No one knows they are here.',
+    'Secluded Ranch (WV)':'Nothing for miles. That is the point.',
+    'Secluded Mansion':'The house is large enough that nothing carries.',
+    'Condo (Downtown)':'The city burns through floor-to-ceiling glass.',
+    'Shitty Apartment':'Small rooms. Thin walls.',
+    'Suburbs (Davidsonville)':'Lawns and driveways and nobody looking.',
+    'Townhouse (VA)':'Ordinary from the outside.',
+    'School (QAS)':'Empty hallways. Fluorescent light.',
+    'Church (Baptist)':'The pews are empty. Light through stained glass, tilted.',
+  };
+  const timeProse={
+    'early morning, just before sunrise':'Not yet light outside.',
+    'morning, soft daylight':'Morning light comes through.',
+    'midday, harsh overhead sun':'Midday. The light is hard.',
+    'golden hour, late afternoon':'Late afternoon. The light goes gold and then nothing.',
+    'dusk, fading light':'Dusk. Everything going grey.',
+    'evening, blue hour':'That blue hour before dark settles.',
+    'night, artificial light only':'Whatever light there is, he brought it.',
+    'late night, dim and dark':'Late. Dark.',
+    'middle of the night, near dark':'Middle of the night.',
+  };
+  const seasonProse={
+    'summer, hot and humid':'The air sits heavy.',
+    'summer, dry heat':'Dry heat.',
+    'spring, warm and breezy':'Still and warm.',
+    'fall, cool and overcast':'Grey outside.',
+    'winter, cold and dry':'Cold.',
+    'winter, heavy snow outside':'Snow outside. No one is going anywhere.',
+    'rainy, stormy':'It has been raining a while.',
+    'overcast, grey and dim':'Flat light. No shadows.',
+  };
 
-  function buildWheelBox(id,isLast){
-    const def=WHEEL_DEFS[id];
-    if(!def)return null;
-    const isDone=results.some(r=>r.wheelId===id);
-    const isCur=id===currentWheelId;
+  const lines=[];
 
-    const wrapper=document.createElement('div');
+  // ══════════════════════════════
+  // PARAGRAPH 1 — THE SITUATION
+  // ══════════════════════════════
+  const p1=[];
 
-    // ── Box ──
-    const box=document.createElement('div');
-    box.className='fc-box'+(isCur?' fc-current':isDone?' fc-done':'')+(isDisabled(id)?' fc-disabled':'');
-    box.dataset.wid=id;
+  // Setting first — location, time, weather
+  const locLine=location&&locProse[location]?locProse[location]:'';
+  const timeLine=timeDay&&timeProse[timeDay]?timeProse[timeDay]:'';
+  const seasonLine=season&&seasonProse[season]?seasonProse[season]:'';
+  if(locLine) p1.push(locLine);
+  if(timeLine) p1.push(timeLine);
+  if(seasonLine) p1.push(seasonLine);
 
-    // Header
-    const disabled=isDisabled(id);
-    if(disabled) box.style.opacity='.45';
+  // Acquisition
+  const acqLine=acqMap[acquired]||'';
+  if(acqLine) p1.push(acqLine);
 
-    const head=document.createElement('div');
-    head.className='fc-box-head';
+  // Mode + length
+  const modeLine=modeMap[mode]||'';
+  if(modeLine){
+    const lenStr=length?` ${lc(firstWord(length))}.`:'';
+    p1.push(modeLine.replace('.', lenStr||'.'));
+  }
 
-    const status=document.createElement('div');
-    status.className='fc-box-status'+(isCur?' current':isDone?' done':'');
+  // Disobedience + punishment
+  if(disobedience&&punishment){
+    const dStr=lc(firstWord(disobedience));
+    const pStr=lc(firstWord(punishment));
+    p1.push(`She ${dStr}. The punishment: ${pStr}.`);
+  }
 
-    const nameEl=document.createElement('div');
-    nameEl.className='fc-box-name';
-    nameEl.textContent=def.name;
-    if(disabled) nameEl.style.textDecoration='line-through';
-
-    const meta=document.createElement('div');
-    meta.className='fc-box-meta';
-    meta.textContent=`${def.segments.length} seg`;
-
-    // Toggle button
-    const toggleBtn=document.createElement('button');
-    toggleBtn.type='button';
-    toggleBtn.title=disabled?'Enable wheel':'Disable wheel';
-    toggleBtn.textContent=disabled?'OFF':'ON';
-    toggleBtn.style.cssText='background:none;border:1px solid '+(disabled?'var(--border)':'var(--gold)')+';color:'+(disabled?'var(--text2)':'var(--gold)')+';font-size:.6rem;padding:4px 7px;cursor:pointer;font-family:inherit;letter-spacing:1px;flex-shrink:0;touch-action:manipulation';
-    toggleBtn.onclick=(e)=>{
-      e.stopPropagation(); // don't expand/collapse
-      toggleWheelDisabled(id);
+  // Kink dynamic
+  if(kink&&kink!=='Vanilla'&&kink!=='Normal'){
+    const kinkLines={
+      'Super Dom':'He does not ask.',
+      'Med Dom':'He leads. She follows.',
+      'Light Dom':'There is a softness to his control.',
+      'Gentle Dom':'He is careful with her.',
+      'Exhibitionist':'She is made to be seen.',
+      'Voyeur':'He watches.',
+      'Breeding Kink':'The aim is singular.',
+      'Degradation Kink':'Words are part of it.',
+      'Pain Kink':'She takes what she is given.',
     };
-
-    const chev=document.createElement('div');
-    chev.className='fc-box-chevron';
-    chev.textContent='▾';
-
-    head.appendChild(status);
-    head.appendChild(nameEl);
-    head.appendChild(meta);
-    head.appendChild(toggleBtn);
-    head.appendChild(chev);
-    box.appendChild(head);
-
-    // Segments panel (hidden by default)
-    const segsPanel=document.createElement('div');
-    segsPanel.className='fc-segs';
-    segsPanel.style.display='none';
-
-    function buildSegRows(){
-      segsPanel.innerHTML='';
-      const favs=getFavorites(id);
-      def.segments.forEach((seg,i)=>{
-        const row=document.createElement('div');
-        row.className='fc-seg-row';
-        row.draggable=true;
-        row.dataset.idx=i;
-
-        // Drag handle
-        const drag=document.createElement('span');
-        drag.className='fc-drag';
-        drag.textContent='⠿';
-        drag.title='Drag to reorder';
-
-        // Label input
-        const labelEl=document.createElement('input');
-        labelEl.className='fc-seg-label';
-        labelEl.type='text';
-        labelEl.value=seg.label;
-        labelEl.onblur=()=>{
-          def.segments[i].label=labelEl.value;
-          meta.textContent=`${def.segments.length} seg`;
-          if(id===currentWheelId)drawWheel(currentAngle);
-          autoSaveActive();
-        };
-        labelEl.onkeydown=e=>{if(e.key==='Enter')labelEl.blur();};
-
-        // Weight display
-        const weightLbl=document.createElement('span');
-        weightLbl.className='fc-seg-weight';
-        weightLbl.textContent=seg.weight;
-
-        // Weight slider
-        const slider=document.createElement('input');
-        slider.className='fc-seg-slider';
-        slider.type='range';
-        slider.min=1;slider.max=100;
-        slider.value=Math.min(100,seg.weight);
-        slider.oninput=()=>{
-          def.segments[i].weight=parseInt(slider.value);
-          weightLbl.textContent=slider.value;
-          if(id===currentWheelId)drawWheel(currentAngle);
-          autoSaveActive();
-        };
-
-        // Star
-        const isFav=favs.has(i);
-        const star=document.createElement('button');
-        star.type='button';
-        star.className='fc-seg-star';
-        star.textContent=isFav?'★':'☆';
-        star.style.color=isFav?'var(--gold)':'var(--text2)';
-        star.onclick=()=>{ toggleFavorite(id,i); buildSegRows(); };
-
-        // Delete
-        const del=document.createElement('button');
-        del.type='button';
-        del.className='fc-seg-del';
-        del.textContent='✕';
-        del.onclick=()=>{
-          if(def.segments.length<=2){alert('Need at least 2 segments.');return;}
-          def.segments.splice(i,1);
-          buildSegRows();
-          meta.textContent=`${def.segments.length} seg`;
-          if(id===currentWheelId)drawWheel(currentAngle);
-          autoSaveActive();
-        };
-
-        row.appendChild(drag);
-        row.appendChild(labelEl);
-        row.appendChild(weightLbl);
-        row.appendChild(slider);
-        row.appendChild(star);
-        row.appendChild(del);
-        segsPanel.appendChild(row);
-
-        // ── Drag & drop reorder ──
-        let dragSrc=null;
-        row.addEventListener('dragstart',e=>{
-          dragSrc=i;
-          e.dataTransfer.effectAllowed='move';
-          row.style.opacity='.4';
-        });
-        row.addEventListener('dragend',()=>{ row.style.opacity='1'; });
-        row.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; });
-        row.addEventListener('drop',e=>{
-          e.preventDefault();
-          if(dragSrc===null||dragSrc===i)return;
-          const moved=def.segments.splice(dragSrc,1)[0];
-          def.segments.splice(i,0,moved);
-          dragSrc=null;
-          buildSegRows();
-          if(id===currentWheelId)drawWheel(currentAngle);
-          autoSaveActive();
-        });
-      });
-
-      // Add segment button
-      const addBtn=document.createElement('button');
-      addBtn.type='button';
-      addBtn.className='fc-add-seg';
-      addBtn.textContent='+ Add Segment';
-      addBtn.onclick=()=>{
-        def.segments.push({label:'New Option',weight:10});
-        buildSegRows();
-        meta.textContent=`${def.segments.length} seg`;
-        if(id===currentWheelId)drawWheel(currentAngle);
-        autoSaveActive();
-        // Scroll to bottom of new segment
-        setTimeout(()=>segsPanel.lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
-      };
-      segsPanel.appendChild(addBtn);
-
-      // Wheel name edit — long press header to rename
-      const nameEditEl=document.createElement('input');
-      nameEditEl.className='fc-wheel-name-edit';
-      nameEditEl.type='text';
-      nameEditEl.value=def.name;
-      nameEditEl.onblur=()=>{
-        if(nameEditEl.value.trim()){
-          def.name=nameEditEl.value.trim();
-          nameEl.textContent=def.name;
-        }
-        nameEditEl.style.display='none';
-        nameEl.style.display='';
-      };
-      nameEditEl.onkeydown=e=>{if(e.key==='Enter')nameEditEl.blur();};
-      segsPanel.insertBefore(nameEditEl,segsPanel.firstChild);
-
-      // Long press to rename wheel
-      let pressTimer=null;
-      head.addEventListener('pointerdown',()=>{
-        pressTimer=setTimeout(()=>{
-          nameEl.style.display='none';
-          nameEditEl.style.display='block';
-          nameEditEl.focus();
-          nameEditEl.select();
-        },600);
-      });
-      head.addEventListener('pointerup',()=>clearTimeout(pressTimer));
-      head.addEventListener('pointerleave',()=>clearTimeout(pressTimer));
-    }
-
-    box.appendChild(segsPanel);
-
-    // Toggle expand on tap
-    head.addEventListener('click',()=>{
-      const isOpen=segsPanel.style.display!=='none';
-      // Close any other open wheel
-      if(expandedWid&&expandedWid!==id){
-        const prev=grid.querySelector(`.fc-box[data-wid="${expandedWid}"]`);
-        if(prev){
-          prev.querySelector('.fc-segs').style.display='none';
-          prev.classList.remove('fc-active');
-          prev.querySelector('.fc-box-chevron').style.transform='';
-        }
-      }
-      if(isOpen){
-        segsPanel.style.display='none';
-        box.classList.remove('fc-active');
-        chev.style.transform='';
-        expandedWid=null;
-      } else {
-        buildSegRows();
-        segsPanel.style.display='block';
-        box.classList.add('fc-active');
-        chev.style.transform='rotate(180deg)';
-        expandedWid=id;
-        // Scroll box into view
-        setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
-      }
-    });
-
-    wrapper.appendChild(box);
-
-    // Arrow (skip for last wheel)
-    if(!isLast){
-      const arrow=document.createElement('div');
-      arrow.className='fc-arrow';
-      arrow.innerHTML='&#8595;';
-      wrapper.appendChild(arrow);
-    }
-
-    return wrapper;
+    const kLine=kinkLines[kink]||'';
+    if(kLine) p1.push(kLine);
   }
 
-  // Render all blocks
-  blocks.forEach(({cat,ids})=>{
-    // Category header
-    const catHeader=document.createElement('div');
-    catHeader.className='fc-cat';
-    catHeader.textContent=cat;
-    grid.appendChild(catHeader);
+  lines.push(p1.filter(Boolean).join(' '));
 
-    // Wheel boxes
-    ids.forEach((id,i)=>{
-      const isLastInFlow=(cat===blocks[blocks.length-1].cat&&i===ids.length-1);
-      const box=buildWheelBox(id,isLastInFlow);
-      if(box)grid.appendChild(box);
-    });
-  });
-}
+  // ══════════════════════════════
+  // PARAGRAPH 2 — THE BODY
+  // ══════════════════════════════
+  const p2=[];
 
+  // Opening: ethnicity, origin, age, height, body
+  const bodyDesc=lc(body)||'';
+  const ageStr=age?lc(firstWord(age)):'';
+  const htStr=height?height:'';
+  let opener='';
+  if(ethnicShort&&ageStr&&bodyDesc) opener=`She is ${ethnicShort}. ${ageStr.charAt(0).toUpperCase()+ageStr.slice(1)}, ${htStr}, ${bodyDesc}.`;
+  else if(ethnicShort&&bodyDesc) opener=`She is ${ethnicShort}. ${bodyDesc.charAt(0).toUpperCase()+bodyDesc.slice(1)}.`;
+  else if(ethnicShort) opener=`She is ${ethnicShort}.`;
+  if(opener) p2.push(opener);
+  if(originCity) p2.push(`From ${originCity}.`);
 
-function openMatrixPanel(){
-  renderMatrixPanel();
-  // Sync difficulty sliders to current values
-  const hs=document.getElementById('hardMultSlider');
-  const es=document.getElementById('extremeMultSlider');
-  if(hs){hs.value=diffMultipliers.hard||6;document.getElementById('hardMultLbl').textContent=(diffMultipliers.hard||6)+'×';}
-  if(es){es.value=diffMultipliers.extreme||25;document.getElementById('extremeMultLbl').textContent=(diffMultipliers.extreme||25)+'×';}
-  document.getElementById('matrixOverlay').classList.add('open');
-  document.getElementById('matrixPanel').classList.add('open');
-}
-
-function closeMatrixPanel(){
-  document.getElementById('matrixOverlay').classList.remove('open');
-  document.getElementById('matrixPanel').classList.remove('open');
-}
-
-// ── Result history — last 20 completed spins ──
-const HISTORY_KEY='thewheel-history-v1';
-let spinHistory=[];
-
-async function loadHistory(){
-  try{
-    const r=await window.storage.get(HISTORY_KEY);
-    if(r?.value) spinHistory=JSON.parse(r.value);
-  }catch(e){spinHistory=[];}
-}
-async function saveHistory(){
-  try{await window.storage.set(HISTORY_KEY,JSON.stringify(spinHistory.slice(0,20)));}catch(e){}
-}
-function recordSpin(){
-  const race=results.find(r=>r.wheelId==='race')?.label||'';
-  const body=results.find(r=>r.wheelId==='body')?.label||'';
-  const face=results.find(r=>r.wheelId==='face')?.label||'';
-  const narEl=document.getElementById('narrativeText');
-  const snippet=(narEl?.textContent||'').slice(0,120)+'...';
-  spinHistory.unshift({
-    id:Date.now(),
-    date:new Date().toLocaleString(),
-    race,body,face,snippet,
-    results:[...results],
-  });
-  saveHistory();
-}
-function renderHistory(){
-  const panel=document.getElementById('historyList');
-  if(!panel)return;
-  panel.innerHTML='';
-  if(!spinHistory.length){
-    panel.innerHTML='<div style="color:var(--text2);font-size:.78rem;padding:10px 0">No spins recorded yet.</div>';
-    return;
-  }
-  spinHistory.slice(0,20).forEach((spin,i)=>{
-    const row=document.createElement('div');
-    row.style.cssText='padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer';
-    row.innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-        <span style="font-size:.78rem;font-weight:700;color:var(--text)">${spin.race||'Unknown'} · ${spin.body||''} · ${spin.face||''}</span>
-        <span style="font-size:.65rem;color:var(--text2)">${spin.date}</span>
-      </div>
-      <div style="font-size:.72rem;color:var(--text2);line-height:1.4">${spin.snippet}</div>
-      <div style="display:flex;gap:6px;margin-top:6px">
-        <button type="button" style="background:none;border:1px solid var(--border);color:var(--text2);font-size:.65rem;padding:2px 8px;cursor:pointer"
-          onclick="restoreHistorySpin(${i})">Restore</button>
-        <button type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-size:.65rem;padding:2px 8px;cursor:pointer"
-          onclick="deleteHistorySpin(${i})">✕</button>
-      </div>`;
-    panel.appendChild(row);
-  });
-}
-function restoreHistorySpin(idx){
-  const spin=spinHistory[idx];
-  if(!spin)return;
-  if(!confirm('Restore this spin? Current results will be lost.'))return;
-  results=[...spin.results];
-  currentWheelId='wildcard';
-  showOutput();
-  document.getElementById('historyPanel').classList.remove('open');
-  document.getElementById('historyOverlay').classList.remove('open');
-}
-function deleteHistorySpin(idx){
-  spinHistory.splice(idx,1);
-  saveHistory();
-  renderHistory();
-}
-function openHistoryPanel(){
-  renderHistory();
-  document.getElementById('historyOverlay').classList.add('open');
-  document.getElementById('historyPanel').classList.add('open');
-}
-function closeHistoryPanel(){
-  document.getElementById('historyOverlay').classList.remove('open');
-  document.getElementById('historyPanel').classList.remove('open');
-}
-
-// ── Disabled wheels — wheels skipped during spin but not deleted ──
-const DISABLED_KEY='thewheel-disabled-v1';
-let disabledWheels=new Set();
-
-async function loadDisabledWheels(){
-  try{
-    const r=await window.storage.get(DISABLED_KEY);
-    if(r?.value) disabledWheels=new Set(JSON.parse(r.value));
-  }catch(e){disabledWheels=new Set();}
-}
-function saveDisabledWheels(){
-  try{window.storage.set(DISABLED_KEY,JSON.stringify([...disabledWheels]));}catch(e){}
-}
-function toggleWheelDisabled(wid){
-  // Protect entry wheel only
-  if(wid==='difficulty'){alert('This wheel cannot be disabled.');return;}
-  if(disabledWheels.has(wid)) disabledWheels.delete(wid);
-  else disabledWheels.add(wid);
-  saveDisabledWheels();
-  renderFlowMap();
-}
-function isDisabled(wid){ return disabledWheels.has(wid); }
-
-// ── Hard block toggles — true = active ──
-const HARD_BLOCKS_DEFAULTS={
-  'anorexic_cup':true,
-  'anorexic_ass':true,
-};
-let hardBlockToggles={...HARD_BLOCKS_DEFAULTS};
-
-async function loadHardBlocks(){
-  try{const r=await window.storage.get('thewheel-hardblocks-v1');if(r?.value)hardBlockToggles={...HARD_BLOCKS_DEFAULTS,...JSON.parse(r.value)};}catch(e){}
-}
-function saveHardBlocks(){
-  try{window.storage.set('thewheel-hardblocks-v1',JSON.stringify(hardBlockToggles));}catch(e){}
-}
-
-// ── Difficulty multipliers — editable Hard/Extreme boost values ──
-let diffMultipliers={hard:6,extreme:25};
-function saveDiffMultipliers(){
-  try{window.storage.set('thewheel-diffmult-v1',JSON.stringify(diffMultipliers));}catch(e){}
-}
-async function loadDiffMultipliers(){
-  try{
-    const r=await window.storage.get('thewheel-diffmult-v1');
-    if(r?.value) diffMultipliers={...diffMultipliers,...JSON.parse(r.value)};
-  }catch(e){}
-}
-
-// ── Matrix multiplier storage — keyed by constraint id ──
-const MATRIX_DEFAULTS={
-  'thin_cup_j':0.15,'teen_breast_droop':0.15,'teen_breast_firm':0.2,
-  'teen_ass_droop':0.15,'teen_ass_proj':0.3,
-  'older_firm_suppress':0.2,'older_saggy_boost':2.0,'older_barely_suppress':0.3,
-  'older_ass_proj_suppress':0.2,'older_ass_firm_boost':1.8,
-  'bbw_thin_thigh':0.1,'bbw_thick_thigh':2.0,
-  'bbw_breast_suppress':0.2,'bbw_breast_boost':1.6,
-  'thin_breast_suppress':0.1,'thin_breast_boost':1.5,
-  'thin_thigh_suppress':0.2,
-  'huge_ass_thigh':0.15,
-  'small_cup_proj_suppress':0.3,'small_cup_shape_suppress':0.2,'small_cup_firm_boost':1.4,
-  'large_cup_proj_suppress':0.2,'large_cup_firm_suppress':0.2,'large_cup_firm_boost':1.6,
-  'athletic_firm_suppress':0.3,
-  'short_bbw_suppress':0.3,
-  'small_cup_firm_suppress':0.2,
-  'older_ass_proj_boost':1.8,
-  'older_ass_firm_suppress':0.3,
-  'teen_ass_mommy':0.1,
-  'older_mother_boost':3.0,
-  'older_teacher_boost':2.0,
-};
-let matrixMultipliers={...MATRIX_DEFAULTS};
-
-function saveMatrixMultipliers(){
-  try{window.storage.set('thewheel-matrix-v1',JSON.stringify(matrixMultipliers));}catch(e){}
-}
-async function loadMatrixMultipliers(){
-  try{
-    const r=await window.storage.get('thewheel-matrix-v1');
-    if(r?.value) matrixMultipliers={...MATRIX_DEFAULTS,...JSON.parse(r.value)};
-  }catch(e){matrixMultipliers={...MATRIX_DEFAULTS};}
-}
-function exportConfig(){
-  const cfg={
-    wheels:{},
-    order:[...WHEEL_ORDER],
-    disabled:[...disabledWheels],
-    matrix:matrixMultipliers,
-    hardBlocks:hardBlockToggles,
-    version:'v5.1',
-    exported:new Date().toISOString(),
-  };
-  // Export all wheel definitions (names + segments)
-  WHEEL_ORDER.forEach(id=>{
-    if(WHEEL_DEFS[id]) cfg.wheels[id]={
-      name:WHEEL_DEFS[id].name,
-      segments:WHEEL_DEFS[id].segments.map(s=>({...s})),
-    };
-  });
-  const blob=new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='thewheel-config-'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function exportHTML(){
-  // Grab the current page HTML
-  const src=document.documentElement.outerHTML;
-  const parser=new DOMParser();
-  const doc=parser.parseFromString(src,'text/html');
-
-  // Find the main script tag (not module) and replace WHEEL_DEFS content
-  const scripts=[...doc.querySelectorAll('script:not([type])')];
-  const mainScript=scripts.find(s=>s.textContent.includes('const WHEEL_DEFS'));
-  if(!mainScript){alert('Could not locate wheel definitions in page.');return;}
-
-  let js=mainScript.textContent;
-
-  // Build updated WHEEL_DEFS string from current live state
-  const defsLines=['const WHEEL_DEFS = {'];
-  WHEEL_ORDER.forEach(id=>{
-    if(!WHEEL_DEFS[id])return;
-    const def=WHEEL_DEFS[id];
-    const segs=def.segments.map(s=>{
-      const label=s.label.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      return `  {label:'${label}',weight:${s.weight}${s.branch?`,branch:'${s.branch}'`:''}}`;
-    }).join(',\n');
-    defsLines.push(`${id}:{name:${JSON.stringify(def.name)},segments:[\n${segs},\n]},`);
-  });
-  // Add any wheels not in WHEEL_ORDER
-  Object.keys(WHEEL_DEFS).forEach(id=>{
-    if(WHEEL_ORDER.includes(id))return;
-    const def=WHEEL_DEFS[id];
-    const segs=def.segments.map(s=>{
-      const label=s.label.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      return `  {label:'${label}',weight:${s.weight}${s.branch?`,branch:'${s.branch}'`:''}}`;
-    }).join(',\n');
-    defsLines.push(`${id}:{name:${JSON.stringify(def.name)},segments:[\n${segs},\n]},`);
-  });
-  defsLines.push('};');
-  const newDefs=defsLines.join('\n');
-
-  // Replace the WHEEL_DEFS block in the script
-  const defsStart=js.indexOf('const WHEEL_DEFS = {');
-  const defsEnd=js.indexOf('\n};\n\n// ═══════════════ STATE',defsStart);
-  if(defsStart===-1||defsEnd===-1){alert('Could not locate WHEEL_DEFS block boundaries.');return;}
-  js=js.slice(0,defsStart)+newDefs+js.slice(defsEnd+3);
-
-  // Also update WHEEL_ORDER
-  const newOrder=`const WHEEL_ORDER=[\n  ${WHEEL_ORDER.map(id=>`'${id}'`).join(',')}];`;
-  js=js.replace(/const WHEEL_ORDER=\[[\s\S]*?\];/,newOrder);
-
-  // Bump version to force fresh load
-  js=js.replace(/WHEEL_VERSION='v[\d.]+'/,`WHEEL_VERSION='v5.1-export-${new Date().toISOString().slice(0,10)}'`);
-
-  mainScript.textContent=js;
-
-  // Serialize and download
-  const html='<!DOCTYPE html>\n'+doc.documentElement.outerHTML;
-  const blob=new Blob([html],{type:'text/html'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='wheel_'+new Date().toISOString().slice(0,10)+'.html';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function importConfig(){
-  const input=document.createElement('input');
-  input.type='file';
-  input.accept='.json';
-  input.onchange=async e=>{
-    const file=e.target.files[0];
-    if(!file)return;
-    try{
-      const text=await file.text();
-      const cfg=JSON.parse(text);
-      if(!cfg.version||!cfg.wheels){alert('Invalid config file.');return;}
-      // Apply wheel names and segments
-      Object.entries(cfg.wheels).forEach(([id,def])=>{
-        if(WHEEL_DEFS[id]){
-          WHEEL_DEFS[id].name=def.name;
-          WHEEL_DEFS[id].segments=def.segments;
-        }
-      });
-      // Apply wheel order (only include ids that exist)
-      if(cfg.order) WHEEL_ORDER.length=0,cfg.order.forEach(id=>{if(WHEEL_DEFS[id])WHEEL_ORDER.push(id);});
-      // Apply disabled
-      if(cfg.disabled) disabledWheels=new Set(cfg.disabled);
-      // Apply matrix
-      if(cfg.matrix) Object.assign(matrixMultipliers,cfg.matrix);
-      // Apply hard blocks
-      if(cfg.hardBlocks) Object.assign(hardBlockToggles,cfg.hardBlocks);
-      // Save everything
-      await autoSaveActive();
-      saveDisabledWheels();
-      saveMatrixMultipliers();
-      saveHardBlocks();
-      // Refresh UI
-      renderFlowMap();
-      alert('Config imported successfully.');
-    }catch(err){
-      alert('Failed to import: '+err.message);
-    }
-  };
-  input.click();
-}
-
-function resetMatrixDefaults(){
-  if(!confirm('Reset all soft constraint multipliers to defaults?'))return;
-  matrixMultipliers={...MATRIX_DEFAULTS};
-  saveMatrixMultipliers();
-  renderMatrixPanel();
-}
-
-function openGroupPanel(){
-  renderGroupPanel();
-  document.getElementById('groupOverlay').classList.add('open');
-  document.getElementById('groupPanel').classList.add('open');
-}
-function closeGroupPanel(){
-  document.getElementById('groupOverlay').classList.remove('open');
-  document.getElementById('groupPanel').classList.remove('open');
-}
-function renderGroupPanel(){
-  const container=document.getElementById('groupConfigList');
-  if(!container)return;
-  container.innerHTML='';
-
-  const GROUPS=[
-    {key:'bodyGroup',title:'Body Group',buckets:['thin','mid','bbw'],
-     allLabels:['Bulimic','Anorexic','Thin','Slim','Petite','Slim Thick','Average','Mid Size','Mid Thick','Thick','Thicker','Thickest','Chubby','Meatball','Chunky','Curvy','Upside Down Triangle','BBW','SSBBW','USSBBW']},
-    {key:'ageGroup',title:'Age Group',buckets:['teen','young','mid','mature','older'],
-     allLabels:['18-19','20-24','25-29','30-35','36-40','41-50','51-60','60+']},
-    {key:'heightGroup',title:'Height Group',buckets:['very_short','short','average','tall','very_tall'],
-     allLabels:["<4'0\"","4'1\"-4'5\"","4'6\"-4'10\"","4'11\"-5'2\"","5'3\"-5'7\"","5'8\"-5'11\"","6'0\"-6'5\"",">6'6\""]},
-    {key:'assSizeGroup',title:'Ass Size Group',buckets:['small','average','large'],
-     allLabels:['Barely there','Small','Average','Full','Large','Huge','Obscene','Flat','Inverted']},
-    {key:'cupGroup',title:'Cup Group',buckets:['small','average','large','very_large'],
-     allLabels:['A','B','C','D','DD','DDD','E','F','G','H','I','J','K','L','M','N+']},
-    {key:'muscleGroup',title:'Muscle Group',buckets:['none','light','athletic'],
-     allLabels:['completely soft, no definition','soft all over, no visible tone','soft with subtle leg tone','thick and soft, pillowy feel','very soft all over, pillowy','completely soft, no definition visible','extremely soft, skin folds with movement','skinny fat, soft despite small frame','naturally lean, slight tone without effort','lightly toned, subtle arm and leg definition','toned midsection, visible but soft abs','curvy with slight arm definition','soft with strong legs underneath','full soft body, strong arms from carrying weight','thick but noticeably toned legs','strong thick thighs, soft everywhere else','athletic lean, clearly works out','very defined, low body fat, hard muscle','athletic thick, muscle under curves']},
-    {key:'raceGroup',title:'Race Group',buckets:['light','medium','dark'],
-     allLabels:['White US','White Euro','Latina','Black US','Black Afro','Indian','Native American','South Asian','North Asian','Persian','Pacific Island']},
-  ];
-
-  GROUPS.forEach(g=>{
-    const sec=document.createElement('div');
-    sec.className='grp-section';
-
-    const title=document.createElement('div');
-    title.className='grp-title';
-    title.textContent=g.title;
-    sec.appendChild(title);
-
-    // Show bucket summary
-    const summary=document.createElement('div');
-    summary.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px';
-    g.buckets.forEach(b=>{
-      const count=(groupMaps[g.key]?.[b]||[]).length;
-      const chip=document.createElement('span');
-      chip.style.cssText='font-size:.65rem;padding:2px 7px;border:1px solid var(--border);color:var(--text2);border-radius:2px';
-      chip.textContent=`${b} (${count})`;
-      summary.appendChild(chip);
-    });
-    sec.appendChild(summary);
-
-    // Each label with dropdown
-    g.allLabels.forEach(label=>{
-      const cur=lookupGroup(g.key,label)||'—';
-      const row=document.createElement('div');
-      row.className='grp-row';
-
-      const lbl=document.createElement('div');
-      lbl.className='grp-label';
-      lbl.title=label;
-      lbl.textContent=label;
-
-      const sel=document.createElement('select');
-      sel.className='grp-select';
-      // Unassigned option
-      const unopt=document.createElement('option');
-      unopt.value='';unopt.textContent='— unassigned';
-      if(!lookupGroup(g.key,label))unopt.selected=true;
-      sel.appendChild(unopt);
-
-      g.buckets.forEach(b=>{
-        const opt=document.createElement('option');
-        opt.value=b;
-        opt.textContent=b;
-        if(b===cur)opt.selected=true;
-        sel.appendChild(opt);
-      });
-
-      sel.onchange=()=>{
-        assignGroup(g.key,label,sel.value);
-        renderGroupPanel(); // refresh counts
-      };
-
-      row.appendChild(lbl);
-      row.appendChild(sel);
-      sec.appendChild(row);
-    });
-
-    container.appendChild(sec);
-  });
-}
-
-function renderMatrixPanel(){
-  // ── Hard blocks ──
-  const hbList=document.getElementById('matrixHardBlocks');
-  if(hbList){
-    const hardBlocks=[
-      {id:'anorexic_cup',label:'Anorexic / Bulimic + Cup E and above',action:'Hard cap at D cup'},
-      {id:'anorexic_ass',label:'Anorexic / Bulimic + Huge / Obscene ass',action:'Auto-reroll ass size'},
-    ];
-    hbList.innerHTML='';
-    hardBlocks.forEach(hb=>{
-      const on=hardBlockToggles[hb.id]!==false;
-      const row=document.createElement('div');
-      row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)';
-      row.innerHTML=`
-        <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
-          <input type="checkbox" ${on?'checked':''} style="opacity:0;width:0;height:0"
-            onchange="hardBlockToggles['${hb.id}']=this.checked;saveHardBlocks();renderMatrixPanel()">
-          <span style="position:absolute;inset:0;background:${on?'var(--gold)':'var(--border)'};border-radius:20px;cursor:pointer;transition:.2s"></span>
-          <span style="position:absolute;left:${on?'18':'2'}px;top:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:.2s"></span>
-        </label>
-        <div style="flex:1">
-          <div style="font-size:.75rem;color:${on?'var(--text)':'var(--text2)'}">${hb.label}</div>
-          <div style="font-size:.65rem;color:${on?'#c0121c':'var(--text2)'};margin-top:2px">${hb.action}</div>
-        </div>`;
-      hbList.appendChild(row);
-    });
+  // Skin
+  const skinStr=cl(skin);
+  const glowStr=cl(skinGlow).replace(/\b(skin|across|especially)\b/gi,'').trim();
+  if(skinStr&&glowStr) p2.push(`Her skin is ${lc(skinStr)}, ${lc(glowStr)}.`);
+  else if(skinStr) p2.push(`Her skin is ${lc(skinStr)}.`);
+  if(freckles&&!freckles.startsWith('no freckles')&&!freckles.startsWith('No freckles')){
+    const fk=firstWord(freckles);
+    if(fk&&fk.length>2) p2.push(`${fk}.`);
   }
 
-  // ── Soft constraints ──
-  const constraints=[
-    {id:'thin_cup_j',trigger:'Thin body',affected:'Cup J and above',def:0.15},
-    {id:'teen_breast_droop',trigger:'Age 18–19',affected:'Chandelier/Ptotic/Pendulous breast shape',def:0.15},
-    {id:'teen_breast_firm',trigger:'Age 18–19',affected:'Saggy/Doughy breast firmness',def:0.2},
-    {id:'teen_ass_droop',trigger:'Age 18–19',affected:'Saggy/Pendulous/Mommy ass shape',def:0.15},
-    {id:'teen_ass_proj',trigger:'Age 18–19',affected:'Dropped/Deep set ass projection',def:0.3},
-    {id:'older_firm_suppress',trigger:'Age 60+',affected:'Rock solid/Very firm breast firmness',def:0.2},
-    {id:'older_saggy_boost',trigger:'Age 60+',affected:'Saggy breast firmness',def:2.0},
-    {id:'older_barely_suppress',trigger:'Age 60+',affected:'Barely there breast shape',def:0.3},
-    {id:'older_ass_proj_suppress',trigger:'Age 60+',affected:'Perky/Brazilian/Gravity defying projection',def:0.2},
-    {id:'older_ass_firm_boost',trigger:'Age 60+',affected:'Saggy/Pendulous/Floppy ass firmness',def:1.8},
-    {id:'bbw_thin_thigh',trigger:'BBW+ body',affected:'Thin/Slim thighs',def:0.1},
-    {id:'bbw_thick_thigh',trigger:'BBW+ body',affected:'Thick/Very thick thighs',def:2.0},
-    {id:'bbw_breast_suppress',trigger:'BBW+ body',affected:'Barely there/Athletic/Perky breast shape',def:0.2},
-    {id:'bbw_breast_boost',trigger:'BBW+ body',affected:'Overflow/Pendulous/Lateral spread breast',def:1.6},
-    {id:'thin_breast_suppress',trigger:'Thin body',affected:'Overflow/Pendulous/Chandelier/Waterfall breast',def:0.1},
-    {id:'thin_breast_boost',trigger:'Thin body',affected:'Barely there/Athletic breast shape',def:1.5},
-    {id:'thin_thigh_suppress',trigger:'Thin/Average body',affected:'Thick/Very thick thighs',def:0.2},
-    {id:'huge_ass_thigh',trigger:'Huge/Obscene ass',affected:'Thin/Slim thighs',def:0.15},
-    {id:'small_cup_proj_suppress',trigger:'Cup A/B',affected:'Extreme/High breast projection',def:0.3},
-    {id:'small_cup_shape_suppress',trigger:'Cup A/B',affected:'Saggy/Pendulous/Chandelier breast shape',def:0.2},
-    {id:'small_cup_firm_boost',trigger:'Cup A/B',affected:'Firm/Perky/Taut breast firmness',def:1.4},
-    {id:'large_cup_proj_suppress',trigger:'Cup H+',affected:'Flat/Minimal breast projection',def:0.2},
-    {id:'large_cup_firm_suppress',trigger:'Cup H+',affected:'Rock solid/Very firm breast firmness',def:0.2},
-    {id:'large_cup_firm_boost',trigger:'Cup H+',affected:'Saggy/Doughy/Weighted breast firmness',def:1.6},
-    {id:'athletic_firm_suppress',trigger:'Athletic muscle',affected:'Doughy/Floppy/Watery breast firmness',def:0.3},
-    {id:'short_bbw_suppress',trigger:'Short height',affected:'USSBBW/SSBBW body type',def:0.3},
-  ];
-  const list=document.getElementById('matrixConstraintList');
-  if(list){
-    list.innerHTML='';
-    constraints.forEach(c=>{
-      const val=matrixMultipliers[c.id]??c.def;
-      const isBoost=val>1.0;
-      const isDefault=Math.abs(val-c.def)<0.001;
-      const row=document.createElement('div');
-      row.style.cssText='margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)';
-      row.innerHTML=`
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-          <span style="font-size:.7rem;color:var(--gold)">${c.trigger}</span>
-          <span id="mv_${c.id}" style="font-family:monospace;font-size:.85rem;font-weight:700;color:${isBoost?'#ff9040':'#6abf6a'}">${val.toFixed(2)}×${isDefault?'':' ✎'}</span>
-        </div>
-        <div style="font-size:.72rem;color:var(--text2);margin-bottom:6px">${c.affected}</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:.65rem;color:var(--text2)">0.05</span>
-          <input type="range" min="0.05" max="4" step="0.05" value="${val}"
-            style="flex:1;accent-color:var(--gold)"
-            oninput="updateMatrixVal('${c.id}',parseFloat(this.value),${c.def})">
-          <span style="font-size:.65rem;color:var(--text2)">4.0</span>
-          <button type="button" style="background:none;border:1px solid var(--border);color:var(--text2);font-size:.65rem;padding:2px 6px;cursor:pointer"
-            onclick="updateMatrixVal('${c.id}',${c.def},${c.def});renderMatrixPanel()">↺</button>
-        </div>`;
-      list.appendChild(row);
-    });
+  // Hair
+  const hairStyle=cl(hair);
+  const hairColor=cl(hairCol);
+  if(hairColor&&hairStyle) p2.push(`Her hair is ${lc(hairColor)}, ${lc(hairStyle)}.`);
+  else if(hairStyle) p2.push(`Her hair is ${lc(hairStyle)}.`);
+
+  // Face
+  const faceShStr=firstWord(faceShape).replace(/\bface\b/gi,'').trim();
+  if(faceShStr&&faceProse) p2.push(`Her face is ${lc(faceShStr)}. ${faceProse.charAt(0).toUpperCase()+faceProse.slice(1)}.`);
+  else if(faceProse) p2.push(`${faceProse.charAt(0).toUpperCase()+faceProse.slice(1)}.`);
+
+  const eyeStr=firstWord(eyes).replace(/\b(round and wide|soft and distant|sharp and intense|warm and soft|deep and round)\b/gi,'').trim();
+  const browStr=firstWord(eyebrows).replace(/\b(East Asian style|tendency|overgroomed)\b/gi,'').trim();
+  if(eyeStr&&browStr) p2.push(`${eyeStr} eyes. ${browStr} brows.`);
+  else if(eyeStr) p2.push(`${eyeStr} eyes.`);
+
+  const noseStr=firstWord(nose).replace(/\b(broad and soft|rounded full tip|prominent nostrils|defined bridge|low bridge)\b/gi,'').trim();
+  const lipStr=firstWord(lips).replace(/\blips?\b/gi,'').trim();
+  if(noseStr&&lipStr) p2.push(`${noseStr} nose. ${lipStr} lips.`);
+  else if(lipStr) p2.push(`${lipStr} lips.`);
+
+  const teethStr=firstWord(teeth);
+  if(teethStr&&!/perfect straight white|straight white/i.test(teethStr)) p2.push(`Her teeth — ${lc(teethStr)}.`);
+  const neckStr=firstWord(neck);
+  if(neckStr) p2.push(`${neckStr} neck.`);
+
+  lines.push(p2.filter(Boolean).join(' '));
+
+  // ══════════════════════════════
+  // PARAGRAPH 3 — THE BODY (DETAIL)
+  // ══════════════════════════════
+  const p3=[];
+
+  // Breast
+  const cupStr=cup?cup+' cup':'';
+  const brShStr=firstWord(breastShape);
+  const brFirmStr=firstWord(breastFirm);
+  const brProjStr=firstWord(breastProj);
+  const brPosStr=firstWord(breastPos);
+  if(cupStr&&brShStr) p3.push(`${cupStr}. ${brShStr.charAt(0).toUpperCase()+brShStr.slice(1)}.`);
+  else if(cupStr) p3.push(`${cupStr}.`);
+  if(brFirmStr) p3.push(`${brFirmStr}.`);
+  if(brProjStr&&brProjStr.toLowerCase()!=='moderate') p3.push(`${brProjStr} projection.`);
+
+  // Nipple
+  const nipSizeStr=firstWord(nipSize);
+  const nipTypeStr=firstWord(nipType);
+  const nipPlaceStr=firstWord(nipPlacement);
+  const nipColStr=firstWord(nipCol).replace(/nipples?/gi,'').trim();
+  if(nipSizeStr&&nipTypeStr) p3.push(`${lc(nipSizeStr)}, ${lc(nipTypeStr)}.`);
+  else if(nipSizeStr) p3.push(`${lc(nipSizeStr)}.`);
+  if(nipPlaceStr) p3.push(`${lc(nipPlaceStr)}.`);
+  if(nipColStr) p3.push(`${lc(nipColStr)}.`);
+
+  // Areola
+  const arSzStr=firstWord(areolaSize);
+  const arTxStr=firstWord(areolaText);
+  const arShStr=firstWord(areolaShape);
+  if(arSzStr&&arTxStr) p3.push(`${lc(arSzStr)} areola, ${lc(arTxStr)}.`);
+  else if(arSzStr) p3.push(`${lc(arSzStr)} areola.`);
+  if(arShStr&&arShStr.toLowerCase()!=='perfectly round') p3.push(`${lc(arShStr)} shape.`);
+
+  // Ass
+  const assSzStr=firstWord(assSize);
+  const assShStr=firstWord(assShape);
+  const assPjStr=firstWord(assProj);
+  const assFmStr=firstWord(assFirm);
+  const assTxStr=firstWord(assSkinTex);
+  const assHrStr=firstWord(assBodyHair);
+  const assTrStr=firstWord(assTransition);
+  if(assSzStr&&assShStr) p3.push(`${lc(assSzStr)} ass. ${assShStr}.`);
+  else if(assSzStr) p3.push(`${lc(assSzStr)} ass.`);
+  if(assPjStr) p3.push(`${assPjStr}.`);
+  if(assFmStr) p3.push(`${assFmStr}.`);
+  if(assTxStr&&!/^Smooth/i.test(assTxStr)) p3.push(`${assTxStr}.`);
+  if(assTrStr&&!/^Smooth/i.test(assTrStr)) p3.push(`${assTrStr}.`);
+  if(assHrStr&&!/completely bare/i.test(assHrStr)) p3.push(`${assHrStr}.`);
+
+  // Lower
+  const labSzStr=firstWord(labiaSize);
+  const labClStr=firstWord(labiaCol).replace(/labia/gi,'').trim();
+  if(labSzStr&&labClStr) p3.push(`Her labia — ${lc(labSzStr)}, ${lc(labClStr)}.`);
+  else if(labSzStr) p3.push(`Her labia — ${lc(labSzStr)}.`);
+
+  // Shave
+  const shaveMap={'Waxed/No Hair':'Completely bare.','Landing Strip':'Landing strip.','Fuzzy':'Lightly natural.','Full Bush':'Full bush.'};
+  if(shave&&shaveMap[shave]) p3.push(shaveMap[shave]);
+
+  lines.push(p3.filter(Boolean).join(' '));
+
+  // ══════════════════════════════
+  // PARAGRAPH 4 — BODY CONTINUED
+  // ══════════════════════════════
+  const p4=[];
+
+  // Thighs
+  const thTkStr=firstWord(thighThick);
+  const thInStr=firstWord(thighInner);
+  const thTxStr=firstWord(thighTex);
+  const thShStr=firstWord(thighShape);
+  if(thTkStr&&thInStr) p4.push(`${thTkStr} thighs. ${thInStr}.`);
+  else if(thTkStr) p4.push(`${thTkStr} thighs.`);
+  if(thTxStr&&!/^Smooth/i.test(thTxStr)) p4.push(`${thTxStr}.`);
+
+  // Full body
+  const stStr=firstWord(stomachW);
+  const lgStr=firstWord(legsW);
+  const bkStr=firstWord(backW);
+  const cbStr=firstWord(collarboneW);
+  if(stStr) p4.push(`${stStr}.`);
+  if(lgStr) p4.push(`${lgStr}.`);
+  if(bkStr) p4.push(`${bkStr} back.`);
+  if(cbStr) p4.push(`${cbStr} collarbone.`);
+
+  // Body composition
+  const wstStr=firstWord(waist).replace(/\b(ratio|distribution)\b/gi,'').trim();
+  const mscStr=firstWord(muscle).replace(/\b(despite|from|without effort)\b/gi,'').trim();
+  if(wstStr) p4.push(`${wstStr}.`);
+  if(mscStr) p4.push(`${mscStr}.`);
+  const stchStr=stretch&&!/^no stretch/i.test(stretch)?cl(stretch):'';
+  const cllStr=cellulite&&!/^no cellulite/i.test(cellulite)?cl(cellulite):'';
+  if(stchStr) p4.push(`${stchStr}.`);
+  if(cllStr) p4.push(`${cllStr}.`);
+
+  // Cleavage, hands, feet, body hair
+  const clvStr=firstWord(cleavageW);
+  if(clvStr&&clvStr.length>3) p4.push(`${clvStr}.`);
+  if(bodyHairW&&!/virtually hairless/i.test(bodyHairW)) p4.push(`${firstWord(bodyHairW)}.`);
+  if(hands&&cl(hands)) p4.push(`Her hands — ${lc(cl(hands))}.`);
+  if(feet&&cl(feet)) p4.push(`Her feet — ${lc(cl(feet))}.`);
+
+  lines.push(p4.filter(Boolean).join(' '));
+
+  // ══════════════════════════════
+  // PARAGRAPH 5 — THE INTERIOR
+  // ══════════════════════════════
+  const p5=[];
+
+  // Voice, language
+  const vcStr=firstWord(voiceW);
+  const lnStr=firstWord(languageW);
+  if(vcStr&&lnStr) p5.push(`Her voice is ${lc(vcStr)}. ${lnStr}.`);
+  else if(vcStr) p5.push(`Her voice is ${lc(vcStr)}.`);
+
+  // Background + psychology
+  const finStr=cl(financial);
+  const persStr=cl(personality);
+  const eduStr=firstWord(education);
+  const intStr=firstWord(intelligence);
+  const stStr2=firstWord(streetSmarts);
+  const sexStr=cl(sexExp);
+  if(finStr&&persStr) p5.push(`She grew up ${lc(finStr)}. She is ${lc(persStr)}.`);
+  else if(persStr) p5.push(`She is ${lc(persStr)}.`);
+  if(eduStr) p5.push(`${eduStr}.`);
+  if(intStr&&stStr2) p5.push(`${intStr}. ${stStr2}.`);
+  if(sexStr) p5.push(`${sexStr.charAt(0).toUpperCase()+sexStr.slice(1)}.`);
+
+  // Mental/emotional state
+  const mentStr=cl(mentalState);
+  const emotStr=cl(emotional);
+  if(mentStr&&emotStr) p5.push(`She is ${lc(mentStr)} right now. ${emotStr.charAt(0).toUpperCase()+emotStr.slice(1)}.`);
+  else if(mentStr) p5.push(`She is ${lc(mentStr)}.`);
+  else if(emotStr) p5.push(`${emotStr.charAt(0).toUpperCase()+emotStr.slice(1)}.`);
+
+  // Bond
+  if(bondThreat){
+    const bdStr=cl(bondThreat);
+    if(bdStr) p5.push(`${bdStr.charAt(0).toUpperCase()+bdStr.slice(1)}.`);
   }
 
-  // ── Live memory values — editable dropdowns ──
-  const mem=document.getElementById('matrixMemoryValues');
-  if(mem){
-    const memFields=[
-      {key:'bodyGroup',label:'Body Group',opts:['thin','mid','bbw'],ref:()=>bodyGroup,set:(v)=>{bodyGroup=v;}},
-      {key:'ageGroup',label:'Age Group',opts:['teen','young','mid','mature','older'],ref:()=>ageGroup,set:(v)=>{ageGroup=v;}},
-      {key:'heightGroup',label:'Height Group',opts:['very_short','short','average','tall','very_tall'],ref:()=>heightGroup,set:(v)=>{heightGroup=v;}},
-      {key:'raceGroup',label:'Race Group',opts:['light','medium','dark'],ref:()=>raceGroup,set:(v)=>{raceGroup=v;}},
-      {key:'assSizeGroup',label:'Ass Size Group',opts:['small','average','large'],ref:()=>assSizeGroup,set:(v)=>{assSizeGroup=v;}},
-      {key:'cupGroup',label:'Cup Group',opts:['small','average','large','very_large'],ref:()=>cupGroup,set:(v)=>{cupGroup=v;}},
-      {key:'muscleGroup',label:'Muscle Group',opts:['none','light','athletic'],ref:()=>muscleGroup,set:(v)=>{muscleGroup=v;}},
-    ];
-    mem.innerHTML='';
-    memFields.forEach(f=>{
-      const row=document.createElement('div');
-      row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)';
-      const cur=f.ref();
-      row.innerHTML=`
-        <span style="font-size:.72rem;color:var(--text2)">${f.label}</span>
-        <select style="background:var(--panel);border:1px solid var(--border);color:var(--gold);font-family:monospace;font-size:.72rem;padding:2px 6px;cursor:pointer"
-          onchange="${f.key}_setVal(this.value)">
-          ${f.opts.map(o=>`<option value="${o}" ${o===cur?'selected':''}>${o}</option>`).join('')}
-        </select>`;
-      mem.appendChild(row);
-      // Register setter on window
-      window[f.key+'_setVal']=(v)=>{ f.set(v); };
-    });
+  // Sensory
+  const sftStr=cl(skinSoft);
+  const sctStr=cl(natScent);
+  const tmpStr=cl(skinTemp);
+  const tchStr=cl(touchResp);
+  if(sftStr&&sctStr) p5.push(`Her skin is ${lc(sftStr)}. She smells of ${lc(sctStr)}.`);
+  else if(sftStr) p5.push(`Her skin is ${lc(sftStr)}.`);
+  else if(sctStr) p5.push(`She smells of ${lc(sctStr)}.`);
+  if(tmpStr) p5.push(`She runs ${lc(tmpStr)}.`);
+  if(tchStr) p5.push(`When you touch her, she ${lc(tchStr)}.`);
 
-    // Note
-    const note=document.createElement('div');
-    note.style.cssText='font-size:.65rem;color:var(--text2);margin-top:8px;font-style:italic';
-    note.textContent='Changes take effect on the next wheel spin.';
-    mem.appendChild(note);
-  }
+  // Fav part
+  if(favPart) p5.push(`His favourite part of her — ${lc(firstWord(favPart))}.`);
+
+  lines.push(p5.filter(Boolean).join(' '));
+
+  document.getElementById('narrativeText').textContent=lines.filter(Boolean).join('\n\n');
 }
 
-
-function updateMatrixVal(id,val,def){
-  matrixMultipliers[id]=val;
-  saveMatrixMultipliers();
-  // Update display inline
-  const el=document.getElementById('mv_'+id);
-  if(el){
-    const isBoost=val>1.0;
-    const isDefault=def!==undefined&&Math.abs(val-def)<0.001;
-    el.textContent=val.toFixed(2)+'×'+(isDefault?'':' ✎');
-    el.style.color=isBoost?'#ff9040':'#6abf6a';
-  }
-}
-
-function openEditPanel(thisWheel=false){
-  // Default to flow map view
-  currentEditCat='flow';
-  document.getElementById('editFlowMap').style.display='block';
-  document.getElementById('editWheelEditor').style.display='none';
-  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.toggle('active',t.textContent.includes('Flow')));
-  if(thisWheel){
-    // Find category for current wheel and jump to editor
-    const catOf=id=>{for(const[cat,ids] of Object.entries(WHEEL_CATEGORIES)){if(ids&&ids.includes&&ids.includes(id))return cat;}if(id.startsWith('origin_'))return'Race';return null;};
-    const cat=catOf(currentWheelId);
-    if(cat) setEditCat(cat);
-    document.getElementById('editWheelSelect').value=currentWheelId;
-    renderEditPanel();
-  } else {
-    renderFlowMap();
-  }
-  document.getElementById('editOverlay').classList.add('open');
-  document.getElementById('editPanel').classList.add('open');
-  if(thisWheel) _previewEditWheel();
-}
-
-function closeEditPanel(){
-  document.getElementById('editOverlay').classList.remove('open');
-  document.getElementById('editPanel').classList.remove('open');
-  editPreviewWid=null;
-  autoSaveActive();
-  // Restore the actual current wheel
-  drawWheel(currentAngle);
-  renderProgress();
-  renderWheelUI();
-}
-
-function _previewEditWheel(){
-  // Skip preview on mobile — canvas is behind the panel
-  if(window.innerWidth<=700) return;
-  const wid=document.getElementById('editWheelSelect').value;
-  if(!wid||!WHEEL_DEFS[wid]) return;
-  if(editPreviewWid===wid) return;
-  editPreviewWid=wid;
-  const saved=currentWheelId;
-  currentWheelId=wid;
-  drawWheel(0);
-  currentWheelId=saved;
-  document.getElementById('wheelName').textContent=WHEEL_DEFS[wid].name;
-  document.getElementById('wheelSubtitle').textContent='editing preview';
-}
-
-function refreshWheelSelect(){
-  if(currentEditCat&&currentEditCat!=='flow'){
-    refreshWheelSelectForCat(currentEditCat);
-  } else {
-    const sel=document.getElementById('editWheelSelect'),prev=sel.value;sel.innerHTML='';
-    const shown=new Set();
-    WHEEL_ORDER.forEach(id=>{if(!WHEEL_DEFS[id])return;const o=document.createElement('option');o.value=id;o.textContent=WHEEL_DEFS[id].name;sel.appendChild(o);shown.add(id);});
-    Object.entries(WHEEL_DEFS).forEach(([id,def])=>{if(shown.has(id))return;const o=document.createElement('option');o.value=id;o.textContent=def.name;sel.appendChild(o);});
-    if(prev&&WHEEL_DEFS[prev])sel.value=prev;
-  }
-}
-
-function renderEditPanel(){
-  // Rebuild dropdown from WHEEL_ORDER so it reflects current order
-  const sel=document.getElementById('editWheelSelect');
-  if(sel){
-    const prev=sel.value;
-    sel.innerHTML='';
-    WHEEL_ORDER.forEach(id=>{
-      if(!WHEEL_DEFS[id])return;
-      const o=document.createElement('option');
-      o.value=id;
-      o.textContent=WHEEL_DEFS[id].name||id;
-      sel.appendChild(o);
-    });
-    if(prev&&WHEEL_DEFS[prev])sel.value=prev;
-    else if(sel.options.length)sel.value=sel.options[0].value;
-  }
-  const wid=document.getElementById('editWheelSelect').value;
-  if(!wid||!WHEEL_DEFS[wid])return;
-  const def=WHEEL_DEFS[wid];
-  document.getElementById('editWheelName').value=def.name;
-  // Update nav label
-  const navLbl=document.getElementById('editNavLabel');
-  if(navLbl&&currentEditCat&&currentEditCat!=='flow'){
-    const ids=getCatWheels(currentEditCat);
-    const idx=ids.indexOf(wid);
-    const catLabel=currentEditCat==='all'?'All Wheels':currentEditCat;
-    navLbl.textContent=idx>=0?`${idx+1} of ${ids.length} — ${catLabel}`:'';
-  }
-  const posEl=document.getElementById('editWheelPos');posEl.innerHTML='';
-  WHEEL_ORDER.forEach((id,i)=>{if(!WHEEL_DEFS[id])return;const o=document.createElement('option');o.value=i;o.textContent=`${i+1} — before "${WHEEL_DEFS[id].name}"`;if(id===wid)o.selected=true;posEl.appendChild(o);});
-  const eo=document.createElement('option');eo.value=WHEEL_ORDER.length;eo.textContent=`${WHEEL_ORDER.length+1} — at end`;posEl.appendChild(eo);
-  const ci=WHEEL_ORDER.indexOf(wid);if(ci>=0)posEl.value=ci;
-  const favs=getFavorites(wid);
-  const list=document.getElementById('segList');list.innerHTML='';
-  def.segments.forEach((seg,i)=>{
-    const isFav=favs.has(i),hasBranch=!!(seg.branch&&seg.branch!=='');
-    const row=document.createElement('div');row.className='seg-row';
-    // Star button — prominent gold, always visible
-    const starStyle=isFav
-      ?'background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--gold);flex-shrink:0;padding:0 2px'
-      :'background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--text2);flex-shrink:0;padding:0 2px;opacity:.7';
-    row.innerHTML=`
-      <div class="seg-top">
-        <div style="width:12px;height:12px;border-radius:50%;background:${gc(i)};flex-shrink:0;margin-top:2px"></div>
-        <input class="seg-name-input" value="${seg.label.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}" oninput="updateSegLabel('${wid}',${i},this.value)">
-        <button type="button" style="${starStyle}" onclick="toggleFavorite('${wid}',${i})" title="${isFav?'Remove favorite':'Mark as Easy mode favorite'}">★</button>
-        <button type="button" class="del-seg" onclick="deleteSegment('${wid}',${i})">✕</button>
-      </div>
-      <div class="seg-weight-row">
-        <label>Weight</label>
-        <input type="range" class="wslider" min="1" max="120" value="${Math.min(seg.weight,120)}"
-          oninput="updateSegWeight('${wid}',${i},this.value);this.nextElementSibling.textContent=this.value">
-        <span class="wval">${seg.weight}</span>
-      </div>
-      <div class="seg-branch-row">
-        <label>Goes to</label>
-        <select class="seg-branch-sel ${hasBranch?'wired':''}"
-          onchange="updateSegBranch('${wid}',${i},this.value);this.className='seg-branch-sel'+(this.value?' wired':'')">
-          ${buildBranchOpts(wid,seg)}
-        </select>
-      </div>`;
-    list.appendChild(row);
-  });
-  updateFavCount();
-  // Preview this wheel on canvas
-  _previewEditWheel();
-}
-
-function buildBranchOpts(wid,seg){
-  let opts=`<option value="">→ Next in sequence (default)</option><option value="RESTART" ${(seg.branch||'')==='RESTART'?'selected':''}>↺ Restart</option><option value="DONE" ${(seg.branch||'')==='DONE'?'selected':''}>✓ End & generate output</option>`;
-  Object.entries(WHEEL_DEFS).forEach(([id,def])=>{if(id!==wid)opts+=`<option value="${id}" ${(seg.branch||'')===(id)?'selected':''}>${def.name}</option>`;});
-  return opts;
-}
-
-function updateSegBranch(wid,idx,val){if(val==='')delete WHEEL_DEFS[wid].segments[idx].branch;else WHEEL_DEFS[wid].segments[idx].branch=val;}
-function updateSegLabel(wid,idx,val){WHEEL_DEFS[wid].segments[idx].label=val;}
-function updateSegWeight(wid,idx,val){
-  WHEEL_DEFS[wid].segments[idx].weight=parseInt(val);
-  // Redraw whether it's the active wheel or the edit preview
-  if(wid===currentWheelId) drawWheel(currentAngle);
-  else if(wid===editPreviewWid){
-    const saved=currentWheelId;
-    currentWheelId=wid;
-    drawWheel(0);
-    currentWheelId=saved;
-  }
-}
-function deleteSegment(wid,idx){if(WHEEL_DEFS[wid].segments.length<=2){alert('Need at least 2 segments.');return;}WHEEL_DEFS[wid].segments.splice(idx,1);renderEditPanel();if(wid===currentWheelId)drawWheel(currentAngle);}
-function addSegment(){const wid=document.getElementById('editWheelSelect').value;WHEEL_DEFS[wid].segments.push({label:'New Option',weight:10});renderEditPanel();if(wid===currentWheelId)drawWheel(currentAngle);setTimeout(()=>document.getElementById('segList').lastElementChild?.scrollIntoView({behavior:'smooth'}),100);}
-function saveWheelName(){const wid=document.getElementById('editWheelSelect').value;const n=document.getElementById('editWheelName').value.trim();if(!n)return;WHEEL_DEFS[wid].name=n;const sel=document.getElementById('editWheelSelect');sel.options[sel.selectedIndex].textContent=n;if(wid===currentWheelId)document.getElementById('wheelName').textContent=n;renderProgress();const btn=event.target;btn.textContent='✓';btn.style.color='var(--green)';setTimeout(()=>{btn.textContent='Save';btn.style.color='';},1600);}
-function moveWheelTo(){const wid=document.getElementById('editWheelSelect').value;const np=parseInt(document.getElementById('editWheelPos').value);const idx=WHEEL_ORDER.indexOf(wid);if(idx>=0)WHEEL_ORDER.splice(idx,1);WHEEL_ORDER.splice(Math.min(np,WHEEL_ORDER.length),0,wid);renderProgress();const btn=event.target;btn.textContent='✓';btn.style.color='var(--green)';setTimeout(()=>{btn.textContent='Move';btn.style.color='';},1600);}
-function addNewWheel(){const name=prompt('Name for new wheel:');if(!name?.trim())return;const id='custom_'+Date.now();WHEEL_DEFS[id]={name:name.trim(),segments:[{label:'Option A',weight:10},{label:'Option B',weight:10},{label:'Option C',weight:10}]};WHEEL_ORDER.push(id);refreshWheelSelect();document.getElementById('editWheelSelect').value=id;renderEditPanel();}
-function deleteWheel(){const wid=document.getElementById('editWheelSelect').value;const entry=WHEEL_ORDER[0];if(wid===entry){alert("Can't delete the entry wheel.");return;}if(!confirm(`Delete "${WHEEL_DEFS[wid].name}"?`))return;delete WHEEL_DEFS[wid];const i=WHEEL_ORDER.indexOf(wid);if(i>=0)WHEEL_ORDER.splice(i,1);if(currentWheelId===wid){currentWheelId=WHEEL_ORDER[0];currentAngle=0;}autoSaveActive();refreshWheelSelect();renderEditPanel();drawWheel(currentAngle);renderProgress();}
-
-// ═══════════════ PREFERENCES ═══════════════
-function openPrefsPanel(){renderPrefsPanel();document.getElementById('prefsOverlay').classList.add('open');document.getElementById('prefsPanel').classList.add('open');}
-function closePrefsPanel(){document.getElementById('prefsOverlay').classList.remove('open');document.getElementById('prefsPanel').classList.remove('open');}
-function renderPrefsPanel(){
-  const el=document.getElementById('prefsFavSummary');el.innerHTML='';let total=0;
-  Object.entries(cachedFavs).forEach(([wid,set])=>{if(!set.size||!WHEEL_DEFS[wid])return;total+=set.size;const div=document.createElement('div');div.style.cssText='margin-bottom:10px;padding:8px;background:var(--bg3);border:1px solid var(--border)';const segs=[...set].map(i=>WHEEL_DEFS[wid].segments[i]?.label||'?').join(', ');div.innerHTML=`<div style="font-size:.7rem;color:var(--gold);margin-bottom:3px">${WHEEL_DEFS[wid].name}</div><div style="font-size:.8rem;color:var(--text)">${segs}</div>`;el.appendChild(div);});
-  if(!total)el.innerHTML='<div style="font-size:.8rem;color:var(--text2);font-style:italic">No favorites starred yet.</div>';
-}
-
-// ═══════════════ TEMPLATES ═══════════════
-const STORAGE_KEY='thewheel-data-v5';
-let cachedTemplates=[],cachedActiveId='default';
-
-function getDefaultTpl(){return{id:'default',name:'Character Generator',entryWheel:'difficulty',wheelVersion:WHEEL_VERSION,wheelDefs:JSON.parse(JSON.stringify(WHEEL_DEFS)),wheelOrder:[...WHEEL_ORDER]};}
-
-async function persistSave(){try{await window.storage.set(STORAGE_KEY,JSON.stringify({templates:cachedTemplates,activeId:cachedActiveId}));}catch(e){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({templates:cachedTemplates,activeId:cachedActiveId}));}catch(e2){}}}
-async function persistLoad(){try{let raw=null;try{const r=await window.storage.get(STORAGE_KEY);if(r?.value)raw=r.value;}catch(e){}if(!raw)raw=localStorage.getItem(STORAGE_KEY);if(raw){const d=JSON.parse(raw);if(Array.isArray(d.templates)&&d.templates.length){cachedTemplates=d.templates;cachedActiveId=d.activeId||'default';return true;}}}catch(e){}return false;}
-
-
-function buildEditCatTabs(){
-  const tabs=document.getElementById('editCatTabs');
-  if(!tabs)return;
-  // Remove all category tabs (keep Flow and All which are first 2)
-  const existing=[...tabs.querySelectorAll('.cat-tab')];
-  existing.slice(2).forEach(b=>b.remove());
-  // Get ordered categories from WHEEL_CATEGORIES
-  // Derive category order from WHEEL_ORDER directly — always correct
-  const catOrder=[];
-  const seenCats=new Set();
-  WHEEL_ORDER.forEach(id=>{
-    if(!WHEEL_DEFS[id])return;
-    let cat=null;
-    for(const[c,ids] of Object.entries(WHEEL_CATEGORIES)){if(ids&&ids.includes(id)){cat=c;break;}}
-    if(!cat&&id.startsWith('origin_'))cat='Origins';
-    if(!cat)cat='Other';
-    if(!seenCats.has(cat)){seenCats.add(cat);catOrder.push(cat);}
-  });
-  const allCats=catOrder;
-  allCats.forEach(cat=>{
-    if(!cat||cat==='Other')return;
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.className='cat-tab';
-    // Short label for long names
-    const label=cat==='Breast Response'?'Breast Resp':cat==='Physical Detail'?'Physical':cat;
-    btn.textContent=label;
-    btn.onclick=()=>setEditCat(cat);
-    tabs.appendChild(btn);
-  });
-}
-
-function buildEditSelect(){
-  const sel=document.getElementById('editWheelSelect');
-  if(!sel)return;
-  const cur=sel.value;
-  sel.innerHTML='';
-  WHEEL_ORDER.forEach(id=>{
-    if(!WHEEL_DEFS[id])return;
-    const opt=document.createElement('option');
-    opt.value=id;
-    opt.textContent=WHEEL_DEFS[id].name;
-    sel.appendChild(opt);
-  });
-  // Restore selection if still valid
-  if(cur&&WHEEL_DEFS[cur])sel.value=cur;
-  else if(WHEEL_ORDER.length)sel.value=WHEEL_ORDER[0];
-  // Rebuild category tabs to match current WHEEL_CATEGORIES order
-  buildEditCatTabs();
-}
-async function initApp(){
-  // Register service worker for offline support
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  }
-  await loadFavs();
-  await loadMatrixMultipliers();
-  await loadHardBlocks();
-  await loadDisabledWheels();
-  await loadHistory();
-  await loadGroupMaps();
-  await loadDiffMultipliers();
-  await loadRulesFromStorage();
-  const loaded=await persistLoad();
-  if(!loaded){cachedTemplates=[getDefaultTpl()];cachedActiveId='default';await persistSave();}
-  const active=cachedTemplates.find(t=>t.id===cachedActiveId)||cachedTemplates[0];
-  applyTemplate(active,false);
-  buildEditSelect();
-}
-
-// Version stamp — bump this whenever WHEEL_DEFS structure changes significantly
-const WHEEL_VERSION='v5.4-export-2026-04-16';
-
-function applyTemplate(tpl,save=true){
-  // If the saved template predates the current wheel version, ignore its wheelDefs
-  // and use the built-in WHEEL_DEFS instead — prevents stale saves breaking the app
-  const isStale=!tpl.wheelVersion||tpl.wheelVersion!==WHEEL_VERSION;
-  if(!isStale){
-    // Restore custom segment edits from saved template
-    // but NEVER restore WHEEL_ORDER — always use built-in sequence
-    if(tpl.wheelDefs){
-      Object.keys(tpl.wheelDefs).forEach(id=>{
-        if(WHEEL_DEFS[id]&&tpl.wheelDefs[id]){
-          // Only restore segment-level edits, keep built-in structure
-          WHEEL_DEFS[id].segments=JSON.parse(JSON.stringify(tpl.wheelDefs[id].segments));
-          WHEEL_DEFS[id].name=tpl.wheelDefs[id].name;
-        }
-      });
-    }
-    // WHEEL_ORDER always comes from built-in source — never from Firebase
-  }
-  // Stamp the version on save so future loads know it's current
-  tpl.wheelVersion=WHEEL_VERSION;
-  currentWheelId=tpl.entryWheel&&WHEEL_DEFS[tpl.entryWheel]?tpl.entryWheel:WHEEL_ORDER[0]||'difficulty';
-  cachedActiveId=tpl.id;
-  document.getElementById('headerTplName').textContent=tpl.name;
-  // Only reset if no spin is in progress — prevents zoom/resize from wiping active runs
-  if(results.length===0&&!spinning)restartAll();
-  else{renderWheelUI();drawWheel(currentAngle);renderProgress();}
-  if(save)persistSave();
-}
-
-function autoSaveActive(){const tpl=cachedTemplates.find(t=>t.id===cachedActiveId);if(!tpl)return;tpl.wheelDefs=JSON.parse(JSON.stringify(WHEEL_DEFS));tpl.wheelOrder=[...WHEEL_ORDER];tpl.wheelVersion=WHEEL_VERSION;persistSave();}
-
-function openTemplatePanel(){autoSaveActive();renderTemplatePanel();document.getElementById('tplOverlay').classList.add('open');document.getElementById('tplPanel').classList.add('open');}
-function closeTemplatePanel(){document.getElementById('tplOverlay').classList.remove('open');document.getElementById('tplPanel').classList.remove('open');}
-
-function renderTemplatePanel(){
-  const list=document.getElementById('tplList');list.innerHTML='';
-  cachedTemplates.forEach(tpl=>{
-    const isA=tpl.id===cachedActiveId;
-    const c=document.createElement('div');c.className='tpl-card'+(isA?' active':'');
-    c.innerHTML=`${isA?'<span class="active-badge">Active</span>':''}<div class="tpl-card-dot"></div><div class="tpl-card-info"><div class="tpl-card-name">${tpl.name}</div><div class="tpl-card-meta">${Object.keys(tpl.wheelDefs||{}).length} wheels</div></div><div class="tpl-card-actions">${!isA?`<button type="button" class="tpl-btn" onclick="loadTemplate('${tpl.id}')">Load</button>`:'<span style="font-size:.65rem;color:var(--gold);padding:4px 6px">ACTIVE</span>'}<button type="button" class="tpl-btn" onclick="renameTemplate('${tpl.id}')">Rename</button><button type="button" class="tpl-btn" onclick="deleteTemplate('${tpl.id}')" ${cachedTemplates.length<=1?'disabled':''}>Del</button></div>`;
-    list.appendChild(c);
-  });
-  const sel=document.getElementById('tplEntrySelect');sel.innerHTML='';
-  Object.entries(WHEEL_DEFS).forEach(([id,def])=>{const o=document.createElement('option');o.value=id;o.textContent=def.name;if(id===currentWheelId)o.selected=true;sel.appendChild(o);});
-}
-
-function loadTemplate(id){autoSaveActive();const t=cachedTemplates.find(t=>t.id===id);if(!t)return;applyTemplate(t,false);cachedActiveId=id;persistSave();renderTemplatePanel();closeTemplatePanel();}
-function saveCurrentAsTemplate(){const n=document.getElementById('tplNameInput').value.trim()||'My Template';const ew=document.getElementById('tplEntrySelect').value;const t={id:'tpl_'+Date.now(),name:n,entryWheel:ew,wheelDefs:JSON.parse(JSON.stringify(WHEEL_DEFS)),wheelOrder:[...WHEEL_ORDER]};cachedTemplates.push(t);cachedActiveId=t.id;persistSave();document.getElementById('headerTplName').textContent=n;document.getElementById('tplNameInput').value='';renderTemplatePanel();const b=event.target;b.textContent='Saved ✓';setTimeout(()=>b.textContent='Save Current',1800);}
-function createBlankTemplate(){const n=document.getElementById('tplNameInput').value.trim()||'New Template';const fid='wheel_'+Date.now();const t={id:'blank_'+Date.now(),name:n,entryWheel:fid,wheelDefs:{[fid]:{name:'Wheel 1',segments:[{label:'Option A',weight:10},{label:'Option B',weight:10}]}},wheelOrder:[fid]};cachedTemplates.push(t);cachedActiveId=t.id;persistSave();document.getElementById('tplNameInput').value='';applyTemplate(t,false);renderTemplatePanel();closeTemplatePanel();setTimeout(()=>openEditPanel(),300);}
-function renameTemplate(id){const t=cachedTemplates.find(t=>t.id===id);if(!t)return;const n=prompt('Rename:',t.name);if(!n?.trim())return;t.name=n.trim();persistSave();if(id===cachedActiveId)document.getElementById('headerTplName').textContent=t.name;renderTemplatePanel();}
-function deleteTemplate(id){if(cachedTemplates.length<=1){alert("Can't delete last template.");return;}const t=cachedTemplates.find(t=>t.id===id);if(!confirm(`Delete "${t?.name}"?`))return;cachedTemplates=cachedTemplates.filter(t=>t.id!==id);persistSave();if(id===cachedActiveId)loadTemplate(cachedTemplates[0].id);else renderTemplatePanel();}
-function exportTemplates(){autoSaveActive();const b=new Blob([JSON.stringify(cachedTemplates,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wheel_templates.json';a.click();URL.revokeObjectURL(a.href);}
-function importTemplates(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const im=JSON.parse(e.target.result);if(!Array.isArray(im))throw new Error();const eids=new Set(cachedTemplates.map(t=>t.id));const nw=im.filter(t=>!eids.has(t.id));cachedTemplates=[...cachedTemplates,...nw];persistSave();renderTemplatePanel();alert(`Imported ${nw.length} template(s).`);}catch(err){alert('Import failed.');}};r.readAsText(f);inp.value='';}
-
-// ═══════════════ CONSISTENCY RULES ENGINE ═══════════════
-const RULES_STORAGE_KEY = 'thewheel-rules-v1';
-let activeRules = [];
-
-async function loadRulesFromStorage(){
-  try {
-    const r = await window.storage.get(RULES_STORAGE_KEY);
-    if(r?.value) activeRules = JSON.parse(r.value);
-  } catch(e){ activeRules = []; }
-}
-
-async function saveRulesToStorage(){
-  try {
-    await window.storage.set(RULES_STORAGE_KEY, JSON.stringify(activeRules));
-  } catch(e){}
-}
-
-function loadRulesJSON(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if(!data.rules || !Array.isArray(data.rules)) throw new Error('Invalid rules file');
-      activeRules = data.rules;
-      saveRulesToStorage();
-      renderRulesPanel();
-      alert(`✓ Loaded ${activeRules.length} rules.`);
-    } catch(err){
-      alert('Failed to load rules: ' + err.message);
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
-}
-
-function clearAllRules(){
-  if(!confirm('Clear all rules?')) return;
-  activeRules = [];
-  saveRulesToStorage();
-  renderRulesPanel();
-}
-
-function toggleRuleEnabled(idx){
-  if(activeRules[idx]) activeRules[idx].enabled = !activeRules[idx].enabled;
-  saveRulesToStorage();
-  renderRulesPanel();
-}
-
-function openRulesPanel(){
-  renderRulesPanel();
-  document.getElementById('rulesOverlay').classList.add('open');
-  document.getElementById('rulesPanel').classList.add('open');
-}
-
-function closeRulesPanel(){
-  document.getElementById('rulesOverlay').classList.remove('open');
-  document.getElementById('rulesPanel').classList.remove('open');
-}
-
-function renderRulesPanel(){
-  const total = activeRules.length;
-  const active = activeRules.filter(r=>r.enabled).length;
-  const suppress = activeRules.filter(r=>r.enabled&&r.direction==='suppress').length;
-  const boost = activeRules.filter(r=>r.enabled&&r.direction==='boost').length;
-
-  const stats = document.getElementById('rulesStats');
-  if(stats){
-    stats.innerHTML = [
-      ['Total', total],
-      ['Active', active],
-      ['Suppress', suppress],
-      ['Boost', boost],
-    ].map(([l,v])=>`
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:6px 12px;flex:1;min-width:60px;text-align:center">
-        <div style="font-size:1.1rem;font-weight:700;color:var(--accent)">${v}</div>
-        <div style="font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px">${l}</div>
-      </div>`).join('');
-  }
-
-  const list = document.getElementById('rulesListPanel');
-  if(!list) return;
-
-  if(activeRules.length === 0){
-    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text2);font-size:.85rem;border:1px dashed var(--border)">No rules loaded.<br>Upload a JSON file from the Rules Builder.</div>';
-    return;
-  }
-
-  list.innerHTML = '';
-  activeRules.forEach((r, idx) => {
-    const twName = WHEEL_DEFS[r.triggerWheel]?.name || r.triggerWheel;
-    const tarwName = WHEEL_DEFS[r.targetWheel]?.name || r.targetWheel;
-    const dirColor = r.direction === 'suppress' ? '#ff6666' : '#66ff99';
-    const dirLabel = r.direction === 'suppress' ? '▼' : '▲';
-    const row = document.createElement('div');
-    row.style.cssText = `background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${r.enabled?(r.direction==='suppress'?'var(--accent)':'var(--green)'):'var(--border)'};padding:10px 12px;margin-bottom:8px;opacity:${r.enabled?1:0.45}`;
-    row.innerHTML = `
-      <div style="display:flex;align-items:flex-start;gap:8px">
-        <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;margin-top:2px">
-          <input type="checkbox" ${r.enabled?'checked':''} style="opacity:0;width:0;height:0"
-            onchange="toggleRuleEnabled(${idx})">
-          <span style="position:absolute;inset:0;background:${r.enabled?'var(--green)':'#333'};border-radius:10px;cursor:pointer;transition:.3s">
-            <span style="position:absolute;width:14px;height:14px;left:${r.enabled?'19px':'3px'};top:3px;background:#fff;border-radius:50%;transition:.3s;display:block"></span>
-          </span>
-        </label>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:.78rem;color:var(--text);line-height:1.5">
-            IF <span style="color:var(--gold)">${twName}</span> = <em style="color:var(--text2)">"${r.triggerSegment}"</em>
-          </div>
-          <div style="font-size:.78rem;color:var(--text);line-height:1.5">
-            <span style="color:${dirColor};font-weight:700">${dirLabel} ${r.direction}</span>
-            <em style="color:var(--text2)">"${r.targetSegment}"</em> in <span style="color:var(--gold)">${tarwName}</span>
-            <span style="color:var(--accent);font-weight:700"> × ${r.multiplier}</span>
-          </div>
-        </div>
-      </div>`;
-    list.appendChild(row);
-  });
-}
-
-// ── Apply rules inside applyConsistencyMatrix ──
-function applyActiveRules(weights, segs, wid){
-  if(!activeRules || activeRules.length === 0) return weights;
-  const w = [...weights];
-  activeRules.forEach(rule => {
-    if(!rule.enabled) return;
-    if(rule.targetWheel !== wid) return;
-    // Check if trigger wheel has a result matching trigger segment
-    const triggerResult = results.find(r => r.wheelId === rule.triggerWheel);
-    if(!triggerResult || triggerResult.label !== rule.triggerSegment) return;
-    // Apply multiplier to matching target segments
-    segs.forEach((seg, i) => {
-      if(seg.label === rule.targetSegment){
-        w[i] = Math.max(w[i] * rule.multiplier, w[i] * 0.05);
-      }
-    });
-  });
-  return w;
-}
-window.addEventListener('firestore-update', async e => {
-  const { key, value } = e.detail;
-  if(!value) return;
-  try {
-    switch(key) {
-      case 'thewheel-data-v5':
-        const d = JSON.parse(value);
-        if(Array.isArray(d.templates) && d.templates.length){
-          cachedTemplates = d.templates;
-          cachedActiveId = d.activeId || 'default';
-          const active = cachedTemplates.find(t=>t.id===cachedActiveId)||cachedTemplates[0];
-          if(active) applyTemplate(active, false);
-        }
-        break;
-      case 'thewheel-disabled-v1':
-        disabledWheels = new Set(JSON.parse(value));
-        renderProgress();
-        break;
-      case 'thewheel-matrix-v1':
-        Object.assign(matrixMultipliers, JSON.parse(value));
-        break;
-      case 'thewheel-hardblocks-v1':
-        Object.assign(hardBlockToggles, JSON.parse(value));
-        break;
-      case 'thewheel-diffmult-v1':
-        Object.assign(diffMultipliers, JSON.parse(value));
-        break;
-      case 'thewheel-groupmaps-v1':
-        groupMaps = JSON.parse(value);
-        break;
-      case 'thewheel-rules-v1':
-        activeRules = JSON.parse(value);
-        renderRulesPanel();
-        break;
-    }
-  } catch(err) {}
-});
-
-// ═══════════════ PIN GATE ═══════════════
-const PIN_CORRECT = '1234'; // ← CHANGE THIS TO YOUR PIN
-const PIN_STORAGE = 'thewheel-pin-unlocked';
-let pinEntry = '';
-
-function pinPress(n){
-  if(pinEntry.length >= 4) return;
-  pinEntry += n;
-  updatePinDots();
-  if(pinEntry.length === 4) setTimeout(pinCheck, 120);
-}
-
-function pinClear(){
-  pinEntry = pinEntry.slice(0, -1);
-  updatePinDots();
-  document.getElementById('pinError').classList.remove('show');
-}
-
-function updatePinDots(){
-  for(let i=0;i<4;i++){
-    document.getElementById('pd'+i).classList.toggle('filled', i < pinEntry.length);
-  }
-}
-
-function pinCheck(){
-  if(pinEntry === PIN_CORRECT){
-    localStorage.setItem(PIN_STORAGE, '1');
-    document.getElementById('pinGate').classList.add('hidden');
-  } else {
-    document.getElementById('pinError').classList.add('show');
-    pinEntry = '';
-    updatePinDots();
-  }
-}
-
-function checkPin(){
-  // Already unlocked on this device
-  if(localStorage.getItem(PIN_STORAGE) === '1'){
-    document.getElementById('pinGate').classList.add('hidden');
-    return true;
-  }
-  return false;
-}
-
-// ═══════════════ INIT ═══════════════
-function startApp(){
-  if(!checkPin()){
-    // App will start after PIN entered — wait for gate to hide
-    const obs = new MutationObserver(()=>{
-      if(document.getElementById('pinGate').classList.contains('hidden')){
-        obs.disconnect();
-        initApp().then(()=>{renderWheelUI();drawWheel(0);});
-      }
-    });
-    obs.observe(document.getElementById('pinGate'), {attributes:true, attributeFilter:['class']});
-  } else {
-    initApp().then(()=>{renderWheelUI();drawWheel(0);});
-  }
-}
-
-// Wait for Firebase to be ready before starting
-if(window.storage){
-  startApp();
-} else {
-  window.addEventListener('firebase-ready', startApp, {once:true});
-  // Fallback if Firebase fails to load within 3s
-  setTimeout(()=>{
-    if(!window.storage){
-      window.storage={
-        async get(k){const v=localStorage.getItem(k);return v?{key:k,value:v}:null;},
-        async set(k,v){localStorage.setItem(k,v);return{key:k,value:v};},
-        async delete(k){localStorage.removeItem(k);return{key:k,deleted:true};},
-        async list(p){return{keys:Object.keys(localStorage).filter(k=>!p||k.startsWith(p))};}
-      };
-      startApp();
-    }
-  }, 3000);
-}
-</script>
-
-
-<div id="deepseek-ai"></div><div id="coplmfnphahpcknbchcehdikbdieognn" style="all: initial; font-size: 16px !important"></div><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration>
-<div id="deepseek-ai"></div>
-<div id="wheelDetailOverlay" onclick="if(event.target===this)closeWheelDetail()">
-  <div id="wheelDetailPanel">
-    <div class="wdp-header">
-      <div class="wdp-name" id="wdpName">—</div>
-      <span class="wdp-status" id="wdpStatus">—</span>
-      <div class="wdp-nav">
-        <button onclick="navWheelDetail(-1)">◀ Prev</button>
-        <button onclick="navWheelDetail(1)">Next ▶</button>
-      </div>
-      <button class="wdp-close" onclick="closeWheelDetail()">✕</button>
-    </div>
-    <div class="wdp-result" id="wdpResult" style="display:none">
-      <span>Result:</span><span id="wdpResultText"></span>
-    </div>
-    <div class="wdp-segs" id="wdpSegs"></div>
-    <div class="wdp-footer">
-      <span id="wdpPos"></span>
-      <span id="wdpCat"></span>
-    </div>
-  </div>
-</div>
-
-
-<div id="deepseek-ai"></div></body></html>
+>
