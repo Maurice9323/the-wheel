@@ -6168,7 +6168,7 @@ function computeNext(fromId,label,seg){
   // breast_enthusiasm: specific segments route to ass_size, reluctant/disliking continue normally
   if(fromId==='breast_enthusiasm'){
     if(label.startsWith('Actively Covering')||label.startsWith('Completely Unwilling'))return nextEnabled('ass_size');
-    if(label.startsWith('Reluctant Compliance')||label.startsWith('Strongly Disliking Core'))return nextEnabled('breast_anatomy');
+    if(label.startsWith('Reluctant Compliance')||label.startsWith('Strongly Disliking Core'))return nextEnabled('breast_psychology');
   }
   // lactation_volume: 9 low-volume segments skip to ass_size
   if(fromId==='lactation_volume'){
@@ -6183,21 +6183,24 @@ function computeNext(fromId,label,seg){
   if(fromId==='vaginal_enthusiasm'){
     if(label.startsWith('Completely Unwilling'))return nextEnabled('shave');
     const fs=['Uncomfortable Resistance','Strongly Disliking','Actively Avoiding','Fearful Tension','Emotionally Detached','Physically Unresponsive'];
-    if(fs.some(l=>label.startsWith(l)))return nextEnabled('vaginal_anatomy');
+    if(fs.some(l=>label.startsWith(l)))return nextEnabled('vaginal_psychology');
   }
   // squirt_anatomy: 4 anatomical limit segments skip to shave
   if(fromId==='squirt_anatomy'){
     const sk=['Minimal Skene','Low Bladder Involvement','Sparse Vascular Network','Isolated Glandular Only'];
     if(sk.some(l=>label.startsWith(l)))return nextEnabled('shave');
+    return nextEnabled('squirt_threshold');
   }
   // squirt_sensation_her: negative segments should NOT skip — continue normally
   if(fromId==='squirt_sensation_her'){
     const fs=['Irritating Urethral Burn','Shame-Linked Revulsion','Complete Internal Deadness'];
-    if(fs.some(l=>label.startsWith(l)))return nextEnabled('squirt_enthusiasm');
+    if(fs.some(l=>label.startsWith(l)))return nextEnabled('squirt_sensation_me');
+    return nextEnabled('squirt_sensation_me');
   }
   // squirt_enthusiasm: resistance segments skip to shave
   if(fromId==='squirt_enthusiasm'){
     if(label.startsWith('Actively Holding Back')||label.startsWith('Physically Resistant'))return nextEnabled('shave');
+    return nextEnabled('squirt_anatomy');
   }
   // squirt_threshold: no trigger skips to shave
   if(fromId==='squirt_threshold'&&label.startsWith('No Trigger Possible'))return nextEnabled('shave');
@@ -6323,14 +6326,14 @@ function computeNext(fromId,label,seg){
   if(fromId==='ass_firmness')return nextEnabled('ass_transition');
   if(fromId==='ass_transition')return nextEnabled('ass_skin_texture');
   if(fromId==='ass_skin_texture')return nextEnabled('ass_body_hair');
-  if(fromId==='ass_body_hair')return nextEnabled('anal_appearance');
-  if(fromId==='anal_appearance')return nextEnabled('anal_sensation_me');
-  if(fromId==='anal_sensation_me')return nextEnabled('anal_sensation_her');
-  if(fromId==='anal_sensation_her')return nextEnabled('anal_enthusiasm');
-  if(fromId==='anal_enthusiasm')return nextEnabled('anal_anatomy');
-  if(fromId==='anal_anatomy')return nextEnabled('anal_psychology');
-  if(fromId==='anal_psychology')return nextEnabled('anal_depth');
-  if(fromId==='anal_depth')return nextEnabled('thigh_thickness');
+  if(fromId==='ass_body_hair')return nextEnabled('anal_enthusiasm');
+  if(fromId==='anal_appearance')return nextEnabled('anal_sensation_her');
+  if(fromId==='anal_sensation_me')return nextEnabled('thigh_thickness');
+  if(fromId==='anal_sensation_her')return nextEnabled('anal_sensation_me');
+  if(fromId==='anal_enthusiasm')return nextEnabled('anal_psychology');
+  if(fromId==='anal_anatomy')return nextEnabled('anal_depth');
+  if(fromId==='anal_psychology')return nextEnabled('anal_anatomy');
+  if(fromId==='anal_depth')return nextEnabled('anal_appearance');
   // ── Breast system ──
   if(fromId==='cup_size'){
     // Store cup group for consistency
@@ -6347,13 +6350,13 @@ function computeNext(fromId,label,seg){
   if(['nipple_col_light','nipple_col_medium','nipple_col_dark'].includes(fromId))return nextEnabled('areola_size');
   if(fromId==='areola_size')return nextEnabled('areola_texture');
   if(fromId==='areola_texture')return nextEnabled('areola_shape');
-  if(fromId==='areola_shape')return nextEnabled('breast_sensation_her_gland');
+  if(fromId==='areola_shape')return nextEnabled('breast_enthusiasm');
   
   if(fromId==='breast_sensation_her_gland')return nextEnabled('breast_sensation_her_nipple');
   if(fromId==='breast_sensation_her_nipple')return nextEnabled('breast_enthusiasm');
-  if(fromId==='breast_enthusiasm')return nextEnabled('breast_anatomy');
-  if(fromId==='breast_anatomy')return nextEnabled('breast_psychology');
-  if(fromId==='breast_psychology')return nextEnabled('breast_compression');
+  if(fromId==='breast_enthusiasm')return nextEnabled('breast_psychology');
+  if(fromId==='breast_anatomy')return nextEnabled('breast_compression');
+  if(fromId==='breast_psychology')return nextEnabled('breast_anatomy');
   if(fromId==='breast_compression')return nextEnabled('lactation_volume');
   if(fromId==='lactation_volume')return nextEnabled('lactation_taste');
   if(fromId==='lactation_taste')return nextEnabled('milk_play');
@@ -6363,21 +6366,21 @@ function computeNext(fromId,label,seg){
     return nextEnabled('ass_size');
   }
   if(fromId==='labia_size')return nextEnabled(labColW());
-  if(['labia_col_light','labia_col_medium','labia_col_dark'].includes(fromId))return nextEnabled('vaginal_moisture');
-  if(fromId==='vaginal_moisture')return nextEnabled('vaginal_sensation_me');
-  if(fromId==='vaginal_sensation_me')return nextEnabled('vaginal_sensation_her');
-  if(fromId==='vaginal_sensation_her')return nextEnabled('vaginal_enthusiasm');
-  if(fromId==='vaginal_enthusiasm')return nextEnabled('vaginal_anatomy');
-  if(fromId==='vaginal_anatomy')return nextEnabled('vaginal_psychology');
-  if(fromId==='vaginal_psychology')return nextEnabled('vaginal_depth');
-  if(fromId==='vaginal_depth')return nextEnabled('squirt_anatomy');
+  if(['labia_col_light','labia_col_medium','labia_col_dark'].includes(fromId))return nextEnabled('vaginal_enthusiasm');
+  if(fromId==='vaginal_moisture')return nextEnabled('vaginal_sensation_her');
+  if(fromId==='vaginal_sensation_me')return nextEnabled('squirt_enthusiasm');
+  if(fromId==='vaginal_sensation_her')return nextEnabled('vaginal_sensation_me');
+  if(fromId==='vaginal_enthusiasm')return nextEnabled('vaginal_psychology');
+  if(fromId==='vaginal_anatomy')return nextEnabled('vaginal_depth');
+  if(fromId==='vaginal_psychology')return nextEnabled('vaginal_anatomy');
+  if(fromId==='vaginal_depth')return nextEnabled('vaginal_moisture');
   if(fromId==='squirt_anatomy')return nextEnabled('squirt_sensation_me');
-  if(fromId==='squirt_sensation_me')return nextEnabled('squirt_sensation_her');
+  if(fromId==='squirt_sensation_me')return nextEnabled('shave');
   if(fromId==='squirt_sensation_her')return nextEnabled('squirt_enthusiasm');
   if(fromId==='squirt_enthusiasm')return nextEnabled('squirt_threshold');
   if(fromId==='squirt_threshold')return nextEnabled('squirt_psychology');
   if(fromId==='squirt_psychology')return nextEnabled('squirt_fluid');
-  if(fromId==='squirt_fluid')return nextEnabled('shave');
+  if(fromId==='squirt_fluid')return nextEnabled('squirt_sensation_her');
   if(fromId.startsWith('stretch_'))return nextEnabled(bodyW('cellulite'));
   if(fromId.startsWith('cellulite_'))return nextEnabled(bodyW('muscle'));
   if(fromId.startsWith('muscle_')){
@@ -6401,14 +6404,14 @@ function computeNext(fromId,label,seg){
   if(fromId==='face_shape')return nextEnabled('teeth');
   if(fromId==='teeth')return nextEnabled('ears');
   if(fromId==='ears')return nextEnabled('neck');
-  if(fromId==='neck')return nextEnabled('oral_saliva');
-  if(fromId==='oral_saliva')return nextEnabled('oral_sensation_me');
-  if(fromId==='oral_sensation_me')return nextEnabled('oral_sensation_her');
-  if(fromId==='oral_sensation_her')return nextEnabled('oral_enthusiasm');
-  if(fromId==='oral_enthusiasm')return nextEnabled('oral_anatomy');
-  if(fromId==='oral_anatomy')return nextEnabled('oral_psychology');
-  if(fromId==='oral_psychology')return nextEnabled('oral_depth');
-  if(fromId==='oral_depth')return nextEnabled(hairW());
+  if(fromId==='neck')return nextEnabled('oral_enthusiasm');
+  if(fromId==='oral_saliva')return nextEnabled('oral_depth');
+  if(fromId==='oral_sensation_me')return nextEnabled(hairW());
+  if(fromId==='oral_sensation_her')return nextEnabled('oral_sensation_me');
+  if(fromId==='oral_enthusiasm')return nextEnabled('oral_psychology');
+  if(fromId==='oral_anatomy')return nextEnabled('oral_saliva');
+  if(fromId==='oral_psychology')return nextEnabled('oral_anatomy');
+  if(fromId==='oral_depth')return nextEnabled('oral_sensation_her');
   // ── Detail ──
   if(fromId==='shave')return nextEnabled('cleavage');
   if(fromId==='cleavage')return nextEnabled('body_hair');
@@ -6592,7 +6595,7 @@ function getSequence(){
   if(rg==='light')seq.push('freckles');
   seq.push('eyes_'+rg,'nose_'+rg,'eyebrows_'+rg,'skin_glow_'+rg,'lips_'+rg);
   seq.push('face','face_shape','teeth','ears','neck');
-  seq.push('oral_saliva','oral_sensation_me','oral_sensation_her','oral_enthusiasm','oral_anatomy','oral_psychology','oral_depth');
+  seq.push('oral_enthusiasm','oral_psychology','oral_anatomy','oral_saliva','oral_depth','oral_sensation_her','oral_sensation_me');
 
   // ── Hair ──
   seq.push('hair_'+hg);
@@ -6608,12 +6611,12 @@ function getSequence(){
   seq.push('areola_size','areola_texture','areola_shape');
 
   // ── Breast Response ──
-  seq.push('breast_sensation_her_gland','breast_sensation_her_nipple','breast_enthusiasm','breast_anatomy','breast_psychology','breast_compression');
+  seq.push('breast_enthusiasm','breast_psychology','breast_anatomy','breast_compression','breast_sensation_her_gland','breast_sensation_her_nipple');
   seq.push('lactation_volume','lactation_taste','milk_play');
 
   // ── Ass ──
   seq.push('ass_size','ass_shape','ass_projection','ass_firmness','ass_transition','ass_skin_texture','ass_body_hair');
-  seq.push('anal_appearance','anal_sensation_me','anal_sensation_her','anal_enthusiasm','anal_anatomy','anal_psychology','anal_depth');
+  seq.push('anal_enthusiasm','anal_psychology','anal_anatomy','anal_depth','anal_appearance','anal_sensation_her','anal_sensation_me');
 
   // ── Thighs ──
   seq.push('thigh_thickness','thigh_shape','thigh_inner','thigh_texture');
@@ -6623,8 +6626,8 @@ function getSequence(){
 
   // ── Lower ──
   seq.push('labia_size','labia_col_'+rg);
-  seq.push('vaginal_moisture','vaginal_sensation_me','vaginal_sensation_her','vaginal_enthusiasm','vaginal_anatomy','vaginal_psychology','vaginal_depth');
-  seq.push('squirt_anatomy','squirt_sensation_me','squirt_sensation_her','squirt_enthusiasm','squirt_threshold','squirt_psychology','squirt_fluid');
+  seq.push('vaginal_enthusiasm','vaginal_psychology','vaginal_anatomy','vaginal_depth','vaginal_moisture','vaginal_sensation_her','vaginal_sensation_me');
+  seq.push('squirt_enthusiasm','squirt_anatomy','squirt_threshold','squirt_psychology','squirt_fluid','squirt_sensation_her','squirt_sensation_me');
 
   // ── Physical Detail ──
   seq.push('shave','cleavage','body_hair','hands','position','feet');
