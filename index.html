@@ -631,6 +631,19 @@ Clip Skip: 2</div>
       <button type="button" class="btn-copy" onclick="copyAll()" style="background:var(--gold);color:#000;border-color:var(--gold)">✦ Copy All</button>
     </div>
   </div>
+
+    <!-- Lustify V8 Prompt Section -->
+    <div class="output-section" style="margin-top:12px">
+      <div class="output-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>&#9889; Lustify V8 (Apex) Prompt</span>
+        <button type="button" class="btn-regen" onclick="buildLustifyPrompt()">&#8635; Regenerate</button>
+      </div>
+      <div style="font-size:.62rem;color:var(--text2);margin-bottom:6px;padding:0 2px">iPhone candid aesthetic &middot; natural language &middot; for Venice.ai</div>
+      <div class="output-text" id="lustifyText" style="font-size:.78rem;color:var(--text);line-height:1.7;word-break:break-word;user-select:all;white-space:pre-wrap;background:rgba(255,255,255,.02);padding:8px;border:1px solid var(--border);min-height:60px"></div>
+      <div class="output-actions" style="margin-top:6px">
+        <button type="button" class="btn-copy" onclick="(function(){const t=document.getElementById('lustifyText').textContent;navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){});})()">Copy Lustify Prompt</button>
+      </div>
+    </div>
 </div>
 <!-- TEMPLATE PANEL -->
 <div class="tpl-overlay" id="tplOverlay" onclick="closeTemplatePanel()"></div>
@@ -7464,11 +7477,122 @@ function showWildcardBanner(msg){
   setTimeout(()=>banner.remove(),2200);
 }
 
+function buildLustifyPrompt(){
+  const race=gv('race');
+  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub');
+  const body=gv('body'),age=gv('age'),height=gv('height');
+  const skin=ga('skin_light','skin_medium','skin_dark');
+  const eyes=ga('eyes_light','eyes_medium','eyes_dark');
+  const hair=ga('hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark');
+  const hairCol=ga('hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark');
+  const faceRating=gv('face');
+  const lips=ga('lips_light','lips_medium','lips_dark');
+  const cup=gv('cup_size'),breastShape=gv('breast_shape'),breastFirm=gv('breast_firmness');
+  const nipSize=gv('nipple_size'),nipType=gv('nipple_type'),nipCol=ga('nipple_col_light','nipple_col_medium','nipple_col_dark');
+  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture');
+  const assSize=gv('ass_size'),assShape=gv('ass_shape'),assProj=gv('ass_projection'),assFirm=gv('ass_firmness');
+  const labiaSize=gv('labia_size');
+  const thighThick=gv('thigh_thickness'),thighInner=gv('thigh_inner');
+  const stomachW=gv('stomach');
+  const waist=ga('waist_thin','waist_mid','waist_bbw');
+  const shave=gv('shave');
+  const muscle=ga('muscle_thin','muscle_mid','muscle_bbw');
+  const freckles=gv('freckles');
+  const position=gv('position'),location=gv('location');
+  const amount=gv('amount');
+
+  const ethnic=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||race.toLowerCase();
+  const cl=s=>s?s.split(',')[0].replace(/\s{2,}/g,' ').trim():'';
+  const fw=s=>s?s.split(/[—,]/)[0].trim():'';
+  const lc=s=>s?s.toLowerCase():'';
+
+  const ageMap={'18-19':'18 year old','20-24':'early 20s','25-29':'mid 20s','30-35':'early 30s','36-40':'late 30s','41-50':'40s','51-60':'50s','60+':'60s'};
+  const ageTag=ageMap[age]||'';
+  const amtMap={'One':'solo','2-3':'two women','4-7':'group of women','8-10':'multiple women','11+':'many women'};
+  const amtTag=amtMap[amount]||'solo';
+  const bodyMap={
+    'Bulimic':'extremely underweight','Anorexic':'very thin, gaunt','Thin':'lean slim figure','Slim':'slim',
+    'Petite':'petite, small frame','Slim Thick':'slim waist, thick thighs, hourglass','Average':'average build',
+    'Mid Size':'medium build, soft curves','Mid Thick':'medium thick, curvy','Thick':'thick curvy figure, full hips',
+    'Thicker':'very thick, wide hips','Thickest':'extremely thick','Chubby':'chubby, round figure',
+    'Meatball':'very chubby','Chunky':'heavyset','Curvy':'curvy hourglass',
+    'Upside Down Triangle':'broad shoulders, narrow hips','BBW':'bbw, plus size',
+    'SSBBW':'ssbbw, super plus size','USSBBW':'extremely plus size',
+  };
+  const bodyTag=bodyMap[body]||lc(body)||'';
+  const cupMap={
+    'A':'small breasts, A cup','B':'small perky breasts, B cup','C':'medium breasts, C cup',
+    'D':'large breasts, D cup','DD':'large breasts, DD cup','DDD':'very large breasts, DDD cup',
+    'E':'huge breasts, E cup','F':'huge breasts, F cup','G':'massive breasts, G cup',
+    'H':'enormous breasts, H cup','I':'enormous breasts, I cup','J':'massive heavy breasts, J cup',
+    'K':'gigantic breasts, K cup','L':'gigantic breasts, L cup','M':'impossibly large breasts, M cup','N+':'cartoonishly large breasts',
+  };
+  const breastTag=cupMap[cup]||'';
+  const brShTag=breastShape?lc(fw(breastShape))+' shaped breasts':'';
+  const brFirmTag=breastFirm?lc(fw(breastFirm))+' breasts':'';
+  const nipSzTag=nipSize?lc(fw(nipSize)):'';
+  const nipTyTag=nipType?lc(fw(nipType)):'';
+  const nipClTag=nipCol?lc(fw(nipCol)).replace(/nipples?/gi,'').trim():'';
+  const arSzTag=areolaSize?lc(fw(areolaSize))+' areola':'';
+  const arTxTag=areolaText?lc(fw(areolaText))+' areola texture':'';
+  const assSzMap={'Barely there':'flat butt','Small':'small butt','Average':'average ass','Full':'full round ass','Large':'large ass','Huge':'huge ass','Obscene':'enormous ass','Flat':'flat butt','Inverted':'flat no ass'};
+  const assTag=assSzMap[assSize]||'';
+  const assShTag=assShape?lc(fw(assShape))+' ass shape':'';
+  const assPjTag=assProj?lc(fw(assProj)):'';
+  const assFmTag=assFirm?lc(fw(assFirm)):'';
+  const labTag=labiaSize?lc(fw(labiaSize))+' labia':'';
+  const thTag=thighThick?lc(fw(thighThick))+' thighs':'';
+  const thInTag=thighInner?lc(fw(thighInner)):'';
+  const stTag=stomachW?lc(fw(stomachW)):'';
+  const shaveMap={'Waxed/No Hair':'shaved, bare','Landing Strip':'landing strip','Fuzzy':'lightly natural','Full Bush':'full bush'};
+  const shaveTag=shaveMap[shave]||'';
+  const waistTag=waist?lc(cl(waist)).replace(/\b(ratio|distribution|pronounced|slight)\b/gi,'').trim():'';
+  const skinTag=skin?lc(skin.split(',').slice(0,2).join(',').replace(/\b(undertones?|complexion)\b/gi,'').trim()):'';
+  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
+  const faceMap={7:'pretty face',8:'very pretty face',9:'striking face, beautiful',10:'gorgeous face, stunning beauty'};
+  const faceTag=faceMap[ratingNum]||'';
+  const eyeTag=eyes?lc(cl(eyes)):'';
+  const hairTag=[lc(cl(hairCol)),lc(cl(hair))].filter(Boolean).join(' ');
+  const freckTag=freckles&&!/^no freckles/i.test(freckles)?'freckles':'';
+  const muscleTag=muscle?lc(fw(muscle)).replace(/\b(despite|from|without effort)\b/gi,'').trim():'';
+  const posMap={'Doggy Style':'doggy style, from behind','Missionary':'missionary','Cowgirl':'cowgirl, on top','Reverse Cowgirl':'reverse cowgirl','Prone Bone':'prone bone','Standing':'standing','On all fours':'on all fours','Bent over':'bent over','Laying down':'laying on back','Side':'laying on side'};
+  const posTag=posMap[position]||lc(position)||'';
+  const locMoodMap={
+    'City (Georgetown)':'urban interior','Dungeon (Castle)':'stone dungeon',
+    'Boat (Mini-yacht)':'boat interior','International (Airbnb)':'minimalist apartment',
+    'Secluded Ranch (WV)':'rustic interior','Condo (Downtown)':'modern apartment, city view',
+    'Shitty Apartment':'messy apartment','Suburbs (Davidsonville)':'suburban bedroom',
+    'Townhouse (VA)':'townhouse interior','School (QAS)':'school setting','Church (Baptist)':'church interior',
+  };
+  const locTag=locMoodMap[location]||'';
+
+  const parts=[];
+  const subjectParts=[amtTag,ageTag,bodyTag,ethnic].filter(Boolean);
+  if(subjectParts.length) parts.push(subjectParts.join(', '));
+  const physParts=[skinTag,freckTag,faceTag,eyeTag,hairTag].filter(Boolean);
+  if(physParts.length) parts.push(physParts.join(', '));
+  const brParts=[breastTag,brShTag,brFirmTag,nipSzTag,nipTyTag,nipClTag,arSzTag,arTxTag].filter(Boolean);
+  if(brParts.length) parts.push(brParts.join(', '));
+  const loParts=[assTag,assShTag,assPjTag,assFmTag,labTag,shaveTag].filter(Boolean);
+  if(loParts.length) parts.push(loParts.join(', '));
+  const lgParts=[thTag,thInTag,stTag,waistTag,muscleTag].filter(Boolean);
+  if(lgParts.length) parts.push(lgParts.join(', '));
+  if(posTag) parts.push(posTag);
+  if(locTag) parts.push(locTag);
+  parts.push('nude, fully naked');
+  parts.push('candid photo, amateur photo, natural lighting, shot on iPhone 15 Pro, handheld, slightly imperfect, no phone visible, real photo');
+  parts.push('photorealistic, sharp focus, detailed skin, 8k');
+
+  const el=document.getElementById('lustifyText');
+  if(el) el.textContent=parts.join(', ');
+}
+
+
 function showOutput(){
   recordSpin();
   document.getElementById('outputSection').classList.add('show');
   document.getElementById('spinBtn').disabled=true;
-  buildSDPrompt();generateNarrative();
+  buildSDPrompt();generateNarrative();buildLustifyPrompt();
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth'});
 }
 
