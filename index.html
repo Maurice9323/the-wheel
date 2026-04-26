@@ -8,9 +8,6 @@
 <meta name="theme-color" content="#05050e">
 <link rel="manifest" href="manifest.json">
 <title>The Wheel</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="The Wheel">
 <meta name="theme-color" content="#05050e">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&amp;family=Rajdhani:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
 <!-- Firebase SDK -->
@@ -206,7 +203,7 @@ canvas#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 50px 
 #wheelDetailPanel .wdp-seg .seg-w{color:var(--text3);font-size:.6rem;margin-left:auto;flex-shrink:0}
 #wheelDetailPanel .wdp-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.65rem;color:var(--text2);flex-shrink:0}
 
-.btn-spin{background:var(--accent);border:none;color:#fff;padding:16px 56px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;touch-action:manipulation}
+.btn-spin{background:var(--accent);border:none;color:#fff;padding:16px 56px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;transition:all .2s;touch-action:manipulation}
 .btn-spin:hover{background:#a50e17;box-shadow:0 0 30px rgba(200,18,28,.5)}
 .btn-spin:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
 .btn-skip{font-size:.72rem;padding:5px 12px;border-color:var(--gold);color:var(--gold)}
@@ -634,19 +631,6 @@ Clip Skip: 2</div>
       <button type="button" class="btn-copy" onclick="copyAll()" style="background:var(--gold);color:#000;border-color:var(--gold)">✦ Copy All</button>
     </div>
   </div>
-
-    <!-- Lustify V8 Prompt Section -->
-    <div class="output-section" style="margin-top:12px">
-      <div class="output-title" style="display:flex;align-items:center;justify-content:space-between">
-        <span>&#9889; Lustify V8 (Apex) Prompt</span>
-        <button type="button" class="btn-regen" onclick="buildLustifyPrompt()">&#8635; Regenerate</button>
-      </div>
-      <div style="font-size:.62rem;color:var(--text2);margin-bottom:6px;padding:0 2px">iPhone candid aesthetic &middot; natural language &middot; for Venice.ai</div>
-      <div class="output-text" id="lustifyText" style="font-size:.78rem;color:var(--text);line-height:1.7;word-break:break-word;user-select:all;white-space:pre-wrap;background:rgba(255,255,255,.02);padding:8px;border:1px solid var(--border);min-height:60px"></div>
-      <div class="output-actions" style="margin-top:6px">
-        <button type="button" class="btn-copy" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('lustifyText').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy Lustify Prompt',1200)})">Copy Lustify Prompt</button>
-      </div>
-    </div>
 </div>
 <!-- TEMPLATE PANEL -->
 <div class="tpl-overlay" id="tplOverlay" onclick="closeTemplatePanel()"></div>
@@ -1467,7 +1451,7 @@ Clip Skip: 2</div>
 </div>
 <!-- HISTORY PANEL -->
 <div class="overlay open" id="historyOverlay" onclick="closeHistoryPanel()"></div>
-<div class="side-panel" id="historyPanel">
+<div class="side-panel open" id="historyPanel">
   <div class="panel-head">
     <div class="panel-title">⏱ Spin History</div>
     <button type="button" class="close-x" onclick="closeHistoryPanel()">✕</button>
@@ -3727,7 +3711,7 @@ oral_enthusiasm:{name:"Oral Enthusiasm (Perform)",segments:[
   {label:'Emotionally Detached - Performs shallow only blank inside.',weight:10},
   {label:'Physically Repulsed - Gags involuntarily at depth.',weight:10},
   {label:'Limp Unresponsive - No effort beyond lips.',weight:10},
-  {label:'Completely Unwilling - Refuses to open or take any use.',weight:10},
+  {label:'Completely Unwilling - Refuses to open or take any use.',weight:10,branch:'CAT:Hair'},
 ]},
 oral_anatomy:{name:"Oral Make Up",segments:[
   {label:'Long Flexible Tongue - Extended muscle reaches full 7-inch depth easily.',weight:10},
@@ -3931,7 +3915,7 @@ hair_col_dark:{name:"Hair Color (Dark)",segments:[
   {label:'salt and pepper, natural grey',weight:5},
 ]},
 cup_size:{name:"Cup Size",segments:[
-  {label:'A',weight:8},
+  {label:'A',weight:8,branch:'CAT:Nipple'},
   {label:'B',weight:18},
   {label:'C',weight:30},
   {label:'D',weight:40},
@@ -3986,15 +3970,15 @@ breast_shape:{name:"Breast Shape",segments:[
   {label:'Pillow — very soft, spreads wide when lying down, loses shape without support',weight:14},
   {label:'Lateral spread — spreads dramatically to the sides when lying down',weight:12},
   {label:'Overflow — so large they spill over the sides of the chest and downward',weight:8},
-  {label:'Athletic — small and firm, sits high on developed pectoral, minimal tissue',weight:10,branch:'nipple_size'},
-  {label:'Perky — firm, upward-pointing regardless of size, defies gravity',weight:14,branch:'nipple_size'},
+  {label:'Athletic — small and firm, sits high on developed pectoral, minimal tissue',weight:10},
+  {label:'Perky — firm, upward-pointing regardless of size, defies gravity',weight:14},
   {label:'Buoyant — larger than expected but sits higher than their size would suggest',weight:10},
   {label:'Stuck on — very round and firm, unnaturally high and rigid, implant aesthetic',weight:8},
-  {label:'Deflated — skin without much volume, stretched, like after weight loss',weight:8,branch:'nipple_size'},
+  {label:'Deflated — skin without much volume, stretched, like after weight loss',weight:8},
   {label:'Post-feeding — deflated and stretched with larger areola, lost volume but kept skin',weight:6},
   {label:'Stretch marked — stretch marks across the breast tissue itself from growth',weight:8},
   {label:'Veiny — veins visibly present through the skin especially toward the top',weight:8},
-  {label:'Barely there — almost flat, just a slight mound with nipple present',weight:8,branch:'nipple_size'},
+  {label:'Barely there — almost flat, just a slight mound with nipple present',weight:8},
 ]},
 breast_position:{name:"Breast Position",segments:[
   {label:'High on chest — sit near the collarbone, well above where average sits',weight:14},
@@ -4190,15 +4174,15 @@ breast_enthusiasm:{name:"Breast Enthusiasm (Receive)",segments:[
   {label:'Mildly Enjoying Light - Accepts shallow massage only.',weight:10},
   {label:'Neutral Acceptance - Still during any depth.',weight:10},
   {label:'Slightly Hesitant - Flinches at deep pressure.',weight:10},
-  {label:'Reluctant Compliance - Allows but unenthused.',weight:10,branch:'lactation_volume'},
+  {label:'Reluctant Compliance - Allows but unenthused.',weight:10},
   {label:'Mildly Averse Squeeze - Tension at firm compression.',weight:10},
   {label:'Uncomfortable Resistance - Pulls away from deep use.',weight:10},
-  {label:'Strongly Disliking Core - Grimaces at nipple depth.',weight:10,branch:'lactation_volume'},
-  {label:'Actively Covering - Arms block gland use.',weight:10,branch:'lactation_volume'},
+  {label:'Strongly Disliking Core - Grimaces at nipple depth.',weight:10},
+  {label:'Actively Covering - Arms block gland use.',weight:10,branch:'CAT:Ass'},
   {label:'Fearful Sensitivity - Anxious about internal pressure.',weight:10},
-  {label:'Emotionally Detached - Blank during any handling.',weight:10,branch:'lactation_volume'},
-  {label:'Physically Unresponsive - No reaction to depth.',weight:10,branch:'lactation_volume'},
-  {label:'Completely Unwilling - Refuses any breast use.',weight:10,branch:'lactation_volume'},
+  {label:'Emotionally Detached - Blank during any handling.',weight:10},
+  {label:'Physically Unresponsive - No reaction to depth.',weight:10},
+  {label:'Completely Unwilling - Refuses any breast use.',weight:10,branch:'CAT:Ass'},
 ]},
 breast_anatomy:{name:"Breast Anatomical Variations",segments:[
   {label:'Dense Glandular Lobes - Thick packed tissue for deep compression feel.',weight:10},
@@ -4265,7 +4249,7 @@ breast_compression:{name:"Breast Compression Depth & Response",segments:[
   {label:'Free-Use Unlimited Depth - Offers maximum glandular play anyway.',weight:10},
 ]},
 lactation_volume:{name:"Lactation Milk Volume",segments:[
-  {label:'Zero Volume - Completely dry, no milk at all.',weight:10,branch:'labia_size'},
+  {label:'Zero Volume - Completely dry, no milk at all.',weight:10,branch:'CAT:Ass'},
   {label:'Tiny Droplets - 1-2 drops per session, minimal leakage.',weight:10},
   {label:'Light Dribble - Small trickle, under 0.5 oz total.',weight:10},
   {label:'Moderate Stream - Steady flow, 0.5-1 oz per breast.',weight:10},
@@ -4273,27 +4257,27 @@ lactation_volume:{name:"Lactation Milk Volume",segments:[
   {label:'Abundant Flow - 2-4 oz continuous during suckling.',weight:10},
   {label:'Flooding Volume - 4-6 oz per session, soaking.',weight:10},
   {label:'Pulsing Sprays - Intermittent jets totaling 3-5 oz.',weight:10},
-  {label:'Minimal Induced Drops - Hormone-triggered tiny amounts only.',weight:10,branch:'labia_size'},
+  {label:'Minimal Induced Drops - Hormone-triggered tiny amounts only.',weight:10,branch:'CAT:Ass'},
   {label:'Balanced Nursing Volume - Ideal 1-3 oz for feeding feel.',weight:10},
   {label:'Excessive Over-Production - 6+ oz uncontrollable flood.',weight:10},
-  {label:'Weak Gradual Ooze - Slow build to 0.5 oz max.',weight:10,branch:'labia_size'},
+  {label:'Weak Gradual Ooze - Slow build to 0.5 oz max.',weight:10,branch:'CAT:Ass'},
   {label:'Explosive Let-Down - Sudden high volume burst 4+ oz.',weight:10},
-  {label:'Sparse Occasional Leak - Random drops, low total.',weight:10,branch:'labia_size'},
+  {label:'Sparse Occasional Leak - Random drops, low total.',weight:10,branch:'CAT:Ass'},
   {label:'Full Engorged Release - 5-7 oz when stimulated heavily.',weight:10},
   {label:'Light Sustained Drip - Continuous low volume over time.',weight:10},
-  {label:'No Let-Down Reflex - Volume stays internal, zero external.',weight:10,branch:'labia_size'},
+  {label:'No Let-Down Reflex - Volume stays internal, zero external.',weight:10,branch:'CAT:Ass'},
   {label:'Variable Per Breast - One side heavy, other light.',weight:10},
   {label:'Over-Stimulated Gush - Excessive 7+ oz messy volume.',weight:10},
-  {label:'Atrophied Dry Glands - Permanently zero volume.',weight:10,branch:'labia_size'},
-  {label:'Colostrum-Like Thick Drops - Small viscous early-lactation style output, low volume.',weight:10,branch:'labia_size'},
+  {label:'Atrophied Dry Glands - Permanently zero volume.',weight:10,branch:'CAT:Ass'},
+  {label:'Colostrum-Like Thick Drops - Small viscous early-lactation style output, low volume.',weight:10,branch:'CAT:Ass'},
   {label:'Steady Mid-Range Supply - Consistent 2-3 oz per breast with strong let-down.',weight:10},
   {label:'Oversupply Flood - 8-10 oz rapid release causing constant leakage.',weight:10},
   {label:'Weak One-Sided Production - Only one breast yields noticeable volume (1-2 oz).',weight:10},
   {label:'Pulsed Let-Down Bursts - Multiple rhythmic releases totaling 4-6 oz.',weight:10},
-  {label:'Minimal Maintenance Flow - Barely enough to sustain, under 1 oz total.',weight:10,branch:'labia_size'},
+  {label:'Minimal Maintenance Flow - Barely enough to sustain, under 1 oz total.',weight:10,branch:'CAT:Ass'},
   {label:'Engorgement Pressure Surge - Painful heavy 6-8 oz release upon stimulation.',weight:10},
   {label:'Gradual Build to Peak - Starts low then reaches 5+ oz mid-session.',weight:10},
-  {label:'Intermittent Sparse Output - Unpredictable tiny amounts with long dry periods.',weight:10,branch:'labia_size'},
+  {label:'Intermittent Sparse Output - Unpredictable tiny amounts with long dry periods.',weight:10,branch:'CAT:Ass'},
   {label:'Hyper-Production Overflow - Extreme 10+ oz uncontrollable soaking flood.',weight:10},
 ]},
 lactation_taste:{name:"Lactation Milk Taste",segments:[
@@ -4559,7 +4543,7 @@ anal_enthusiasm:{name:"Anal Enthusiasm (Receive)",segments:[
   {label:'Fearful Of Curve - Panics at deeper attempts.',weight:10},
   {label:'Emotionally Closed - Allows shallow only.',weight:10},
   {label:'Physically Limp Refusal - Motionless beyond entry.',weight:10},
-  {label:'Completely Unwilling - Verbal/physical block of any anal use.',weight:10,branch:'cup_size'},
+  {label:'Completely Unwilling - Verbal/physical block of any anal use.',weight:10,branch:'CAT:Thighs'},
 ]},
 anal_anatomy:{name:"Anal Make Up",segments:[
   {label:'Strong Dual Sphincter Rings - Two tight bands for layered grip.',weight:10},
@@ -4841,13 +4825,13 @@ vaginal_enthusiasm:{name:"Vaginal Enthusiasm (Receive)",segments:[
   {label:'Hesitant but Willing - Slow cautious opening despite doubts.',weight:10},
   {label:'Reluctant Compliance - Goes along while clearly unenthused.',weight:10},
   {label:'Mildly Averse - Visible tension and minimal participation.',weight:10},
-  {label:'Uncomfortable Resistance - Body pulls away slightly during use.',weight:10,branch:'squirt_anatomy'},
-  {label:'Strongly Disliking - Grimacing and verbal protests.',weight:10,branch:'squirt_anatomy'},
-  {label:'Actively Avoiding - Twists hips to limit or escape use.',weight:10,branch:'squirt_anatomy'},
-  {label:'Fearful Tension - Rigid muscles and anxious breathing.',weight:10,branch:'squirt_anatomy'},
-  {label:'Emotionally Detached - Blank expression with zero reaction.',weight:10,branch:'squirt_anatomy'},
-  {label:'Physically Unresponsive - Limp and motionless during entire act.',weight:10,branch:'squirt_anatomy'},
-  {label:'Completely Unwilling - Verbal and physical refusal of any vaginal use.',weight:10,branch:'squirt_anatomy'},
+  {label:'Uncomfortable Resistance - Body pulls away slightly during use.',weight:10},
+  {label:'Strongly Disliking - Grimacing and verbal protests.',weight:10},
+  {label:'Actively Avoiding - Twists hips to limit or escape use.',weight:10,branch:'CAT:PhysicalDetail'},
+  {label:'Fearful Tension - Rigid muscles and anxious breathing.',weight:10},
+  {label:'Emotionally Detached - Blank expression with zero reaction.',weight:10},
+  {label:'Physically Unresponsive - Limp and motionless during entire act.',weight:10},
+  {label:'Completely Unwilling - Verbal and physical refusal of any vaginal use.',weight:10,branch:'CAT:PhysicalDetail'},
 ]},
 vaginal_anatomy:{name:"Vaginal Make Up",segments:[
   {label:'Dense Rugae Forest - Thick packed folds throughout canal for max texture.',weight:10},
@@ -4914,11 +4898,11 @@ vaginal_depth:{name:"Vaginal Depth & Capacity",segments:[
 ]},
 squirt_anatomy:{name:"Squirting Anatomical Variations",segments:[
   {label:'Prominent Skene’s Glands - Larger paraurethral glands produce noticeable milky fluid.',weight:10},
-  {label:'Minimal Skene’s Glands - Small glands contribute little to no ejaculate.',weight:10,branch:'squirt_fluid'},
+  {label:'Minimal Skene’s Glands - Small glands contribute little to no ejaculate.',weight:10,branch:'CAT:PhysicalDetail'},
   {label:'Thick Urethral Sponge - Swollen anterior wall tissue highly responsive to pressure.',weight:10},
   {label:'Thin Urethral Sponge - Subtle sponge with lower fluid potential.',weight:10},
   {label:'High Bladder Neck Sensitivity - Easy transudate release during intense contractions.',weight:10},
-  {label:'Low Bladder Involvement - Fluid stays mostly glandular with minimal urine mix.',weight:10,branch:'squirt_fluid'},
+  {label:'Low Bladder Involvement - Fluid stays mostly glandular with minimal urine mix.',weight:10},
   {label:'Elastic Urethral Ducts - Stretchable ducts allow strong expulsion streams.',weight:10},
   {label:'Narrow Urethral Opening - Tighter meatus creates pressurized spurts.',weight:10},
   {label:'Variable Gland Size - Skene’s glands enlarge significantly with arousal.',weight:10},
@@ -4926,12 +4910,12 @@ squirt_anatomy:{name:"Squirting Anatomical Variations",segments:[
   {label:'Deep G-Spot Connection - Anterior wall directly linked to strong glandular response.',weight:10},
   {label:'Shallow Sponge Placement - Easier surface-level triggering of fluid.',weight:10},
   {label:'Abundant Vascular Supply - Increased blood flow leads to heavier flooding.',weight:10},
-  {label:'Sparse Vascular Network - Lower fluid volume even at high arousal.',weight:10,branch:'squirt_fluid'},
+  {label:'Sparse Vascular Network - Lower fluid volume even at high arousal.',weight:10},
   {label:'Strong Pelvic Floor Link - Contractions easily force fluid expulsion.',weight:10},
   {label:'Weak Pelvic Floor - Reduced ability to build expulsion pressure.',weight:10},
   {label:'Asymmetrical Skene’s - One side gland more active than the other.',weight:10},
   {label:'Integrated Bladder Response - Heavy squirting with noticeable volume.',weight:10},
-  {label:'Isolated Glandular Only - Pure small-volume female ejaculation.',weight:10,branch:'squirt_fluid'},
+  {label:'Isolated Glandular Only - Pure small-volume female ejaculation.',weight:10},
 ]},
 squirt_sensation_me:{name:"Squirting Sensation (For Me)",segments:[
   {label:'Warm Gentle Flood - Mild warm trickle coating the penis pleasantly.',weight:10},
@@ -5012,7 +4996,7 @@ squirt_threshold:{name:"Squirting Trigger Threshold",segments:[
   {label:'Minimal Fluid Always - Tiny dribble even at max stimulation.',weight:10},
   {label:'Explosive After Edging - Builds then erupts massively.',weight:10},
   {label:'Painfully High Threshold - Requires near-painful pressure to trigger.',weight:10},
-  {label:'No Trigger Possible - Anatomically unable or psychologically blocked.',weight:10},
+  {label:'No Trigger Possible - Anatomically unable or psychologically blocked.',weight:10,branch:'CAT:PhysicalDetail'},
 ]},
 squirt_psychology:{name:"Squirting Psychological Aspects",segments:[
   {label:'Euphoric Loss-of-Control High - Mentally thrilled by the powerful release.',weight:10},
@@ -6166,39 +6150,19 @@ function nextEnabled(wid){
 
 function computeNext(fromId,label,seg){
   // ── LABEL ROUTING OVERRIDES ──
-  if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
-  if(fromId==='breast_sensation_her_gland'){const fs=['Numbing Tissue Ache','Intense Internal Stretch','Sharp Painful Core Pinch','Complete Glandular Numbness'];if(fs.some(l=>label.startsWith(l)))return nextEnabled('breast_sensation_her_nipple');}
-  if(fromId==='breast_sensation_her_nipple'){const fs=['Numbing Nerve Ache','Sharp Painful Nipple Pinch','Intense Localized Fire','Complete Nipple Revulsion'];if(fs.some(l=>label.startsWith(l)))return nextEnabled('breast_enthusiasm');}
-  if(fromId==='breast_enthusiasm'){if(label.startsWith('Actively Covering')||label.startsWith('Completely Unwilling'))return nextEnabled('ass_size');if(label.startsWith('Reluctant Compliance')||label.startsWith('Strongly Disliking Core'))return nextEnabled('breast_psychology');}
-  if(fromId==='lactation_volume'){const sk=['Zero Volume','Minimal Induced Drops','Weak Gradual Ooze','Sparse Occasional Leak','No Let-Down Reflex','Atrophied Dry Glands','Colostrum-Like Thick Drops','Minimal Maintenance Flow','Intermittent Sparse Output'];if(sk.some(l=>label.startsWith(l)))return nextEnabled('ass_size');}
-  if(fromId==='anal_sensation_her'&&label.startsWith('Complete Anal Revulsion'))return nextEnabled('thigh_thickness');
-  if(fromId==='anal_enthusiasm'&&label.startsWith('Completely Unwilling'))return nextEnabled('thigh_thickness');
-  if(fromId==='anal_psychology'&&label.startsWith('Complete Psychological Refusal'))return nextEnabled('thigh_thickness');
-  if(fromId==='vaginal_enthusiasm'){if(label.startsWith('Completely Unwilling'))return nextEnabled('shave');const fs=['Uncomfortable Resistance','Strongly Disliking','Actively Avoiding','Fearful Tension','Emotionally Detached','Physically Unresponsive'];if(fs.some(l=>label.startsWith(l)))return nextEnabled('vaginal_psychology');}
-  if(fromId==='squirt_anatomy'){const sk=['Minimal Skene','Low Bladder Involvement','Sparse Vascular Network','Isolated Glandular Only'];if(sk.some(l=>label.startsWith(l)))return nextEnabled('shave');return nextEnabled('squirt_threshold');}
-  if(fromId==='squirt_sensation_her'){const fs=['Irritating Urethral Burn','Shame-Linked Revulsion','Complete Internal Deadness'];if(fs.some(l=>label.startsWith(l)))return nextEnabled('squirt_sensation_me');return nextEnabled('squirt_sensation_me');}
-  if(fromId==='squirt_enthusiasm'){if(label.startsWith('Actively Holding Back')||label.startsWith('Physically Resistant'))return nextEnabled('shave');return nextEnabled('squirt_anatomy');}
-  if(fromId==='squirt_threshold'&&label.startsWith('No Trigger Possible'))return nextEnabled('shave');
-  if(fromId==='squirt_psychology'&&label.startsWith('Trauma-Linked Block'))return nextEnabled('shave');
-  if(fromId==='oral_enthusiasm'&&label.startsWith('Completely Unwilling'))return nextEnabled(hairW());
-  if(fromId==='oral_psychology'&&label.startsWith('Complete Psychological Refusal'))return nextEnabled(hairW());
-  if(fromId==='kink'){const _dom=['Super Dom','Med Dom','Light Dom','Gentle Dom'];if(_dom.includes(label))return nextEnabled('pegging_enthusiasm');return nextEnabled('mode');}
-  if(fromId==='general_abuse')return nextEnabled('mode');
-  if(fromId==='pegging_sensation'){const _kr=results.find(r=>r.wheelId==='kink')?.label||'';if(_kr==='Super Dom')return nextEnabled('general_abuse');return nextEnabled('mode');}
-  // ── END LABEL OVERRIDES ──
-
-  // ── LABEL ROUTING OVERRIDES ──
   // These run before segment branch checks — immune to template system overwrites.
 
   // breast_sensation_her_gland: negative segments should NOT skip to lactation_volume
   if(fromId==='breast_sensation_her_gland'){
     const fs=['Numbing Tissue Ache','Intense Internal Stretch','Sharp Painful Core Pinch','Complete Glandular Numbness'];
     if(fs.some(l=>label.startsWith(l)))return nextEnabled('breast_sensation_her_nipple');
+    return nextEnabled('breast_sensation_her_nipple');
   }
   // breast_sensation_her_nipple: negative segments should NOT skip to lactation_volume
   if(fromId==='breast_sensation_her_nipple'){
     const fs=['Numbing Nerve Ache','Sharp Painful Nipple Pinch','Intense Localized Fire','Complete Nipple Revulsion'];
     if(fs.some(l=>label.startsWith(l)))return nextEnabled('breast_enthusiasm');
+    return nextEnabled('lactation_volume');
   }
   // breast_enthusiasm: specific segments route to ass_size, reluctant/disliking continue normally
   if(fromId==='breast_enthusiasm'){
@@ -6260,7 +6224,7 @@ function computeNext(fromId,label,seg){
     return nextEnabled('mode');
   }
   // ── END LABEL OVERRIDES ──
-  if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
+  if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Nipple')return nextEnabled('nipple_size');if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
   if(fromId==='amount'&&label==='Start over')return'RESTART';
   if(fromId==='wildcard'){
     const wcRerollMap={'reroll body wheel':'body','reroll kink wheel':'kink','reroll location wheel':'location','reroll face rating':'face','reroll ass':'ass_size','reroll breast':'cup_size','reroll lower':'labia_size'};
@@ -6392,7 +6356,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='breast_enthusiasm')return nextEnabled('breast_psychology');
   if(fromId==='breast_anatomy')return nextEnabled('breast_compression');
   if(fromId==='breast_psychology')return nextEnabled('breast_anatomy');
-  if(fromId==='breast_compression')return nextEnabled('lactation_volume');
+  if(fromId==='breast_compression')return nextEnabled('breast_sensation_her_gland');
   if(fromId==='lactation_volume')return nextEnabled('lactation_taste');
   if(fromId==='lactation_taste')return nextEnabled('milk_play');
   if(fromId==='milk_play'){
@@ -7500,124 +7464,11 @@ function showWildcardBanner(msg){
   setTimeout(()=>banner.remove(),2200);
 }
 
-function buildLustifyPrompt(){
-  const race=gv('race');
-  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub');
-  const body=gv('body'),age=gv('age'),height=gv('height');
-  const skin=ga('skin_light','skin_medium','skin_dark');
-  const eyes=ga('eyes_light','eyes_medium','eyes_dark');
-  const hair=ga('hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark');
-  const hairCol=ga('hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark');
-  const faceShape=gv('face_shape'),faceRating=gv('face');
-  const lips=ga('lips_light','lips_medium','lips_dark');
-  const cup=gv('cup_size'),breastShape=gv('breast_shape'),breastFirm=gv('breast_firmness');
-  const nipSize=gv('nipple_size'),nipType=gv('nipple_type'),nipCol=ga('nipple_col_light','nipple_col_medium','nipple_col_dark');
-  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture');
-  const assSize=gv('ass_size'),assShape=gv('ass_shape'),assProj=gv('ass_projection'),assFirm=gv('ass_firmness');
-  const labiaSize=gv('labia_size');
-  const thighThick=gv('thigh_thickness'),thighInner=gv('thigh_inner');
-  const stomachW=gv('stomach');
-  const waist=ga('waist_thin','waist_mid','waist_bbw');
-  const shave=gv('shave');
-  const muscle=ga('muscle_thin','muscle_mid','muscle_bbw');
-  const freckles=gv('freckles');
-  const stretch=ga('stretch_thin','stretch_mid','stretch_bbw');
-  const cellulite=ga('cellulite_thin','cellulite_mid','cellulite_bbw');
-  const position=gv('position'),location=gv('location');
-  const amount=gv('amount');
-
-  const ethnic=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||race.toLowerCase();
-  const cl=s=>s?s.split(',')[0].replace(/\s{2,}/g,' ').trim():'';
-  const fw=s=>s?s.split(/[—,]/)[0].trim():'';
-  const lc=s=>s?s.toLowerCase():'';
-
-  const ageMap={'18-19':'18 year old','20-24':'early 20s','25-29':'mid 20s','30-35':'early 30s','36-40':'late 30s','41-50':'40s','51-60':'50s','60+':'60s'};
-  const ageTag=ageMap[age]||'';
-  const htMap={"<4\'0\"":"very short","4\'1\"-4\'5\"":"short","4\'6\"-4\'10\"":"short","4\'11\"-5\'2\"":"5ft1","5\'3\"-5\'7\"":"5ft5","5\'8\"-5\'11\"":"tall","6\'0\"-6\'5\"":"very tall",">6\'6\"":"extremely tall"};
-  const htTag=htMap[height]||'';
-  const amtMap={'One':'solo','2-3':'two women','4-7':'group of women','8-10':'multiple women','11+':'many women'};
-  const amtTag=amtMap[amount]||'solo';
-  const bodyMap={
-    'Bulimic':'extremely underweight','Anorexic':'very thin, gaunt','Thin':'lean slim figure','Slim':'slim',
-    'Petite':'petite, small frame','Slim Thick':'slim waist, thick thighs, hourglass','Average':'average build',
-    'Mid Size':'medium build, soft curves','Mid Thick':'medium thick, curvy','Thick':'thick curvy figure, full hips',
-    'Thicker':'very thick, wide hips','Thickest':'extremely thick','Chubby':'chubby, round figure',
-    'Meatball':'very chubby','Chunky':'heavyset','Curvy':'curvy hourglass',
-    'Upside Down Triangle':'broad shoulders, narrow hips','BBW':'bbw, plus size',
-    'SSBBW':'ssbbw, super plus size','USSBBW':'extremely plus size',
-  };
-  const bodyTag=bodyMap[body]||lc(body)||'';
-  const cupMap={
-    'A':'small breasts, A cup','B':'small perky breasts, B cup','C':'medium breasts, C cup',
-    'D':'large breasts, D cup','DD':'large breasts, DD cup','DDD':'very large breasts, DDD cup',
-    'E':'huge breasts, E cup','F':'huge breasts, F cup','G':'massive breasts, G cup',
-    'H':'enormous breasts, H cup','I':'enormous breasts, I cup','J':'massive heavy breasts, J cup',
-    'K':'gigantic breasts, K cup','L':'gigantic breasts, L cup','M':'impossibly large breasts, M cup','N+':'cartoonishly large breasts',
-  };
-  const breastTag=cupMap[cup]||'';
-  const brShTag=breastShape?lc(fw(breastShape))+' shaped breasts':'';
-  const brFirmTag=breastFirm?lc(fw(breastFirm))+' breasts':'';
-  const nipSzTag=nipSize?lc(fw(nipSize)):'';
-  const nipTyTag=nipType?lc(fw(nipType)):'';
-  const nipClTag=nipCol?lc(fw(nipCol)).replace(/nipples?/gi,'').trim():'';
-  const arSzTag=areolaSize?lc(fw(areolaSize))+' areola':'';
-  const arTxTag=areolaText?lc(fw(areolaText))+' areola texture':'';
-  const assSzMap={'Barely there':'flat butt','Small':'small butt','Average':'average ass','Full':'full round ass','Large':'large ass','Huge':'huge ass','Obscene':'enormous ass','Flat':'flat butt','Inverted':'flat no ass'};
-  const assTag=assSzMap[assSize]||'';
-  const assShTag=assShape?lc(fw(assShape))+' ass shape':'';
-  const assPjTag=assProj?lc(fw(assProj)):'';
-  const assFmTag=assFirm?lc(fw(assFirm)):'';
-  const labTag=labiaSize?lc(fw(labiaSize))+' labia':'';
-  const thTag=thighThick?lc(fw(thighThick))+' thighs':'';
-  const thInTag=thighInner?lc(fw(thighInner)):'';
-  const stTag=stomachW?lc(fw(stomachW)):'';
-  const shaveMap={'Waxed/No Hair':'shaved, bare','Landing Strip':'landing strip','Fuzzy':'lightly natural','Full Bush':'full bush'};
-  const shaveTag=shaveMap[shave]||'';
-  const waistTag=waist?lc(cl(waist)).replace(/\b(ratio|distribution|pronounced|slight)\b/gi,'').trim():'';
-  const skinTag=skin?lc(skin.split(',').slice(0,2).join(',').replace(/\b(undertones?|complexion)\b/gi,'').trim()):'';
-  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
-  const faceMap={7:'pretty face',8:'very pretty face',9:'striking face, beautiful',10:'gorgeous face, stunning beauty'};
-  const faceTag=faceMap[ratingNum]||'';
-  const eyeTag=eyes?lc(cl(eyes)):'';
-  const hairTag=[lc(cl(hairCol)),lc(cl(hair))].filter(Boolean).join(' ');
-  const freckTag=freckles&&!/^no freckles/i.test(freckles)?'freckles':'';
-  const muscleTag=muscle?lc(fw(muscle)).replace(/\b(despite|from|without effort)\b/gi,'').trim():'';
-  const posMap={'Doggy Style':'doggy style, from behind','Missionary':'missionary','Cowgirl':'cowgirl, on top','Reverse Cowgirl':'reverse cowgirl','Prone Bone':'prone bone','Standing':'standing','On all fours':'on all fours','Bent over':'bent over','Laying down':'laying on back','Side':'laying on side'};
-  const posTag=posMap[position]||lc(position)||'';
-  const locMoodMap={
-    'City (Georgetown)':'urban interior','Dungeon (Castle)':'stone dungeon',
-    'Boat (Mini-yacht)':'boat interior','International (Airbnb)':'minimalist apartment',
-    'Secluded Ranch (WV)':'rustic interior','Condo (Downtown)':'modern apartment, city view',
-    'Shitty Apartment':'messy apartment','Suburbs (Davidsonville)':'suburban bedroom',
-    'Townhouse (VA)':'townhouse interior','School (QAS)':'school setting','Church (Baptist)':'church interior',
-  };
-  const locTag=locMoodMap[location]||'';
-
-  const parts=[];
-  const subjectParts=[amtTag,ageTag,htTag,bodyTag,ethnic].filter(Boolean);
-  if(subjectParts.length) parts.push(subjectParts.join(', '));
-  const physParts=[skinTag,freckTag,faceTag,eyeTag,hairTag].filter(Boolean);
-  if(physParts.length) parts.push(physParts.join(', '));
-  const brParts=[breastTag,brShTag,brFirmTag,nipSzTag,nipTyTag,nipClTag,arSzTag,arTxTag].filter(Boolean);
-  if(brParts.length) parts.push(brParts.join(', '));
-  const loParts=[assTag,assShTag,assPjTag,assFmTag,labTag,shaveTag].filter(Boolean);
-  if(loParts.length) parts.push(loParts.join(', '));
-  const lgParts=[thTag,thInTag,stTag,waistTag,muscleTag].filter(Boolean);
-  if(lgParts.length) parts.push(lgParts.join(', '));
-  if(posTag) parts.push(posTag);
-  if(locTag) parts.push(locTag);
-  parts.push('nude, fully naked');
-  parts.push('candid photo, amateur photo, natural lighting, shot on iPhone 15 Pro, handheld, slightly imperfect, no phone visible, real photo');
-  parts.push('photorealistic, sharp focus, detailed skin, 8k');
-
-  document.getElementById('lustifyText').textContent=parts.join(', ');
-}
-
 function showOutput(){
   recordSpin();
   document.getElementById('outputSection').classList.add('show');
   document.getElementById('spinBtn').disabled=true;
-  buildSDPrompt();generateNarrative();buildLustifyPrompt();
+  buildSDPrompt();generateNarrative();
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth'});
 }
 
@@ -8075,8 +7926,10 @@ function copyPart(p){
 }
 
 function generateNarrative(){
+  // ── Pull every wheel result ──
   const race=gv('race');
-  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub');
+  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian',
+    'persian_sub','indian_sub','native_sub','pacific_sub');
   const originKeys=Object.keys(WHEEL_DEFS).filter(k=>k.startsWith('origin_'));
   const origin=ga(...originKeys);
   const age=gv('age'),height=gv('height'),body=gv('body');
@@ -8087,244 +7940,318 @@ function generateNarrative(){
   const nose=ga('nose_light','nose_medium','nose_dark');
   const eyebrows=ga('eyebrows_light','eyebrows_medium','eyebrows_dark');
   const lips=ga('lips_light','lips_medium','lips_dark');
-  const teeth=gv('teeth'),ears=gv('ears'),neck=gv('neck');
-  const faceShape=gv('face_shape'),faceRating=gv('face');
+  const teeth=gv('teeth');
+  const ears=gv('ears');
+  const neck=gv('neck');
+  const faceShape=gv('face_shape');
+  const faceRating=gv('face');
   const hair=ga('hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark');
   const hairCol=ga('hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark');
   const stretch=ga('stretch_thin','stretch_mid','stretch_bbw');
   const cellulite=ga('cellulite_thin','cellulite_mid','cellulite_bbw');
   const muscle=ga('muscle_thin','muscle_mid','muscle_bbw');
   const waist=ga('waist_thin','waist_mid','waist_bbw');
-  const shave=gv('shave'),hands=gv('hands'),feet=gv('feet');
-  const nipSize=gv('nipple_size'),nipType=gv('nipple_type'),nipPlacement=gv('nipple_placement');
-  const nipCol=ga('nipple_col_light','nipple_col_medium','nipple_col_dark');
-  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture'),areolaShape=gv('areola_shape');
-  const assSize=gv('ass_size'),assShape=gv('ass_shape'),assProj=gv('ass_projection'),assFirm=gv('ass_firmness');
-  const assTransition=gv('ass_transition'),assSkinTex=gv('ass_skin_texture'),assBodyHair=gv('ass_body_hair');
-  const cup=gv('cup_size'),breastShape=gv('breast_shape'),breastPos=gv('breast_position');
-  const breastFirm=gv('breast_firmness'),breastProj=gv('breast_projection');
-  const thighThick=gv('thigh_thickness'),thighShape=gv('thigh_shape'),thighInner=gv('thigh_inner'),thighTex=gv('thigh_texture');
-  const stomachW=gv('stomach'),legsW=gv('legs'),backW=gv('back'),collarboneW=gv('collarbone');
-  const cleavageW=gv('cleavage'),bodyHairW=gv('body_hair');
-  const labiaSize=gv('labia_size'),labiaCol=ga('labia_col_light','labia_col_medium','labia_col_dark');
+  const shave=gv('shave');
+  const hands=gv('hands');
+  const feet=gv('feet');
+  const nipSize=gv('nipple_size');
+  const nipType=gv('nipple_type');
   const personality=gv('personality'),financial=gv('financial'),sexExp=gv('sex_exp');
-  const acquired=gv('acquired'),mentalState=gv('mental_state'),emotional=gv('emotional'),bondThreat=gv('bond_threat');
+  const acquired=gv('acquired'),mentalState=gv('mental_state');
+  const emotional=gv('emotional'),bondThreat=gv('bond_threat');
   const mode=gv('mode'),kink=gv('kink'),length=gv('length');
   const disobedience=gv('disobedience'),punishment=gv('punishment');
-  const skinSoft=gv('skin_soft'),natScent=gv('nat_scent'),skinTemp=gv('skin_temp'),touchResp=gv('touch_resp');
+  const skinSoft=gv('skin_soft'),natScent=gv('nat_scent');
+  const skinTemp=gv('skin_temp'),touchResp=gv('touch_resp');
   const timeDay=gv('time_day'),season=gv('season'),location=gv('location');
-  const favPart=gv('fav_part'),education=gv('education'),intelligence=gv('intelligence'),streetSmarts=gv('street_smarts');
-  const voiceW=gv('voice'),languageW=gv('language');
+  const favPart=gv('fav_part'),kinkMode=gv('kink');
 
-  const ethnicLabel=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||race.toLowerCase();
-  const ethnicShort=ethnicLabel.replace(/ woman$/,'');
+  // ── Helpers ──
+  const ethnicLabel=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||`${race.toLowerCase()} woman`;
+  const ethnicShort=ethnicLabel.replace(' woman','');
   const originCity=origin?origin.split('—')[0].trim().split(',')[0].trim():'';
-  const cl=s=>s?s.split(',')[0].replace(/\s{2,}/g,' ').trim():'';
-  const fw=s=>s?s.split(/[—,]/)[0].trim():'';
-  const lc=s=>s?s.toLowerCase():'';
+  const clean=s=>s?s.split(',')[0].replace(/\s{2,}/g,' ').trim():'';
 
-  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
-  const ratingProse={1:'plain',2:'plain',3:'ordinary',4:'ordinary',5:'unremarkable',6:'pleasant enough',7:'pretty',8:'very pretty',9:'striking',10:'beautiful'};
-  const faceProse=ratingProse[ratingNum]||'';
-
+  // ── Acquisition map ──
   const acqMap={
-    'met organically, mutual situation':'They came together the way people do — by circumstance.',
-    'introduced through a mutual':'Someone made the introduction. That was all it took.',
-    'online, social media or app':'She came to him through a screen. The distance collapsed quickly.',
-    'work or school setting':'She was already in his orbit before anything started.',
-    'purchased or traded':'She was acquired. A transaction, uncomplicated.',
-    'taken by force':'She had no say in it.',
-    'inherited from someone else':'She passed to him from someone else. Already changed before she arrived.',
-    'she came to you':'She came on her own. Whether that was freedom or a trap is not clear.',
-    'blackmailed into the situation':'She had something to lose. He made sure she understood that.',
-    'bet or won in a game':'She was the prize. He won.',
-    'was already in the household':'She was already there when the arrangement shifted.',
-    'rescued and now dependent':'He pulled her out of something worse. That debt does not expire.',
-    'arranged by family':'The arrangement was made before either of them had much say.',
-    'groomed over long period':'He was patient about it. Patience is its own kind of violence.',
-    'wrong place wrong time':'She was simply in the wrong place.',
+    'met organically, mutual situation':'She came into your life the way these things sometimes do — mutual, unremarkable at first.',
+    'introduced through a mutual':'Someone you trusted made the introduction. You took it from there.',
+    'online, social media or app':'You found her online. The rest moved quickly.',
+    'work or school setting':'She was already in your orbit before you made your move.',
+    'purchased or traded':'She was acquired. A transaction. Nothing more, nothing less.',
+    'taken by force':'She did not come willingly. She had no say in it.',
+    'inherited from someone else':'She passed to you from someone else. Already broken in before she arrived.',
+    'she came to you':'She came to you on her own. Whether that was a choice or a trap depends on who you ask.',
+    'blackmailed into the situation':'She had something to lose. You made sure she understood that.',
+    'bet or won in a game':'She was the prize. You won.',
+    'was already in the household':'She was already there when the arrangement changed.',
+    'rescued and now dependent':'You pulled her out of something worse. Now she owes you everything.',
+    'arranged by family':'The arrangement was made before either of you had much say.',
+    'groomed over long period':'You were patient. It paid off.',
+    'wrong place wrong time':'She was simply there at the wrong moment.',
   };
+
+  // ── Mode sentences ──
   const modeMap={
-    'Wife':'She is his wife.',
-    'Lover':'She is his lover.',
-    'FWB':'The arrangement has no name. They call it casual.',
-    'Pet':'She is his pet. Not as metaphor.',
-    'Slave':'She belongs to him.',
-    'Sub':'She is his to shape.',
-    'Mother':'She is the mother of his children.',
-    'Sibling':'She is his sibling. The line was crossed some time ago.',
-    'Aunt/Cousin':'She is family. The kind you are not supposed to want.',
-    'Teacher':'She was his teacher. The dynamic shifted.',
-    'Spiteful Friend':'She calls herself his friend.',
-    'Superior':'She outranked him on paper.',
-    'Subordinate':'She works under him. In more than one sense.',
+    'Wife':`She is your wife`,
+    'Lover':`She is your lover`,
+    'FWB':`The arrangement is casual — she is your FWB`,
+    'Pet':`She is your pet. Not a metaphor`,
+    'Slave':`She is your property`,
+    'Sub':`She is yours to shape`,
+    'Mother':`She is the mother of your children`,
+    'Sibling':`She is your sibling. The line was crossed`,
+    'Aunt/Cousin':`She is family. The kind you're not supposed to want`,
+    'Teacher':`She is your teacher. The dynamic shifted`,
+    'Spiteful Friend':`She calls herself your friend. The relationship is something else`,
+    'Superior':`She outranks you on paper. That stopped mattering`,
+    'Subordinate':`She works under you. In more ways than one`,
   };
+
+  // ── Location/setting prose ──
   const locProse={
-    'City (Georgetown)':'The city moves outside, indifferent.',
-    "Basement (Mom's)":'A basement. One bulb. Concrete on all sides.',
-    'Dungeon (Castle)':'Stone walls. Torchlight. No sound from outside.',
-    'Boat (Mini-yacht)':'The water moves under everything. Nowhere to go.',
-    'International (Airbnb)':'A clean, anonymous apartment. No one knows they are here.',
-    'Secluded Ranch (WV)':'Nothing for miles. That is the point.',
-    'Secluded Mansion':'The house is large enough that nothing carries.',
-    'Condo (Downtown)':'The city burns through floor-to-ceiling glass.',
-    'Shitty Apartment':'Small rooms. Thin walls.',
-    'Suburbs (Davidsonville)':'Lawns and driveways and nobody looking.',
-    'Townhouse (VA)':'Ordinary from the outside.',
-    'School (QAS)':'Empty hallways. Fluorescent light.',
-    'Church (Baptist)':'The pews are empty. Light through stained glass, tilted.',
+    'City (Georgetown)':'The city outside is moving the way it always does — indifferent.',
+    "Basement (Mom's)":'The basement is quiet. One bulb overhead. Concrete on all sides.',
+    'Dungeon (Castle)':'The torchlight is the only thing moving. Stone walls. No sound from outside.',
+    'Boat (Mini-yacht)':'The water shifts under you. Nowhere for her to go.',
+    'International (Airbnb)':'The apartment is clean and anonymous. No one knows you are here.',
+    'Secluded Ranch (WV)':'There is nothing out here for miles. That is the point.',
+    'Secluded Mansion':'The house is large enough that no one would hear anything.',
+    'Condo (Downtown)':'The city burns through the floor-to-ceiling glass. Everything looks small from up here.',
+    'Shitty Apartment':'The apartment is small and the walls are thin.',
+    'Suburbs (Davidsonville)':'The neighborhood is quiet. Lawns and driveways and nobody looking.',
+    'Townhouse (VA)':'The townhouse is ordinary. That is the cover.',
+    'School (QAS)':'The hallway is empty. Fluorescent lights. Everyone else is gone.',
+    'Church (Baptist)':'The pews are empty. Light comes through the stained glass at an angle.',
   };
   const timeProse={
-    'early morning, just before sunrise':'Not yet light outside.',
-    'morning, soft daylight':'Morning light comes through.',
-    'midday, harsh overhead sun':'Midday. The light is hard.',
-    'golden hour, late afternoon':'Late afternoon. The light goes gold and then nothing.',
+    'early morning, just before sunrise':'Not yet light.',
+    'morning, soft daylight':'Morning light through the window.',
+    'midday, harsh overhead sun':'Midday. Hard light.',
+    'golden hour, late afternoon':'Late afternoon. The light is gold and fading.',
     'dusk, fading light':'Dusk. Everything going grey.',
-    'evening, blue hour':'That blue hour before dark settles.',
-    'night, artificial light only':'Whatever light there is, he brought it.',
-    'late night, dim and dark':'Late. Dark.',
-    'middle of the night, near dark':'Middle of the night.',
+    'evening, blue hour':'Evening. That blue hour before the dark sets.',
+    'night, artificial light only':'Night. Whatever light there is is artificial.',
+    'late night, dim and dark':'Late. Dark except for what you bring to it.',
+    'middle of the night, near dark':'Middle of the night. Almost nothing.',
   };
   const seasonProse={
-    'summer, hot and humid':'The air sits heavy.',
-    'summer, dry heat':'Dry heat.',
-    'spring, warm and breezy':'Still and warm.',
-    'fall, cool and overcast':'Grey outside.',
-    'winter, cold and dry':'Cold.',
+    'summer, hot and humid':'It is hot. The air sits on everything.',
+    'summer, dry heat':'Dry heat outside.',
+    'spring, warm and breezy':'Spring. Still and warm.',
+    'fall, cool and overcast':'Fall. Grey.',
+    'winter, cold and dry':'Cold outside.',
     'winter, heavy snow outside':'Snow outside. No one is going anywhere.',
-    'rainy, stormy':'It has been raining a while.',
-    'overcast, grey and dim':'Flat light. No shadows.',
+    'rainy, stormy':'It is raining. Has been for a while.',
+    'overcast, grey and dim':'Overcast. The light is flat.',
   };
 
-  const lines=[];
-  const p1=[];
-  if(location&&locProse[location]) p1.push(locProse[location]);
-  if(timeDay&&timeProse[timeDay]) p1.push(timeProse[timeDay]);
-  if(season&&seasonProse[season]) p1.push(seasonProse[season]);
-  const acqLine=acqMap[acquired]||'';
-  if(acqLine) p1.push(acqLine);
-  const modeLine=modeMap[mode]||'';
-  if(modeLine){const lenStr=length?` ${lc(fw(length))}.`:'.';p1.push(modeLine.replace('.',lenStr));}
-  if(disobedience&&punishment) p1.push(`She ${lc(fw(disobedience))}. The punishment: ${lc(fw(punishment))}.`);
-  if(kink&&kink!=='Vanilla'&&kink!=='Normal'){
-    const kl={'Super Dom':'He does not ask.','Med Dom':'He leads. She follows.','Light Dom':'There is a softness to his control.','Gentle Dom':'He is careful with her.','Exhibitionist':'She is made to be seen.','Breeding Kink':'The aim is singular.','Degradation Kink':'Words are part of it.','Pain Kink':'She takes what she is given.'};
-    if(kl[kink]) p1.push(kl[kink]);
+  // ════════════════════════
+  // PARAGRAPH 1 — THE SITUATION
+  // ════════════════════════
+  const p1Parts=[];
+
+  // Acquisition
+  const acqSentence=acqMap[acquired]||'';
+  if(acqSentence) p1Parts.push(acqSentence);
+
+  // Mode + length
+  if(mode){
+    const modeBase=modeMap[mode]||`She is your ${mode.toLowerCase()}`;
+    const lengthStr=length?` — ${length}.`:'.';
+    p1Parts.push(modeBase+lengthStr);
   }
-  lines.push(p1.filter(Boolean).join(' '));
 
-  const p2=[];
-  const bodyDesc=lc(body)||'';
-  const ageStr=age?lc(fw(age)):'';
-  const htStr=height||'';
-  if(ethnicShort&&ageStr&&bodyDesc) p2.push(`She is ${ethnicShort}. ${ageStr.charAt(0).toUpperCase()+ageStr.slice(1)}, ${htStr}, ${bodyDesc}.`);
-  else if(ethnicShort&&bodyDesc) p2.push(`She is ${ethnicShort}. ${bodyDesc.charAt(0).toUpperCase()+bodyDesc.slice(1)}.`);
-  else if(ethnicShort) p2.push(`She is ${ethnicShort}.`);
-  if(originCity) p2.push(`From ${originCity}.`);
-  const skinStr=cl(skin);
-  const glowStr=cl(skinGlow).replace(/\b(skin|across|especially)\b/gi,'').trim();
-  if(skinStr&&glowStr) p2.push(`Her skin is ${lc(skinStr)}, ${lc(glowStr)}.`);
-  else if(skinStr) p2.push(`Her skin is ${lc(skinStr)}.`);
-  if(freckles&&!/^no freckles/i.test(freckles)){const fk=fw(freckles);if(fk&&fk.length>2) p2.push(`${fk}.`);}
-  const hairStyle=cl(hair),hairColor=cl(hairCol);
-  if(hairColor&&hairStyle) p2.push(`Her hair is ${lc(hairColor)}, ${lc(hairStyle)}.`);
-  else if(hairStyle) p2.push(`Her hair is ${lc(hairStyle)}.`);
-  const faceShStr=fw(faceShape).replace(/\bface\b/gi,'').trim();
-  if(faceShStr&&faceProse) p2.push(`Her face is ${lc(faceShStr)}. ${faceProse.charAt(0).toUpperCase()+faceProse.slice(1)}.`);
-  else if(faceProse) p2.push(`${faceProse.charAt(0).toUpperCase()+faceProse.slice(1)}.`);
-  const eyeStr=fw(eyes).replace(/\b(round and wide|soft and distant|sharp and intense|warm and soft|deep and round)\b/gi,'').trim();
-  const browStr=fw(eyebrows).replace(/\b(East Asian style|tendency|overgroomed)\b/gi,'').trim();
-  if(eyeStr&&browStr) p2.push(`${eyeStr} eyes. ${browStr} brows.`);
-  else if(eyeStr) p2.push(`${eyeStr} eyes.`);
-  const noseStr=fw(nose),lipStr=fw(lips).replace(/\blips?\b/gi,'').trim();
-  if(noseStr&&lipStr) p2.push(`${noseStr} nose. ${lipStr} lips.`);
-  else if(lipStr) p2.push(`${lipStr} lips.`);
-  const teethStr=fw(teeth);
-  if(teethStr&&!/perfect straight white|straight white/i.test(teethStr)) p2.push(`Her teeth — ${lc(teethStr)}.`);
-  const neckStr=fw(neck);
-  if(neckStr) p2.push(`${neckStr} neck.`);
-  lines.push(p2.filter(Boolean).join(' '));
+  // Disobedience + punishment if present
+  if(disobedience&&punishment){
+    p1Parts.push(`She ${disobedience.toLowerCase()}. The punishment was ${punishment.toLowerCase()}.`);
+  }
 
-  const p3=[];
-  const cupStr=cup?cup+' cup':'';
-  const brShStr=fw(breastShape),brFirmStr=fw(breastFirm),brProjStr=fw(breastProj);
-  if(cupStr&&brShStr) p3.push(`${cupStr}. ${brShStr}.`);
-  else if(cupStr) p3.push(`${cupStr}.`);
-  if(brFirmStr) p3.push(`${brFirmStr}.`);
-  if(brProjStr&&!/^Moderate/i.test(brProjStr)) p3.push(`${brProjStr} projection.`);
-  const nipSzStr=fw(nipSize),nipTyStr=fw(nipType),nipPlStr=fw(nipPlacement),nipClStr=fw(nipCol).replace(/nipples?/gi,'').trim();
-  if(nipSzStr&&nipTyStr) p3.push(`${lc(nipSzStr)}, ${lc(nipTyStr)}.`);
-  if(nipPlStr) p3.push(`${lc(nipPlStr)}.`);
-  if(nipClStr) p3.push(`${lc(nipClStr)}.`);
-  const arSzStr=fw(areolaSize),arTxStr=fw(areolaText),arShStr=fw(areolaShape);
-  if(arSzStr&&arTxStr) p3.push(`${lc(arSzStr)} areola, ${lc(arTxStr)}.`);
-  else if(arSzStr) p3.push(`${lc(arSzStr)} areola.`);
-  if(arShStr&&!/^Perfectly round/i.test(arShStr)) p3.push(`${lc(arShStr)} shape.`);
-  const assSzStr=fw(assSize),assShStr=fw(assShape),assPjStr=fw(assProj),assFmStr=fw(assFirm);
-  const assTxStr=fw(assSkinTex),assHrStr=fw(assBodyHair),assTrStr=fw(assTransition);
-  if(assSzStr&&assShStr) p3.push(`${lc(assSzStr)} ass. ${assShStr}.`);
-  else if(assSzStr) p3.push(`${lc(assSzStr)} ass.`);
-  if(assPjStr) p3.push(`${assPjStr}.`);
-  if(assFmStr) p3.push(`${assFmStr}.`);
-  if(assTxStr&&!/^Smooth/i.test(assTxStr)) p3.push(`${assTxStr}.`);
-  if(assTrStr&&!/^Smooth/i.test(assTrStr)) p3.push(`${assTrStr}.`);
-  if(assHrStr&&!/completely bare/i.test(assHrStr)) p3.push(`${assHrStr}.`);
-  const labSzStr=fw(labiaSize),labClStr=fw(labiaCol).replace(/labia/gi,'').trim();
-  if(labSzStr&&labClStr) p3.push(`Her labia — ${lc(labSzStr)}, ${lc(labClStr)}.`);
-  else if(labSzStr) p3.push(`Her labia — ${lc(labSzStr)}.`);
-  const shaveMap={'Waxed/No Hair':'Completely bare.','Landing Strip':'Landing strip.','Fuzzy':'Lightly natural.','Full Bush':'Full bush.'};
-  if(shave&&shaveMap[shave]) p3.push(shaveMap[shave]);
-  lines.push(p3.filter(Boolean).join(' '));
+  // Setting — location then time then weather, each as its own sentence
+  if(location&&locProse[location]) p1Parts.push(locProse[location]);
+  if(timeDay&&timeProse[timeDay]) p1Parts.push(timeProse[timeDay]);
+  if(season&&seasonProse[season]) p1Parts.push(seasonProse[season]);
+  else if(timeDay&&!timeProse[timeDay]) p1Parts.push(timeDay+'.');
 
-  const p4=[];
-  const thTkStr=fw(thighThick),thInStr=fw(thighInner),thTxStr=fw(thighTex);
-  if(thTkStr&&thInStr) p4.push(`${thTkStr} thighs. ${thInStr}.`);
-  else if(thTkStr) p4.push(`${thTkStr} thighs.`);
-  if(thTxStr&&!/^Smooth/i.test(thTxStr)) p4.push(`${thTxStr}.`);
-  const stStr=fw(stomachW),lgStr=fw(legsW),bkStr=fw(backW),cbStr=fw(collarboneW);
-  if(stStr) p4.push(`${stStr}.`);
-  if(lgStr) p4.push(`${lgStr}.`);
-  if(bkStr) p4.push(`${bkStr} back.`);
-  if(cbStr) p4.push(`${cbStr} collarbone.`);
-  const wstStr=fw(waist).replace(/\b(ratio|distribution)\b/gi,'').trim();
-  const mscStr=fw(muscle).replace(/\b(despite|from|without effort)\b/gi,'').trim();
-  if(wstStr) p4.push(`${wstStr}.`);
-  if(mscStr) p4.push(`${mscStr}.`);
-  const stchStr=stretch&&!/^no stretch/i.test(stretch)?cl(stretch):'';
-  const cllStr=cellulite&&!/^no cellulite/i.test(cellulite)?cl(cellulite):'';
-  if(stchStr) p4.push(`${stchStr}.`);
-  if(cllStr) p4.push(`${cllStr}.`);
-  const clvStr=fw(cleavageW);
-  if(clvStr&&clvStr.length>3) p4.push(`${clvStr}.`);
-  if(bodyHairW&&!/virtually hairless/i.test(bodyHairW)) p4.push(`${fw(bodyHairW)}.`);
-  if(hands&&cl(hands)) p4.push(`Her hands — ${lc(cl(hands))}.`);
-  if(feet&&cl(feet)) p4.push(`Her feet — ${lc(cl(feet))}.`);
-  lines.push(p4.filter(Boolean).join(' '));
+  const para1=p1Parts.filter(Boolean).join(' ');
 
-  const p5=[];
-  const vcStr=fw(voiceW),lnStr=fw(languageW);
-  if(vcStr&&lnStr) p5.push(`Her voice is ${lc(vcStr)}. ${lnStr}.`);
-  else if(vcStr) p5.push(`Her voice is ${lc(vcStr)}.`);
-  const finStr=cl(financial),persStr=cl(personality),eduStr=fw(education),intStr=fw(intelligence),stStr2=fw(streetSmarts),sexStr=cl(sexExp);
-  if(finStr&&persStr) p5.push(`She grew up ${lc(finStr)}. She is ${lc(persStr)}.`);
-  else if(persStr) p5.push(`She is ${lc(persStr)}.`);
-  if(eduStr) p5.push(`${eduStr}.`);
-  if(intStr&&stStr2) p5.push(`${intStr}. ${stStr2}.`);
-  if(sexStr) p5.push(`${sexStr.charAt(0).toUpperCase()+sexStr.slice(1)}.`);
-  const mentStr=cl(mentalState),emotStr=cl(emotional);
-  if(mentStr&&emotStr) p5.push(`She is ${lc(mentStr)} right now. ${emotStr.charAt(0).toUpperCase()+emotStr.slice(1)}.`);
-  else if(mentStr) p5.push(`She is ${lc(mentStr)}.`);
-  else if(emotStr) p5.push(`${emotStr.charAt(0).toUpperCase()+emotStr.slice(1)}.`);
-  if(bondThreat){const bdStr=cl(bondThreat);if(bdStr) p5.push(`${bdStr.charAt(0).toUpperCase()+bdStr.slice(1)}.`);}
-  const sftStr=cl(skinSoft),sctStr=cl(natScent),tmpStr=cl(skinTemp),tchStr=cl(touchResp);
-  if(sftStr&&sctStr) p5.push(`Her skin is ${lc(sftStr)}. She smells of ${lc(sctStr)}.`);
-  else if(sftStr) p5.push(`Her skin is ${lc(sftStr)}.`);
-  else if(sctStr) p5.push(`She smells of ${lc(sctStr)}.`);
-  if(tmpStr) p5.push(`She runs ${lc(tmpStr)}.`);
-  if(tchStr) p5.push(`When you touch her, she ${lc(tchStr)}.`);
-  if(favPart) p5.push(`His favourite part of her — ${lc(fw(favPart))}.`);
-  lines.push(p5.filter(Boolean).join(' '));
+  // ════════════════════════
+  // PARAGRAPH 2 — THE PORTRAIT
+  // ════════════════════════
+  const p2Parts=[];
 
-  document.getElementById('narrativeText').textContent=lines.filter(Boolean).join('\n\n');
+  // ── Opening: ethnicity + age + height + body ──
+  const bodyParts=[];
+  if(age) bodyParts.push(age);
+  if(height) bodyParts.push(height);
+  if(body) bodyParts.push(body.toLowerCase());
+  const openDesc=bodyParts.join(', ');
+  if(ethnicShort&&openDesc) p2Parts.push(`She is ${ethnicShort}, ${openDesc}.`);
+  else if(ethnicShort) p2Parts.push(`She is ${ethnicShort}.`);
+  if(originCity) p2Parts.push(`She is from ${originCity}.`);
+
+  // ── Skin ──
+  const skinCore=skin?clean(skin):'';
+  const skinGlowCore=skinGlow?clean(skinGlow).replace(/\b(skin|across|especially)\b/gi,'').trim():'';
+  if(skinCore&&skinGlowCore) p2Parts.push(`Her skin is ${skinCore}, ${skinGlowCore}.`);
+  else if(skinCore) p2Parts.push(`Her skin is ${skinCore}.`);
+  if(freckles&&!freckles.startsWith('no freckles')) p2Parts.push(`${clean(freckles)}.`);
+
+  // ── Hair ──
+  const hairStyleCore=hair?clean(hair):'';
+  const hairColorCore=hairCol?clean(hairCol):'';
+  if(hairColorCore&&hairStyleCore) p2Parts.push(`Her hair is ${hairColorCore}, ${hairStyleCore}.`);
+  else if(hairStyleCore) p2Parts.push(`Her hair is ${hairStyleCore}.`);
+
+  // ── Face — shape, rating, eyes, eyebrows, nose, lips, teeth ──
+  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
+  const ratingProse={1:'plain-faced, unremarkable',2:'plain-faced, ordinary',3:'below average',4:'below average, plain features',5:'average',6:'average, pleasant enough',7:'pretty',8:'very pretty',9:'striking',10:'beautiful'};
+  const faceProse=ratingProse[ratingNum]||'';
+  const faceShapeCore=faceShape?clean(faceShape).replace(/\bface\b/gi,'').trim():'';
+  const eyesCore=eyes?clean(eyes).replace(/\b(round and wide|soft and distant|sharp and intense|warm and soft|deep and round|golden tone|smooth lid|subtle fold|heavy lid|doe-like|catlike|sad expression|sleepy look)\b/gi,'').trim():'';
+  const eyebrowsCore=eyebrows?clean(eyebrows).replace(/\b(East Asian style|tendency|overgroomed)\b/gi,'').trim():'';
+  const noseCore=nose?clean(nose).replace(/\b(broad and soft|rounded full tip|prominent nostrils|rounded tip|low bridge|slightly upturned|defined bridge|soft tip)\b/gi,'').trim():'';
+  const lipsCore=lips?clean(lips).replace(/\blips?\b/gi,'').trim():'';
+  const teethCore=teeth?clean(teeth).replace(/\b(charming|naturally imperfect|clearly treated|natural wear)\b/gi,'').trim():'';
+  const earsCore=ears?clean(ears).replace(/\b(small and|large and|slightly|notable)\b/gi,'').trim():'';
+  const neckCore=neck?clean(neck).replace(/\b(elegant|strong looking|prominent)\b/gi,'').trim():'';
+
+  // Face sentence: shape + rating
+  if(faceShapeCore&&faceProse) p2Parts.push(`Her face is ${faceShapeCore}, ${faceProse}.`);
+  else if(faceProse) p2Parts.push(`She is ${faceProse}.`);
+
+  // Eyes + eyebrows
+  if(eyesCore&&eyebrowsCore) p2Parts.push(`Her eyes are ${eyesCore}. Her brows are ${eyebrowsCore}.`);
+  else if(eyesCore) p2Parts.push(`Her eyes are ${eyesCore}.`);
+
+  // Nose + lips together
+  if(noseCore&&lipsCore) p2Parts.push(`Her nose is ${noseCore}. Her lips are ${lipsCore}.`);
+  else if(lipsCore) p2Parts.push(`Her lips are ${lipsCore}.`);
+
+  // Teeth + ears + neck if notable
+  if(teethCore&&teethCore!=='perfect straight white') p2Parts.push(`Her teeth are ${teethCore}.`);
+  if(earsCore&&!/small.*close|normal|average/i.test(earsCore)) p2Parts.push(`Her ears are ${earsCore}.`);
+  if(neckCore) p2Parts.push(`Her neck is ${neckCore}.`);
+
+  // ── Pull new wheel results ──
+  const assSize=gv('ass_size'),assShape=gv('ass_shape'),assProj=gv('ass_projection'),assFirm=gv('ass_firmness');
+  const assTransition=gv('ass_transition'),assSkinTex=gv('ass_skin_texture'),assHair=gv('ass_body_hair');
+  const cup=gv('cup_size'),breastShape=gv('breast_shape'),breastPos=gv('breast_position');
+  const breastFirm=gv('breast_firmness'),breastProj=gv('breast_projection');
+  const nipPlacement=gv('nipple_placement');
+  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture'),areolaShape=gv('areola_shape');
+  const thighThick=gv('thigh_thickness'),thighShapeW=gv('thigh_shape'),thighInner=gv('thigh_inner'),thighTex=gv('thigh_texture');
+  const stomachW=gv('stomach'),legsW=gv('legs'),backW=gv('back'),collarboneW=gv('collarbone');
+  const cleavageW=gv('cleavage'),bodyHairW=gv('body_hair');
+  const education=gv('education'),intelligence=gv('intelligence'),streetSmarts=gv('street_smarts');
+  const voiceW=gv('voice'),languageW=gv('language');
+
+  // ── Ass ──
+  const assSizeCore=assSize?clean(assSize):'';
+  const assShapeCore=assShape?assShape.split(' —')[0].trim():'';
+  const assProjCore=assProj?assProj.split(' —')[0].trim():'';
+  const assFirmCore=assFirm?assFirm.split(' —')[0].trim():'';
+  if(assSizeCore&&assShapeCore) p2Parts.push(`Her ass is ${assSizeCore.toLowerCase()}, ${assShapeCore.toLowerCase()}.`);
+  else if(assSizeCore) p2Parts.push(`Her ass is ${assSizeCore.toLowerCase()}.`);
+  if(assProjCore) p2Parts.push(`${assProjCore}.`);
+  if(assFirmCore) p2Parts.push(`${assFirmCore}.`);
+  if(assTransition&&!assTransition.startsWith('Smooth')) p2Parts.push(`${clean(assTransition)}.`);
+
+  // ── Breast ──
+  const cupCore=cup?cup+' cup':'';
+  const breastShapeCore=breastShape?breastShape.split(' —')[0].trim():'';
+  const breastFirmCore=breastFirm?breastFirm.split(' —')[0].trim():'';
+  const breastProjCore=breastProj?breastProj.split(' —')[0].trim():'';
+  if(cupCore&&breastShapeCore) p2Parts.push(`She is ${cupCore} — ${breastShapeCore.toLowerCase()}.`);
+  else if(cupCore) p2Parts.push(`She is ${cupCore}.`);
+  if(breastFirmCore) p2Parts.push(`${breastFirmCore}.`);
+  if(breastProjCore) p2Parts.push(`${breastProjCore} projection.`);
+
+  // ── Collarbone + back ──
+  const collarboneCore=collarboneW?collarboneW.split(' —')[0].trim():'';
+  const backCore=backW?backW.split(' —')[0].trim():'';
+  if(collarboneCore) p2Parts.push(`${collarboneCore} collarbone.`);
+  if(backCore) p2Parts.push(`${backCore}.`);
+
+  // ── Stomach + legs ──
+  const stomachCore=stomachW?stomachW.split(' —')[0].trim():'';
+  const legsCore=legsW?legsW.split(' —')[0].trim():'';
+  if(stomachCore) p2Parts.push(`${stomachCore}.`);
+  if(legsCore) p2Parts.push(`Her legs are ${legsCore.toLowerCase()}.`);
+
+  // ── Thighs ──
+  const thighThickCore=thighThick?thighThick.split(' —')[0].trim():'';
+  const thighInnerCore=thighInner?thighInner.split(' —')[0].trim():'';
+  if(thighThickCore&&thighInnerCore) p2Parts.push(`${thighThickCore} thighs, ${thighInnerCore.toLowerCase()}.`);
+  else if(thighThickCore) p2Parts.push(`${thighThickCore} thighs.`);
+
+  // ── Body detail ──
+  const waistCore=waist?clean(waist).replace(/\b(ratio|distribution|pronounced|slight)\b/gi,'').trim():'';
+  const muscleCore=muscle?clean(muscle).replace(/\b(despite small frame|from carrying weight|without effort)\b/gi,'').trim():'';
+  if(waistCore) p2Parts.push(`${waistCore.charAt(0).toUpperCase()+waistCore.slice(1)}.`);
+  if(muscleCore) p2Parts.push(`${muscleCore.charAt(0).toUpperCase()+muscleCore.slice(1)}.`);
+  const stretchCore=stretch&&!stretch.startsWith('no stretch')?clean(stretch):'';
+  const celluliteCore=cellulite&&!cellulite.startsWith('no cellulite')?clean(cellulite):'';
+  if(stretchCore) p2Parts.push(`${stretchCore}.`);
+  if(celluliteCore) p2Parts.push(`${celluliteCore}.`);
+
+  // ── Lower detail ──
+  const labiaSize=gv('labia_size');
+  const labiaCol=ga('labia_col_light','labia_col_medium','labia_col_dark');
+  const labiaCore=labiaSize?labiaSize.split(' —')[0].trim():'';
+  const labiaColCore=labiaCol?labiaCol.split(',')[0].trim():'';
+  if(labiaCore) p2Parts.push(`Her labia are ${labiaCore.toLowerCase()}${labiaColCore?', '+labiaColCore.toLowerCase():''}.`);
+
+  // ── Detail ──
+  const shaveMap={'Waxed/No Hair':'She is completely bare.','Landing Strip':'Landing strip.','Fuzzy':'Lightly natural.','Full Bush':'Full natural bush.'};
+  if(shave&&shaveMap[shave]) p2Parts.push(shaveMap[shave]);
+  if(cleavageW) p2Parts.push(`${clean(cleavageW)}.`);
+  if(hands&&clean(hands)) p2Parts.push(`Her hands are ${clean(hands)}.`);
+  if(feet&&clean(feet)) p2Parts.push(`Her feet — ${clean(feet)}.`);
+
+  // ── Voice + Language ──
+  const voiceCore=voiceW?voiceW.split(' —')[0].trim():'';
+  const langCore=languageW?languageW.split(' —')[0].trim():'';
+  if(voiceCore&&langCore) p2Parts.push(`Her voice is ${voiceCore.toLowerCase()}. ${langCore}.`);
+  else if(voiceCore) p2Parts.push(`Her voice is ${voiceCore.toLowerCase()}.`);
+
+  // ── Psychology ──
+  const finCore=financial?clean(financial):'';
+  const persCore=personality?clean(personality):'';
+  const sexCore=sexExp?clean(sexExp):'';
+  const eduCore=education?education.split('—')[0].trim():'';
+  const intCore=intelligence?intelligence.split('—')[0].trim():'';
+  const streetCore=streetSmarts?streetSmarts.split('—')[0].trim():'';
+  if(finCore&&persCore) p2Parts.push(`She grew up ${finCore}. She is ${persCore}.`);
+  else if(persCore) p2Parts.push(`She is ${persCore}.`);
+  if(eduCore) p2Parts.push(`${eduCore}.`);
+  if(intCore&&streetCore) p2Parts.push(`${intCore}. ${streetCore}.`);
+  if(sexCore) p2Parts.push(`${sexCore.charAt(0).toUpperCase()+sexCore.slice(1)}.`);
+
+  // Mental state + emotional
+  const mentalCore=mentalState?clean(mentalState):'';
+  const emotCore=emotional?clean(emotional):'';
+  if(mentalCore&&emotCore) p2Parts.push(`Right now she is ${mentalCore}. ${emotCore.charAt(0).toUpperCase()+emotCore.slice(1)}.`);
+  else if(mentalCore) p2Parts.push(`Right now she is ${mentalCore}.`);
+  else if(emotCore) p2Parts.push(`${emotCore.charAt(0).toUpperCase()+emotCore.slice(1)}.`);
+
+  // Bond & threat
+  if(bondThreat) p2Parts.push(`${clean(bondThreat).charAt(0).toUpperCase()+clean(bondThreat).slice(1)}.`);
+
+  // ── Sensory ──
+  const softCore=skinSoft?clean(skinSoft):'';
+  const scentCore=natScent?clean(natScent):'';
+  const tempCore=skinTemp?clean(skinTemp):'';
+  const touchCore=touchResp?clean(touchResp):'';
+  if(softCore&&scentCore) p2Parts.push(`Her skin is ${softCore}. She smells ${scentCore}.`);
+  else if(softCore) p2Parts.push(`Her skin is ${softCore}.`);
+  else if(scentCore) p2Parts.push(`She smells ${scentCore}.`);
+  if(tempCore) p2Parts.push(`She runs ${tempCore}.`);
+  if(touchCore) p2Parts.push(`When you touch her, she ${touchCore}.`);
+
+  const para2=p2Parts.filter(Boolean).join(' ');
+
+  document.getElementById('narrativeText').textContent=[para1,para2].filter(Boolean).join('\n\n');
 }
 
 function copyNarrative(){
@@ -9858,17 +9785,6 @@ if(window.storage){
     }
   }, 3000);
 }
-function closeHistoryPanel(){
-  document.getElementById('historyPanel').classList.remove('open');
-  const ov=document.getElementById('historyOverlay');
-  if(ov) ov.style.display='none';
-}
-function openHistoryPanel(){
-  document.getElementById('historyPanel').classList.add('open');
-  const ov=document.getElementById('historyOverlay');
-  if(ov) ov.style.display='block';
-}
-
 </script>
 
 
