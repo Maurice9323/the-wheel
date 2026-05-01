@@ -644,18 +644,6 @@ Clip Skip: 2</div>
     </div>
   </div>
 
-    <!-- Lustify V8 Prompt Section -->
-    <div class="output-section" style="margin-top:12px">
-      <div class="output-title" style="display:flex;align-items:center;justify-content:space-between">
-        <span>⚡ Lustify V8 (Apex) Prompt</span>
-        <button type="button" class="btn-regen" onclick="buildLustifyPrompt()">↻ Regenerate</button>
-      </div>
-      <div style="font-size:.62rem;color:var(--text2);margin-bottom:6px;padding:0 2px">iPhone candid aesthetic · natural language · for Venice.ai</div>
-      <div class="output-text" id="lustifyText" style="font-size:.78rem;color:var(--text);line-height:1.7;word-break:break-word;user-select:all;white-space:pre-wrap;background:rgba(255,255,255,.02);padding:8px;border:1px solid var(--border);min-height:60px"></div>
-      <div class="output-actions" style="margin-top:6px">
-        <button type="button" class="btn-copy" onclick="(function(){const t=document.getElementById('lustifyText').textContent;navigator.clipboard&amp;&amp;navigator.clipboard.writeText(t).then(function(){});})()">Copy Lustify Prompt</button>
-      </div>
-    </div>
 </div>
 <!-- TEMPLATE PANEL -->
 <div class="tpl-overlay" id="tplOverlay" onclick="closeTemplatePanel()"></div>
@@ -8876,18 +8864,24 @@ function computeNext(fromId,label,seg){
   // ── 60+ AGE SKIP LOGIC ──
   // Skip wheels that are replaced/removed for 60+ characters
   if(ageIs60plus){
-    const skip60all=['lactation_volume','lactation_taste','milk_play',
-      'squirt_enthusiasm','squirt_anatomy','squirt_threshold','squirt_psychology',
-      'squirt_fluid','squirt_sensation_her','squirt_sensation_me',
-      'breast_shape'];  // replaced by breast_shape_60plus
-    const skip71plus=['skin_glow_light','skin_glow_medium','skin_glow_dark',
-      'stretch_thin','stretch_mid','stretch_bbw'];
-    const skip80plus=['freckles','body_hair',
-      'cellulite_thin','cellulite_mid','cellulite_bbw',
-      'nipple_placement'];
-    if(skip60all.includes(fromId))return nextEnabled(WHEEL_ORDER[WHEEL_ORDER.indexOf(fromId)+1+skip60all.filter(s=>WHEEL_ORDER.indexOf(s)>WHEEL_ORDER.indexOf(fromId)).length]||'DONE');
-    if((ageIs60plus==='71-80'||ageIs60plus==='80+')&&skip71plus.includes(fromId))return nextEnabled(WHEEL_ORDER[WHEEL_ORDER.indexOf(fromId)+1]||'DONE');
-    if(ageIs60plus==='80+'&&skip80plus.includes(fromId))return nextEnabled(WHEEL_ORDER[WHEEL_ORDER.indexOf(fromId)+1]||'DONE');
+    // Skip lactation chain → go to ass_size
+    if(['lactation_volume','lactation_taste','milk_play'].includes(fromId))return nextEnabled('ass_size');
+    // Skip squirt chain → go to shave
+    if(['squirt_enthusiasm','squirt_anatomy','squirt_threshold','squirt_psychology',
+        'squirt_fluid','squirt_sensation_her','squirt_sensation_me'].includes(fromId))return nextEnabled('shave');
+    // breast_shape handled by age handler routing to breast_shape_60plus directly
+    // 71+ skips
+    if(ageIs60plus==='71-80'||ageIs60plus==='80+'){
+      if(['skin_glow_light','skin_glow_medium','skin_glow_dark'].includes(fromId))return nextEnabled('freckles');
+      if(['stretch_thin','stretch_mid','stretch_bbw'].includes(fromId))return nextEnabled('cellulite_thin');
+    }
+    // 80+ skips
+    if(ageIs60plus==='80+'){
+      if(fromId==='freckles')return nextEnabled('eyes_light');
+      if(['body_hair'].includes(fromId))return nextEnabled('cleavage');
+      if(['cellulite_thin','cellulite_mid','cellulite_bbw'].includes(fromId))return nextEnabled('body_hair');
+      if(fromId==='nipple_placement')return nextEnabled('nipple_col_light');
+    }
   }
   // ── END LABEL OVERRIDES ──
   if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Nipple')return nextEnabled('nipple_size');if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
@@ -9002,12 +8996,8 @@ function computeNext(fromId,label,seg){
   if(fromId==='anal_depth')return nextEnabled('anal_appearance');
   // ── Breast system ──
   if(fromId==='cup_size'){
-    // Store cup group for consistency
     cupGroup=detectCupGroup(label);
-    if(label==='60-70'||label==='71-80'||label==='80+'){
-      return nextEnabled('breast_shape_60plus');
-    }
-    return nextEnabled('height');
+    return nextEnabled('breast_shape');
   }
   if(fromId==='breast_shape')return nextEnabled('breast_position');
   if(fromId==='breast_position')return nextEnabled('breast_firmness');
@@ -9894,7 +9884,7 @@ function calcStatStrip(){
   const thickL=ssGet('thigh_thickness');
   const ageL=ssGet('age');
   const assL=ssGet('ass_size');
-  const assShapeL=ssGet('ass_shape');
+  const assShapeL=ssGet('ass_shape')||ssGet('ass_shape_60plus');
   const assProjL=ssGet('ass_projection');
   const stomachL=ssGet('stomach');
   const backL=ssGet('back');
