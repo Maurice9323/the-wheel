@@ -1294,7 +1294,7 @@ Clip Skip: 2</div>
 </div>
 <!-- HISTORY PANEL -->
 <div class="overlay open" id="historyOverlay" onclick="closeHistoryPanel()"></div>
-<div class="side-panel open" id="historyPanel">
+<div class="side-panel" id="historyPanel">
   <div class="panel-head">
     <div class="panel-title">⏱ Spin History</div>
     <button type="button" class="close-x" onclick="closeHistoryPanel()">✕</button>
@@ -8091,27 +8091,17 @@ older_sister_abuse:{name:"Older Sister Abuse",segments:[
   {label:'Makes brother swallow her spit, drink her pee, and eat her scat while she laughs.',weight:10},
   {label:'Uses brother as her living toilet and punching bag in endless sessions.',weight:10},
 ]},
-older_sister_dark_acts:{name:"Older Sister Dark Acts",segments:[
-  {label:'She giggles while tying her little brother spreadeagle, then spends hours playfully slapping his face and riding him hard, teasing “Aww, is my baby brother gonna cry?”',weight:10},
-  {label:'She pins him down and spits huge thick loads straight into his mouth while laughing at how desperately he swallows for her.',weight:10},
-  {label:'She forces him to drink her piss straight from her pussy while she sits on his chest and mocks him for getting hard.',weight:10},
-  {label:'She sits on his face and makes him eat her scat while giggling and calling him her personal little toilet brother.',weight:10},
-  {label:'She edges him for days with her hand, spitting on his dick every time he begs and laughing at how pathetic he looks.',weight:10},
-  {label:'She records herself destroying him and loops the video while riding him, forcing him to watch and listen to her laughter.',weight:10},
-  {label:'She slaps his face repeatedly with both hands while riding him, giggling every time his eyes water.',weight:10},
-  {label:'She makes him repeat “I am Big Sister’s worthless little toy” during every thrust while she slaps his cheeks in rhythm.',weight:10},
-  {label:'She isolates him from everyone and uses him as her personal spit, piss, and scat toy whenever she feels bored.',weight:10},
-  {label:'She forces him to clean her ass with his tongue right after she shits, teasing him the entire time about how gross he is.',weight:10},
-  {label:'She spits massive amounts directly into his eyes and mouth while violently riding him and calling him her favorite victim.',weight:10},
-  {label:'She makes him drink her piss multiple times a day, slapping his face between gulps and laughing at his humiliation.',weight:10},
-  {label:'She makes him eat her scat off the floor while she stands over him spitting on his head and giggling.',weight:10},
-  {label:'She keeps him chained for days, alternating between making him eat her scat, drink her piss, and swallow her vomit.',weight:10},
-  {label:'She slaps his face until he cries, then rides him harder while teasing “Big Sister loves when you cry for me.”',weight:10},
-  {label:'She threatens to tell their parents everything unless he swallows her spit, drinks her piss, and eats her scat on command.',weight:10},
-  {label:'She chokes him with her thighs while spitting thick ropes into his open mouth and laughing at his struggling.',weight:10},
-  {label:'She makes him eat her scat while riding his face, slapping his chest and giggling every time he gags.',weight:10},
-  {label:'She isolates him until he begs for her abuse, then rewards him by vomiting directly into his mouth while calling him her broken little brother.',weight:10},
-  {label:'She pins him down and forces him to swallow her vomit in heavy, warm waves while she laughs hysterically and slaps his face between each gagging heave.',weight:10},
+older_sister_dark_acts:{name:'Older Sister Dark Acts',segments:[
+  {label:'Stub 1 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 2 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 3 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 4 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 5 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 6 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 7 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 8 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 9 — Older Sister Dark Acts',weight:10},
+  {label:'Stub 10 — Older Sister Dark Acts',weight:10}
 ]},
 younger_sister_enthusiasm:{name:"Younger Sister Enthusiasm",segments:[
   {label:'Needy Little Sister Begging - Whimpers desperately for big brother to use her.',weight:10},
@@ -9631,7 +9621,7 @@ function drawWheel(rot){
     const sl=(adj[i]/total)*Math.PI*2,ea=ang+sl,mid=ang+sl/2;
     ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R,ang,ea);ctx.closePath();
     ctx.fillStyle=gc(i);ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=0.5;ctx.stroke();
     if(sl>0.12){
       ctx.save();ctx.rotate(mid);ctx.textAlign='right';
       ctx.fillStyle='rgba(255,255,255,.92)';
@@ -12634,19 +12624,18 @@ function startApp(){
 if(window.storage){
   startApp();
 } else {
-  window.addEventListener('firebase-ready', startApp, {once:true});
-  // Fallback if Firebase fails to load within 3s
-  setTimeout(()=>{
-    if(!window.storage){
-      window.storage={
-        async get(k){const v=localStorage.getItem(k);return v?{key:k,value:v}:null;},
-        async set(k,v){localStorage.setItem(k,v);return{key:k,value:v};},
-        async delete(k){localStorage.removeItem(k);return{key:k,deleted:true};},
-        async list(p){return{keys:Object.keys(localStorage).filter(k=>!p||k.startsWith(p))};}
-      };
-      startApp();
-    }
-  }, 3000);
+  // Start immediately with localStorage — don't wait for Firebase
+  window.storage={
+    async get(k){const v=localStorage.getItem(k);return v?{key:k,value:v}:null;},
+    async set(k,v){localStorage.setItem(k,v);return{key:k,value:v};},
+    async delete(k){localStorage.removeItem(k);return{key:k,deleted:true};},
+    async list(p){return{keys:Object.keys(localStorage).filter(k=>!p||k.startsWith(p))};}
+  };
+  startApp();
+  // Silently upgrade to Firebase when ready (within 5s)
+  window.addEventListener('firebase-ready',()=>{
+    if(window._firebaseStorage){window.storage=window._firebaseStorage;}
+  },{once:true});
 }
 </script>
 
