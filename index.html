@@ -8713,7 +8713,6 @@ function computeNext(fromId,label,seg){
     // 80+ skips
     if(ageIs60plus==='80+'){
       if(fromId==='freckles')return nextEnabled('eyes_light');
-      if(['body_hair'].includes(fromId))return nextEnabled('cleavage');
       if(['cellulite_thin','cellulite_mid','cellulite_bbw'].includes(fromId))return nextEnabled('body_hair');
       if(fromId==='nipple_placement')return nextEnabled('nipple_col_light');
     }
@@ -8736,6 +8735,7 @@ function computeNext(fromId,label,seg){
     // hair_aging_60plus: skip remaining hair_col variants → cup_size
     if(fromId==='hair_aging_60plus')return nextEnabled('cup_size');
     if(fromId==='body_hair')return nextEnabled('body_redistribution_60plus');
+    if(fromId==='body_redistribution_60plus')return nextEnabled('hands');
 
     if(fromId==='arms_shoulders')return nextEnabled('arms_shoulders_60plus');
     if(fromId==='personality')return nextEnabled('personality_60plus');
