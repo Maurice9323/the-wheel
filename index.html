@@ -8686,6 +8686,24 @@ function computeNext(fromId,label,seg){
     if(_kr==='Super Dom')return nextEnabled('general_abuse');
     return nextEnabled('mode');
   }
+  // mode: route to mode-specific chains based on label (overrides any Firebase template branches)
+  if(fromId==='mode'){
+    if(label==='Mother')return nextEnabled('mothering_enthusiasm');
+    if(label==='Older Sister')return nextEnabled('older_sister_enthusiasm');
+    if(label==='Younger Sister')return nextEnabled('younger_sister_enthusiasm');
+    if(label==='Aunt')return nextEnabled('aunt_enthusiasm');
+    if(label==='Cousin')return nextEnabled('cousin_enthusiasm');
+    if(label==='Teacher')return nextEnabled('teacher_enthusiasm');
+    const _mv={'Wife':'wife_variety','Lover':'lover_variety','FWB':'fwb_variety',
+      'Pet':'pet_variety','Slave':'slave_variety','Sub':'sub_variety',
+      'Spiteful Friend':'spiteful_friend_variety','Superior':'superior_variety',
+      'Subordinate':'subordinate_variety','Housekeeper':'housekeeper_variety',
+      'Groomed Protégé':'groomed_protege_variety'};
+    if(_mv[label])return nextEnabled(_mv[label]);
+    const _kr=results.find(r=>r.wheelId==='kink')?.label||'';
+    if(['Super Dom','Med Dom','Light Dom','Gentle Dom'].includes(_kr))return nextEnabled('baby_talk');
+    return nextEnabled('breeding_gate');
+  }
   // ── 60+ AGE SKIP LOGIC ──
   // Skip wheels that are replaced/removed for 60+ characters
   if(ageIs60plus){
