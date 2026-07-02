@@ -12154,8 +12154,16 @@ function renderRulesPanel(){
 // ── Apply rules inside applyConsistencyMatrix ──
 function applyActiveRules(weights, segs, wid){
   if(!activeRules || activeRules.length === 0) return weights;
-  const w = [...weights];
+  const w0 = [...weights];                     // FIXED snapshot: nothing below reads live-mutating totals
+  const tot0 = w0.reduce((a,b)=>a+b,0);
   const hasTrig = t => { const r = results.find(x => x.wheelId === t.wheel); return !!r && r.label === t.segment; };
+
+  // Collect every (segment index -> ordered list of strength adjustments) from ALL firing rules first,
+  // so cross-segment order never affects the outcome. Legacy multiplier hits are collected separately
+  // since they scale a segment's own weight directly and don't depend on the shared total.
+  const strengthHits = {};   // index -> [s1, s2, ...]
+  const multiplierHits = {}; // index -> [m1, m2, ...]
+
   activeRules.forEach(rule => {
     if(rule.enabled === false) return;
     const trigs = (Array.isArray(rule.triggers) && rule.triggers.length)
@@ -12173,27 +12181,46 @@ function applyActiveRules(weights, segs, wid){
       segs.forEach((seg, i) => {
         if(seg.label !== tg.segment) return;
         if(typeof tg.strength === 'number'){
-          // Strength-based: s in [-1,1]. +1 -> ~99% of the wheel, -1 -> 0 (never), 0 -> no change.
           const s = Math.max(-1, Math.min(1, tg.strength));
           if(Math.abs(s) < 0.001) return;
-          const tot = w.reduce((a,b)=>a+b,0);
-          const O = tot - w[i];                 // weight of the other segments (current)
-          const p0 = tot > 0 ? w[i]/tot : 0;    // current probability
-          let p = s > 0 ? p0 + (0.99 - p0)*s : p0*(1 + s);
-          p = Math.max(0, Math.min(0.99, p));
-          w[i] = O > 0 ? (O*p)/(1-p) : w[i];
+          (strengthHits[i] = strengthHits[i] || []).push(s);
         } else {
-          // Legacy multiplier behavior (older rule files)
           const mult = (typeof tg.multiplier === 'number') ? tg.multiplier : 1;
-          w[i] = Math.max(w[i]*mult, w[i]*0.05);
+          (multiplierHits[i] = multiplierHits[i] || []).push(mult);
         }
       });
     });
   });
+
+  const w = [...w0];
+
+  // Strength-based: each segment's own trajectory computed independently from the FIXED snapshot.
+  // Multiple rules hitting the same segment compound sequentially against each other (stacking),
+  // but never against a total that other segments have already inflated.
+  Object.keys(strengthHits).forEach(idxStr => {
+    const i = Number(idxStr);
+    const O0 = tot0 - w0[i];
+    let p = tot0 > 0 ? w0[i]/tot0 : 0;
+    strengthHits[i].forEach(s => {
+      p = s > 0 ? p + (0.99 - p)*s : p*(1 + s);
+      p = Math.max(0, Math.min(0.99, p));
+    });
+    w[i] = O0 > 0 ? (O0*p)/(1-p) : w0[i];
+  });
+
+  // Legacy multiplier: scales a segment's own weight directly, already order/cross-segment independent.
+  Object.keys(multiplierHits).forEach(idxStr => {
+    const i = Number(idxStr);
+    let val = w0[i];
+    multiplierHits[i].forEach(mult => { val = Math.max(val*mult, val*0.05); });
+    w[i] = val;
+  });
+
   // Safety: if rules zeroed the whole wheel, fall back to the pre-rule weights
   if(w.reduce((a,b)=>a+b,0) <= 0) return weights;
   return w;
 }
+
 window.addEventListener('firestore-update', async e => {
   const { key, value } = e.detail;
   if(!value) return;
