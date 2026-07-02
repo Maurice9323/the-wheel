@@ -493,6 +493,13 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
   </div>
 </div>
 <div class="output-section" id="outputSection">
+  <div class="output-box" id="outputRecap" style="margin-bottom:14px">
+    <div class="output-title" style="cursor:pointer" onclick="toggleOutputRecap()">
+      <span>✦ Results (<span id="recapCount">0</span>)</span>
+      <span id="recapToggleIcon" style="font-size:.7rem;color:var(--text2)">▼ hide</span>
+    </div>
+    <div id="recapList" style="max-height:260px;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:8px"></div>
+  </div>
   <!-- SD / ComfyUI tab bar -->
   <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:8px">
     <button type="button" id="tabSD" onclick="switchOutputTab('sd')" style="flex:1;background:none;border:none;border-bottom:2px solid var(--gold);color:var(--gold);font-family:Rajdhani,sans-serif;font-size:.75rem;letter-spacing:1px;padding:7px 0;cursor:pointer;text-transform:uppercase">
@@ -531,7 +538,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
     <div style="font-size:.62rem;color:var(--text2);margin-bottom:6px">iPhone candid aesthetic · natural language · for Venice.ai</div>
     <div class="output-text" id="lustifyText" style="font-size:.78rem;line-height:1.7;word-break:break-word;user-select:all;white-space:pre-wrap;min-height:80px"></div>
     <div class="output-actions">
-      <button type="button" class="btn-copy" onclick="(function(){const t=document.getElementById('lustifyText').textContent;navigator.clipboard&amp;&amp;navigator.clipboard.writeText(t).then(function(){});})()">Copy Lustify Prompt</button>
+      <button type="button" class="btn-copy" onclick="copyLustify()">Copy Lustify Prompt</button>
     </div>
   </div>
 
@@ -9864,6 +9871,7 @@ function buildLustifyPrompt(){
 
 function showOutput(){
   recordSpin();
+  renderOutputRecap();
   document.getElementById('outputSection').classList.add('show');
   document.getElementById('spinBtn').disabled=true;
   buildSDPrompt();generateNarrative();buildLustifyPrompt();
@@ -10286,6 +10294,46 @@ Image Size: 512x768 (portrait) or 768x1024 (high res)
 Hires Fix: 2x upscale, denoising 0.45, steps 15
 Clip Skip: 2</div>
     </div>`;
+}
+
+function renderOutputRecap(){
+  const countEl=document.getElementById('recapCount');
+  const list=document.getElementById('recapList');
+  if(!list) return;
+  if(countEl) countEl.textContent=results.length;
+  list.innerHTML='';
+  results.forEach(r=>{
+    const el=document.createElement('div');
+    el.style.cssText='padding:6px 9px;border-left:2px solid var(--accent2);background:var(--bg2);min-width:0';
+    el.innerHTML=`<div style="font-size:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.wheelName}</div><div style="font-size:.78rem;font-weight:600;color:var(--text);word-break:break-word">${r.label}</div>`;
+    list.appendChild(el);
+  });
+}
+function toggleOutputRecap(){
+  const list=document.getElementById('recapList');
+  const icon=document.getElementById('recapToggleIcon');
+  if(!list||!icon) return;
+  const hidden=list.style.display==='none';
+  list.style.display=hidden?'grid':'none';
+  icon.textContent=hidden?'▼ hide':'▲ show';
+}
+function copyLustify(){
+  const el=document.getElementById('lustifyText');
+  const txt=(el?.innerText||el?.textContent||'').trim();
+  const doCopy=()=>{const btn=document.querySelector('.btn-copy[onclick="copyLustify()"]');if(btn){btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='Copy Lustify Prompt',2000);}};
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(txt).then(doCopy).catch(()=>{
+      const ta=document.createElement('textarea');
+      ta.value=txt;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');
+      document.body.removeChild(ta);doCopy();
+    });
+  } else {
+    const ta=document.createElement('textarea');
+    ta.value=txt;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);doCopy();
+  }
 }
 
 function copyComfy(){
