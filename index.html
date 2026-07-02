@@ -8217,11 +8217,7 @@ function computeNext(fromId,label,seg){
     return nextEnabled('breast_sensation_her_nipple');
   }
   // breast_sensation_her_nipple: negative segments should NOT skip to lactation_volume
-  if(fromId==='breast_sensation_her_nipple'){
-    const fs=['Numbing Nerve Ache','Sharp Painful Nipple Pinch','Intense Localized Fire','Complete Nipple Revulsion'];
-    if(fs.some(l=>label.startsWith(l)))return nextEnabled('breast_enthusiasm');
-    return nextEnabled('lactation_volume');
-  }
+  if(fromId==='breast_sensation_her_nipple')return nextEnabled('lactation_volume'); // always flows forward, no loop-back
   // breast_enthusiasm: specific segments route to ass_size, reluctant/disliking continue normally
   if(fromId==='breast_enthusiasm'){
     if(label.startsWith('Actively Covering')||label.startsWith('Completely Unwilling'))return nextEnabled('ass_size');
@@ -8970,8 +8966,9 @@ function applyConsistencyMatrix(weights,segs,wid){
   if(wid==='cup_size'){
     // Anorexic/Bulimic: hard cap at D (E and above → weight 0)
     const bodyResult=results.find(r=>r.wheelId==='body')?.label||'';
+    let hardZeroed=[];
     if(hardBlockToggles['anorexic_cup']!==false&&/anorexic|bulimic/i.test(bodyResult)){
-      w.forEach((_,i)=>{if(/^[E-N]/.test(segs[i].label)||segs[i].label==='N+')w[i]=0;});
+      w.forEach((_,i)=>{if(/^[E-N]/.test(segs[i].label)||segs[i].label==='N+'){w[i]=0;hardZeroed.push(i);}});
     }
     // Thin/Slim: suppress J+
     if(bodyGroup==='thin'){
@@ -8981,7 +8978,9 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(cupGroup==='very_large'){
       // Already rolled, no adjustment needed here
     }
-    return w;
+    const ruled=applyActiveRules(w, segs, wid);
+    hardZeroed.forEach(i=>{ruled[i]=0;}); // hard cap always wins, rules cannot revive a zeroed segment
+    return ruled;
   }
 
   // ── Breast shape wheel ──
@@ -9005,7 +9004,7 @@ function applyConsistencyMatrix(weights,segs,wid){
       w.forEach((_,i)=>{if(/barely there|athletic|perky/i.test(lbl(i)))w[i]*=(matrixMultipliers['bbw_breast_suppress']??0.2);});
       w.forEach((_,i)=>{if(/overflow|pendulous|lateral spread/i.test(lbl(i)))w[i]*=(matrixMultipliers['bbw_breast_boost']??1.6);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Breast firmness wheel ──
@@ -9033,7 +9032,7 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(muscleGroup==='athletic'){
       w.forEach((_,i)=>{if(/doughy|floppy|watery/i.test(lbl(i)))w[i]*=(matrixMultipliers['athletic_firm_suppress']??0.3);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Breast projection wheel ──
@@ -9046,7 +9045,7 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(cupGroup==='very_large'){
       w.forEach((_,i)=>{if(/^flat|^minimal/i.test(lbl(i)))w[i]*=(matrixMultipliers['large_cup_proj_suppress']??0.2);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Ass projection wheel ──
@@ -9060,7 +9059,7 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(ageGroup==='teen'){
       w.forEach((_,i)=>{if(/dropped|deep set/i.test(lbl(i)))w[i]*=(matrixMultipliers['teen_ass_proj']??0.3);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Ass firmness wheel ──
@@ -9074,7 +9073,7 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(ageGroup==='teen'){
       w.forEach((_,i)=>{if(/saggy|pendulous|mommy/i.test(lbl(i)))w[i]*=(matrixMultipliers['teen_ass_droop']??0.15);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Ass shape wheel ──
@@ -9083,7 +9082,7 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(ageGroup==='teen'){
       w.forEach((_,i)=>{if(/mommy/i.test(lbl(i)))w[i]*=(matrixMultipliers['teen_ass_mommy']??0.1);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Thigh thickness wheel ──
@@ -9101,7 +9100,7 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(assSizeGroup==='large'){
       w.forEach((_,i)=>{if(/^very thin|^slim/i.test(lbl(i)))w[i]*=(matrixMultipliers['huge_ass_thigh']??0.15);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Body type wheel ──
@@ -9110,7 +9109,7 @@ function applyConsistencyMatrix(weights,segs,wid){
     if(heightGroup==='short'||heightGroup==='very_short'){
       w.forEach((_,i)=>{if(/ussbbw|ssbbw/i.test(lbl(i)))w[i]*=(matrixMultipliers['short_bbw_suppress']??0.3);});
     }
-    return w;
+    return applyActiveRules(w, segs, wid);
   }
 
   // ── Mode wheel — age-based boosts/blocks ──
