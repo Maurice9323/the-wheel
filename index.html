@@ -8270,28 +8270,7 @@ function computeNext(fromId,label,seg){
     if(_kr==='Super Dom')return nextEnabled('general_abuse');
     return nextEnabled('mode');
   }
-  // ── 60+ AGE SKIP LOGIC ──
-  // Skip wheels that are replaced/removed for 60+ characters
-  if(ageIs60plus){
-    // Skip lactation chain → go to ass_size
-    if(['lactation_volume','lactation_taste','milk_play'].includes(fromId))return nextEnabled('ass_size');
-    // Skip squirt chain → go to shave
-    if(['squirt_enthusiasm','squirt_anatomy','squirt_threshold','squirt_psychology',
-        'squirt_fluid','squirt_sensation_her','squirt_sensation_me'].includes(fromId))return nextEnabled('shave');
-    // breast_shape handled by age handler routing to breast_shape_60plus directly
-    // 71+ skips
-    if(ageIs60plus==='71-80'||ageIs60plus==='80+'){
-      // (71+ skin_glow skip removed — it created a face-chain loop; skin_glow now routes normally to lips)
-      if(['stretch_thin','stretch_mid','stretch_bbw'].includes(fromId))return nextEnabled('cellulite_thin');
-    }
-    // 80+ skips
-    if(ageIs60plus==='80+'){
-      if(fromId==='freckles')return nextEnabled('eyes_light');
-      // (80+ body_hair->cleavage skip removed — created a cleavage<->body_hair loop; body_hair now routes normally)
-      if(['cellulite_thin','cellulite_mid','cellulite_bbw'].includes(fromId))return nextEnabled('body_hair');
-      if(fromId==='nipple_placement')return nextEnabled('nipple_col_light');
-    }
-  }
+  // ── 60+ AGE SKIP LOGIC removed: all 60+ ages now route through the full normal sequence ──
   // ── END LABEL OVERRIDES ──
   if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Nipple')return nextEnabled('nipple_size');if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
   if(fromId==='amount'&&label==='Start over')return'RESTART';
@@ -11969,23 +11948,74 @@ async function saveRulesToStorage(){
 
 function loadRulesJSON(e){
   const file = e.target.files[0];
-  if(!file) return;
+  if(!file){ e.target.value=''; return; }
+  if(!/\.json$/i.test(file.name)){
+    alert('That doesn\'t look like a .json file: "' + file.name + '". Export from the Rules Builder and try again.');
+    e.target.value=''; return;
+  }
   const reader = new FileReader();
+  reader.onerror = () => {
+    alert('Could not read that file — the browser reported a read error. Try re-selecting it, or re-export from the Rules Builder.');
+    e.target.value='';
+  };
   reader.onload = ev => {
+    e.target.value='';
+    const text = ev.target.result;
+    if(!text || typeof text !== 'string' || text.trim().length === 0){
+      alert('The file came back empty. Try re-exporting from the Rules Builder and upload that file directly.');
+      return;
+    }
+    let data;
     try {
-      const data = JSON.parse(ev.target.result);
-      if(!data.rules || !Array.isArray(data.rules)) throw new Error('Invalid rules file');
-      activeRules = data.rules;
-      saveRulesToStorage();
-      renderRulesPanel();
-      alert(`✓ Loaded ${activeRules.length} rules.`);
+      data = JSON.parse(text);
     } catch(err){
-      alert('Failed to load rules: ' + err.message);
+      alert('This file isn\'t valid JSON (' + err.message + '). It may be corrupted or not an actual export from the Rules Builder.');
+      return;
+    }
+    if(!data || typeof data !== 'object' || Array.isArray(data)){
+      alert('Unexpected file format: expected an object with a "rules" list, got something else.');
+      return;
+    }
+    if(!('rules' in data)){
+      alert('This file has no "rules" field. Make sure you\'re uploading a rules export from the Rules Builder, not a different file.');
+      return;
+    }
+    if(!Array.isArray(data.rules)){
+      alert('The "rules" field isn\'t a list — this file may be from an incompatible version of the Rules Builder.');
+      return;
+    }
+    if(data.rules.length === 0){
+      alert('This file has 0 rules — nothing to load. Check that you built rules in the Rules Builder before exporting.');
+      return;
+    }
+    const bad = [];
+    const segExists = (w,s) => { const d=WHEEL_DEFS[w]; return !!d && d.segments.some(x=>x.label===s); };
+    data.rules.forEach((r, i) => {
+      const trigs = Array.isArray(r.triggers) ? r.triggers : (r.triggerWheel ? [{wheel:r.triggerWheel,segment:r.triggerSegment}] : []);
+      const targs = Array.isArray(r.targets) ? r.targets : (r.targetWheel ? [{wheel:r.targetWheel,segment:r.targetSegment}] : []);
+      if(trigs.length === 0) bad.push('rule ' + (i+1) + ' has no trigger');
+      if(targs.length === 0) bad.push('rule ' + (i+1) + ' has no target');
+      trigs.forEach(t => {
+        if(t.wheel && !WHEEL_DEFS[t.wheel]) bad.push('rule ' + (i+1) + ' trigger wheel "' + t.wheel + '" does not exist');
+        else if(t.wheel && t.segment && !segExists(t.wheel, t.segment)) bad.push('rule ' + (i+1) + ' trigger segment "' + t.segment.slice(0,40) + '" not found on ' + t.wheel);
+      });
+      targs.forEach(t => {
+        if(t.wheel && !WHEEL_DEFS[t.wheel]) bad.push('rule ' + (i+1) + ' target wheel "' + t.wheel + '" does not exist');
+        else if(t.wheel && t.segment && !segExists(t.wheel, t.segment)) bad.push('rule ' + (i+1) + ' target segment "' + t.segment.slice(0,40) + '" not found on ' + t.wheel);
+      });
+    });
+    activeRules = data.rules;
+    saveRulesToStorage();
+    renderRulesPanel();
+    if(bad.length){
+      alert('Loaded ' + activeRules.length + ' rules, but found issues:\n\u2022 ' + bad.slice(0,5).join('\n\u2022 ') + (bad.length>5?'\n...and '+(bad.length-5)+' more.':'') + '\n\nCheck the highlighted rules in the panel.');
+    } else {
+      alert('\u2713 Loaded ' + activeRules.length + ' rules.');
     }
   };
   reader.readAsText(file);
-  e.target.value = '';
 }
+
 
 function clearAllRules(){
   if(!confirm('Clear all rules?')) return;
@@ -12011,19 +12041,31 @@ function closeRulesPanel(){
   document.getElementById('rulesPanel').classList.remove('open');
 }
 
+function normalizeTriggers(r){
+  return (Array.isArray(r.triggers) && r.triggers.length)
+    ? r.triggers.filter(t=>t.wheel&&t.segment)
+    : (r.triggerWheel ? [{wheel:r.triggerWheel, segment:r.triggerSegment}] : []);
+}
+function normalizeTargets(r){
+  return (Array.isArray(r.targets) && r.targets.length)
+    ? r.targets
+    : (r.targetWheel ? [{wheel:r.targetWheel, segment:r.targetSegment, multiplier:r.multiplier, strength:r.strength}] : []);
+}
 function renderRulesPanel(){
   const total = activeRules.length;
-  const active = activeRules.filter(r=>r.enabled).length;
-  const suppress = activeRules.filter(r=>r.enabled&&r.direction==='suppress').length;
-  const boost = activeRules.filter(r=>r.enabled&&r.direction==='boost').length;
+  const active = activeRules.filter(r=>r.enabled!==false).length;
+  let boostCount=0, suppressCount=0;
+  activeRules.forEach(r=>{
+    normalizeTargets(r).forEach(tg=>{
+      const s = typeof tg.strength==='number' ? tg.strength : (typeof tg.multiplier==='number' ? (tg.multiplier>1?1:tg.multiplier<1?-1:0) : 0);
+      if(s>0) boostCount++; else if(s<0) suppressCount++;
+    });
+  });
 
   const stats = document.getElementById('rulesStats');
   if(stats){
     stats.innerHTML = [
-      ['Total', total],
-      ['Active', active],
-      ['Suppress', suppress],
-      ['Boost', boost],
+      ['Total', total],['Active', active],['Suppress', suppressCount],['Boost', boostCount],
     ].map(([l,v])=>`
       <div style="background:var(--bg3);border:1px solid var(--border);padding:6px 12px;flex:1;min-width:60px;text-align:center">
         <div style="font-size:1.1rem;font-weight:700;color:var(--accent)">${v}</div>
@@ -12041,35 +12083,73 @@ function renderRulesPanel(){
 
   list.innerHTML = '';
   activeRules.forEach((r, idx) => {
-    const twName = WHEEL_DEFS[r.triggerWheel]?.name || r.triggerWheel;
-    const tarwName = WHEEL_DEFS[r.targetWheel]?.name || r.targetWheel;
-    const dirColor = r.direction === 'suppress' ? '#ff6666' : '#66ff99';
-    const dirLabel = r.direction === 'suppress' ? '▼' : '▲';
+    const trigs = normalizeTriggers(r);
+    const targs = normalizeTargets(r);
+    const logic = (r.logic || 'OR').toUpperCase();
+
+    const trigText = trigs.length
+      ? trigs.map(t=>{
+          const name = WHEEL_DEFS[t.wheel]?.name || t.wheel;
+          const missing = !WHEEL_DEFS[t.wheel];
+          return `<span style="color:${missing?'#ff6666':'var(--gold)'}">${name}</span> = <em style="color:var(--text2)">"${t.segment}"</em>${missing?' <span style="color:#ff6666">(wheel not found)</span>':''}`;
+        }).join(` <span style="color:var(--text2)">${logic}</span> `)
+      : '<span style="color:#ff6666">(no trigger)</span>';
+
+    // group targets by wheel + effective strength for compact display
+    const groups = {};
+    targs.forEach(tg=>{
+      const hasStrength = typeof tg.strength === 'number';
+      const s = hasStrength ? tg.strength : null;
+      const key = tg.wheel+'|'+(hasStrength?s:('x'+tg.multiplier));
+      if(!groups[key]) groups[key] = {wheel:tg.wheel, strength:s, multiplier:tg.multiplier, segs:[]};
+      groups[key].segs.push(tg.segment);
+    });
+
+    const targetLines = Object.values(groups).map(g=>{
+      const wname = WHEEL_DEFS[g.wheel]?.name || g.wheel;
+      const missingWheel = !WHEEL_DEFS[g.wheel];
+      const missingSegs = g.segs.filter(s=>{
+        const d=WHEEL_DEFS[g.wheel];
+        return d && !d.segments.some(x=>x.label===s);
+      });
+      const hasStrength = g.strength!==null;
+      const dirIsBoost = hasStrength ? g.strength>=0 : (g.multiplier>1);
+      const dirLabel = dirIsBoost ? '▲ boost' : '▼ suppress';
+      const dirColor = dirIsBoost ? '#66ff99' : '#ff6666';
+      const strLabel = hasStrength ? (g.strength>=0?'+':'')+Math.round(g.strength*100)+'%' : '×'+g.multiplier;
+      const segText = g.segs.length<=3 ? g.segs.map(s=>`"${s}"`).join(', ') : g.segs.length+' segments';
+      const warn = missingWheel ? ' <span style="color:#ff6666">(wheel not found)</span>'
+                 : missingSegs.length ? ` <span style="color:#ff6666">(${missingSegs.length} unmatched segment${missingSegs.length>1?'s':''})</span>`
+                 : '';
+      return `<div style="font-size:.75rem;line-height:1.6;padding-left:12px">
+        <span style="color:${dirColor};font-weight:700">${dirLabel} ${strLabel}</span>
+        <span style="color:${missingWheel?'#ff6666':'var(--gold)'}">${wname}</span>:
+        <span style="color:var(--text2)">${segText}</span>${warn}
+      </div>`;
+    }).join('');
+
     const row = document.createElement('div');
-    row.style.cssText = `background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${r.enabled?(r.direction==='suppress'?'var(--accent)':'var(--green)'):'var(--border)'};padding:10px 12px;margin-bottom:8px;opacity:${r.enabled?1:0.45}`;
+    row.style.cssText = `background:var(--bg3);border:1px solid var(--border);border-left:3px solid ${r.enabled!==false?'var(--green)':'var(--border)'};padding:10px 12px;margin-bottom:8px;opacity:${r.enabled!==false?1:0.45}`;
     row.innerHTML = `
       <div style="display:flex;align-items:flex-start;gap:8px">
         <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;margin-top:2px">
-          <input type="checkbox" ${r.enabled?'checked':''} style="opacity:0;width:0;height:0"
+          <input type="checkbox" ${r.enabled!==false?'checked':''} style="opacity:0;width:0;height:0"
             onchange="toggleRuleEnabled(${idx})">
-          <span style="position:absolute;inset:0;background:${r.enabled?'var(--green)':'#333'};border-radius:10px;cursor:pointer;transition:.3s">
-            <span style="position:absolute;width:14px;height:14px;left:${r.enabled?'19px':'3px'};top:3px;background:#fff;border-radius:50%;transition:.3s;display:block"></span>
+          <span style="position:absolute;inset:0;background:${r.enabled!==false?'var(--green)':'#333'};border-radius:10px;cursor:pointer;transition:.3s">
+            <span style="position:absolute;width:14px;height:14px;left:${r.enabled!==false?'19px':'3px'};top:3px;background:#fff;border-radius:50%;transition:.3s;display:block"></span>
           </span>
         </label>
         <div style="flex:1;min-width:0">
-          <div style="font-size:.78rem;color:var(--text);line-height:1.5">
-            IF <span style="color:var(--gold)">${twName}</span> = <em style="color:var(--text2)">"${r.triggerSegment}"</em>
-          </div>
-          <div style="font-size:.78rem;color:var(--text);line-height:1.5">
-            <span style="color:${dirColor};font-weight:700">${dirLabel} ${r.direction}</span>
-            <em style="color:var(--text2)">"${r.targetSegment}"</em> in <span style="color:var(--gold)">${tarwName}</span>
-            <span style="color:var(--accent);font-weight:700"> × ${r.multiplier}</span>
-          </div>
+          <div style="font-size:.78rem;color:var(--text);line-height:1.5">IF ${trigText}</div>
+          <div style="font-size:.7rem;color:var(--text2);margin:4px 0 2px">THEN (${targs.length} target${targs.length!==1?'s':''}):</div>
+          ${targetLines}
         </div>
       </div>`;
     list.appendChild(row);
   });
 }
+
+
 
 // ── Apply rules inside applyConsistencyMatrix ──
 function applyActiveRules(weights, segs, wid){
