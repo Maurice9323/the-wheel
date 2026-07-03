@@ -8273,6 +8273,9 @@ function computeNext(fromId,label,seg){
     if(_kr==='Super Dom')return nextEnabled('general_abuse');
     return nextEnabled('mode');
   }
+  // pegging_enthusiasm: ALL segments → pegging_sensation
+  // (overrides any old branch:'amount' baked into some segments from template)
+  if(fromId==='pegging_enthusiasm')return nextEnabled('pegging_sensation');
   // ── 60+ AGE SKIP LOGIC removed: all 60+ ages now route through the full normal sequence ──
   // ── END LABEL OVERRIDES ──
   if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Nipple')return nextEnabled('nipple_size');if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
