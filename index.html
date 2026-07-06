@@ -8263,6 +8263,9 @@ function computeNext(fromId,label,seg){
   // pegging_enthusiasm: ALL segments → pegging_sensation
   // (overrides any old branch:'amount' baked into some segments from template)
   if(fromId==='pegging_enthusiasm')return nextEnabled('pegging_sensation');
+  // ass_size: ALL segments → ass_shape
+  // (overrides any old branch:'ass_skin_texture'/'ass_firmness' baked into some segments from template)
+  if(fromId==='ass_size')return nextEnabled('ass_shape');
   // ── 60+ AGE SKIP LOGIC removed: all 60+ ages now route through the full normal sequence ──
   // ── END LABEL OVERRIDES ──
   if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Nipple')return nextEnabled('nipple_size');if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
@@ -9265,7 +9268,7 @@ const SS_BAND_H={"<4'0\"":-4,"4'1\"-4'5\"":-4,"4'6\"-4'10\"":-2,"4'11\"-5'2\"":-
 const SS_CUP_PROJ={'A':1,'B':2,'C':3,'D':4,'DD':5,'DDD':6,'E':6,'F':7,'G':8,'H':9,'I':10,'J':11,'K':12,'L':13,'M':14,'N+':15};
 const SS_WAIST_BASE={'Bulimic':[20,22],'Anorexic':[22,24],'Thin':[24,26],'Slim':[25,27],'Petite':[23,26],'Slim Thick':[26,28],'Average':[28,30],'Curvy':[27,30],'Upside Down Triangle':[30,33],'Mid Size':[30,33],'Mid Thick':[33,36],'Thick':[35,38],'Chubby':[36,40],'Thicker':[38,42],'Meatball':[40,44],'Thickest':[42,46],'Chunky':[44,48],'BBW':[48,56],'SSBBW':[56,68],'USSBBW':[68,80]};
 const SS_WAIST_RATIO={'apron belly, ratio less visible from front':6,'completely straight, no curve':5,'minimal ratio, nearly straight frame':4,'wide all over, minimal ratio difference':4,'even soft distribution, no clear ratio':4,'even distribution, less defined ratio':3,'slight ratio, thickness evenly spread':2,'moderate ratio, soft curves':0,'slight curve, subtle definition':0,'moderate ratio, gentle hourglass':-2,'defined ratio, clear waist dip':-3,'pronounced ratio, clear hourglass':-4,'pronounced ratio, large hips vs waist':-4,'very pronounced ratio, dramatic curve':-5,'surprisingly pronounced ratio for size':-5,'surprisingly defined waist for size':-5,'wide hips narrow waist, extreme ratio':-6,'dramatic ratio, very wide hips and thighs':-6};
-const SS_STOMACH_MAP={'Flat and toned — no visible fat, defined midsection':-3,'Flat and soft — no fat but no definition either':-2,'Slightly soft — small amount of fat, still relatively flat':-1,'Visible abs — muscle definition clearly present':-4,'Pudgy — noticeable softness, small belly present':2,'Bloated appearance — distended look, not purely from fat':3,'Visible ribcage — ribs show at the sides or front':-3,'Soft with visible linea alba — the midline visible even without definition':-1,'Navel deep and pronounced — deep innie, clearly defined':0,'Navel shallow — barely an indent':0,'Outie navel — projects outward':0};
+const SS_STOMACH_MAP={"Soft rounded belly — gentle forward curve, no real definition":1,"Low hanging apron — excess skin and fat drapes below the navel":4,"Full midsection — weight has settled uniformly across the abdomen":2,"Deflated and loose — skin hangs loosely with minimal volume behind it":1,"Upper belly dominant — weight sits above the navel, lower belly flatter":1,"Lower belly pouch — small concentrated pouch below the navel":0,"Layered — two distinct rolls of soft tissue visible at rest":3,"Still relatively flat — minimal redistribution, stomach largely unchanged":-2,"Thick and wide — midsection has expanded outward rather than forward":5,"Heavily layered — significant multiple rolls with loose skin throughout":5,'Flat and toned — no visible fat, defined midsection':-3,'Flat and soft — no fat but no definition either':-2,'Slightly soft — small amount of fat, still relatively flat':-1,'Visible abs — muscle definition clearly present':-4,'Pudgy — noticeable softness, small belly present':2,'Bloated appearance — distended look, not purely from fat':3,'Visible ribcage — ribs show at the sides or front':-3,'Soft with visible linea alba — the midline visible even without definition':-1,'Navel deep and pronounced — deep innie, clearly defined':0,'Navel shallow — barely an indent':0,'Outie navel — projects outward':0};
 const SS_HIPS_BASE={'Bulimic':[27,30],'Anorexic':[29,33],'Thin':[32,35],'Slim':[33,36],'Petite':[31,35],'Slim Thick':[36,40],'Average':[36,39],'Curvy':[38,44],'Upside Down Triangle':[33,37],'Mid Size':[39,43],'Mid Thick':[43,47],'Thick':[45,50],'Chubby':[45,50],'Thicker':[49,54],'Meatball':[49,54],'Thickest':[52,58],'Chunky':[52,60],'BBW':[58,70],'SSBBW':[70,86],'USSBBW':[86,108]};
 const SS_ASS_HIP_MAP={'Flat':-4,'Inverted':-4,'Barely there':-2,'Small':-1,'Average':0,'Full':2,'Large':5,'Huge':8,'Obscene':14};
 const SS_THICK_HIP_MAP={'Very thin — barely any mass, bone visible, no softness':-3,'Slim — slender, little fat or muscle, tapers cleanly':-1,'Average — proportionate, nothing remarkable':0,'Full — noticeable thickness, fills out clothes':1,'Thick — substantial mass, clearly prominent':3,'Very thick — extremely full, significant presence':5,'Disproportionate — much thicker than the rest of the body would suggest':8,'Long and slim — extended length with minimal mass':-1,'Short and thick — compact with significant mass':2};
@@ -9297,9 +9300,20 @@ function ssGetAny(...wids){for(const w of wids){const r=ssGet(w);if(r)return r;}
 
 const SS_FRAME_W={"Narrow frame — small bones throughout, delicate joints, slight overall structure":-8,"Fine-boned — small wrists, ankles, delicate joints throughout":-8,"Petite frame — small overall bone structure, compact joints, slight build":-6,"Even frame — shoulders and hips roughly equal width, straight up and down":0,"Athletic frame — medium-wide shoulders, narrow hips, built for movement":0,"Shoulder dominant — shoulders notably wider than hips, inverted taper":2,"Hip dominant — hips wider than shoulders, classic hourglass base":2,"Tall and rangy — long bones, open joints, frame built for height":3,"Wide frame — broad bone structure, shoulders and hips carry width":10,"Heavy-boned — thick wrists, dense joints, frame carries weight visibly":10,"Heavy-set with wide hips — dense frame concentrated at the lower body":12,"Tall wide frame — height combined with broad bone structure throughout":13,"Large and wide frame — broad bones throughout, shoulders and hips both wide and heavy":15};
 const SS_BACK_W={"Narrow shoulders — shoulder width is small relative to hips":-4,"Visible spine — vertebrae visible down the center":-4,"Average shoulders — proportionate width":0,"Smooth back — no visible spine or muscle definition":0,"Bra strap indent — skin shows the line even without a bra":0,"Dimples of Venus — two small indents at the base of the spine above the ass":0,"Long back — torso is long relative to legs":0,"Short back — torso is short relative to legs":0,"Defined back muscles — muscle groups visible on either side of the spine":2,"Soft back — no definition, smooth and full":2,"Broad shoulders — wider than average, commands presence":4,"Back fat visible — rolls or fullness around the bra line area":6};
-const SS_STOMACH_W={"Flat and toned — no visible fat, defined midsection":-3,"Visible abs — muscle definition clearly present":-3,"Visible ribcage — ribs show at the sides or front":-3,"Flat and soft — no fat but no definition either":-1,"Slightly soft — small amount of fat, still relatively flat":0,"Soft with visible linea alba — the midline visible even without definition":0,"Navel deep and pronounced — deep innie, clearly defined":0,"Navel shallow — barely an indent":0,"Outie navel — projects outward":0,"Bloated appearance — distended look, not purely from fat":2,"Pudgy — noticeable softness, small belly present":3};
+const SS_STOMACH_W={"Soft rounded belly — gentle forward curve, no real definition":1,"Low hanging apron — excess skin and fat drapes below the navel":3,"Full midsection — weight has settled uniformly across the abdomen":2,"Deflated and loose — skin hangs loosely with minimal volume behind it":-2,"Upper belly dominant — weight sits above the navel, lower belly flatter":0,"Lower belly pouch — small concentrated pouch below the navel":0,"Layered — two distinct rolls of soft tissue visible at rest":2,"Still relatively flat — minimal redistribution, stomach largely unchanged":-2,"Thick and wide — midsection has expanded outward rather than forward":3,"Heavily layered — significant multiple rolls with loose skin throughout":4,"Flat and toned — no visible fat, defined midsection":-3,"Visible abs — muscle definition clearly present":-3,"Visible ribcage — ribs show at the sides or front":-3,"Flat and soft — no fat but no definition either":-1,"Slightly soft — small amount of fat, still relatively flat":0,"Soft with visible linea alba — the midline visible even without definition":0,"Navel deep and pronounced — deep innie, clearly defined":0,"Navel shallow — barely an indent":0,"Outie navel — projects outward":0,"Bloated appearance — distended look, not purely from fat":2,"Pudgy — noticeable softness, small belly present":3};
 const SS_PROJ_BUST={"Flat — almost no projection, barely rises from the chest":-2,"Minimal — slight projection, noticeable but modest":-1,"Moderate — average projection, proportionate to size":0,"Wide rather than deep — spreads laterally, minimal forward projection":0,"Full — significant projection, clearly extends outward":1,"Deep rather than wide — narrow from front but projects significantly forward":2,"High — dramatic forward projection, extends well past average for size":2,"Extreme — maximum projection, almost defies gravity":4};
 
+function heightToInchesRange(label){
+  if(label==="<4'0\"")return[24,47];
+  if(label===">6'6\"")return[79,84];
+  const m=label.match(/(\d+)'(\d+)"-(\d+)'(\d+)"/);
+  if(!m)return null;
+  return[parseInt(m[1],10)*12+parseInt(m[2],10), parseInt(m[3],10)*12+parseInt(m[4],10)];
+}
+function inchesToHeightStr(inches){
+  const ft=Math.floor(inches/12), inch=inches-ft*12;
+  return ft+"'"+inch+'"';
+}
 function calcStatStrip(){
   const height=ssGet('height');
   const body=ssGet('body');
@@ -9309,7 +9323,7 @@ function calcStatStrip(){
   const assL=ssGet('ass_size');
   const assShapeL=ssGet('ass_shape')||ssGet('ass_shape_60plus');
   const assProjL=ssGet('ass_projection');
-  const stomachL=ssGet('stomach');
+  const stomachL=ssGet('stomach')||ssGet('stomach_60plus');
   const backL=ssGet('back');
   const frameL=ssGet('frame_bone_structure');
   const muscleL=ssGetAny('muscle_thin','muscle_mid','muscle_bbw');
@@ -9403,7 +9417,12 @@ function calcStatStrip(){
     projStr=allKnown?`~${ssLock('proj',lo,hi)}"`:`~${lo}–${hi}"`;
   }
 
-  return{height:height||'—',weight:weightStr,bra:braStr,bust:bustStr,waist:waistStr,hips:hipsStr,foot:footStr,proj:projStr};
+  let heightStr='—';
+  if(height){
+    const hr=heightToInchesRange(height);
+    heightStr=hr?inchesToHeightStr(ssLock('height',hr[0],hr[1])):height;
+  }
+  return{height:heightStr,weight:weightStr,bra:braStr,bust:bustStr,waist:waistStr,hips:hipsStr,foot:footStr,proj:projStr};
 }
 
 function updateStatStrip(){
@@ -12216,12 +12235,20 @@ function applyActiveRules(weights, segs, wid){
 
   activeRules.forEach(rule => {
     if(rule.enabled === false) return;
-    const trigs = (Array.isArray(rule.triggers) && rule.triggers.length)
-      ? rule.triggers.filter(t => t.wheel && t.segment)
-      : (rule.triggerWheel ? [{wheel: rule.triggerWheel, segment: rule.triggerSegment}] : []);
-    if(!trigs.length) return;
-    const logic = (rule.logic || 'OR').toUpperCase();
-    const fired = logic === 'AND' ? trigs.every(hasTrig) : trigs.some(hasTrig);
+    let fired;
+    if(Array.isArray(rule.levels) && rule.levels.length){
+      // Multi-level: each level is a list of {wheel,segment} conditions OR'd together;
+      // ALL levels must fire (AND across levels) for the rule to fire.
+      fired = rule.levels.every(level => Array.isArray(level) && level.length && level.some(hasTrig));
+    } else {
+      // Legacy flat schema: single OR/AND across all triggers.
+      const trigs = (Array.isArray(rule.triggers) && rule.triggers.length)
+        ? rule.triggers.filter(t => t.wheel && t.segment)
+        : (rule.triggerWheel ? [{wheel: rule.triggerWheel, segment: rule.triggerSegment}] : []);
+      if(!trigs.length) return;
+      const logic = (rule.logic || 'OR').toUpperCase();
+      fired = logic === 'AND' ? trigs.every(hasTrig) : trigs.some(hasTrig);
+    }
     if(!fired) return;
     const targs = (Array.isArray(rule.targets) && rule.targets.length)
       ? rule.targets
