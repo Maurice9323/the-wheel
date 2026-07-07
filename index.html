@@ -9314,6 +9314,18 @@ function inchesToHeightStr(inches){
   const ft=Math.floor(inches/12), inch=inches-ft*12;
   return ft+"'"+inch+'"';
 }
+const SS_HEIGHT_FRAC={"Petite frame — small overall bone structure, compact joints, slight build":0.2,"Fine-boned — small wrists, ankles, delicate joints throughout":0.4,"Narrow frame — small bones throughout, delicate joints, slight overall structure":0.42,"Tall and rangy — long bones, open joints, frame built for height":0.85,"Tall wide frame — height combined with broad bone structure throughout":0.85};
+const SS_HEIGHT_AGE={"71-80":-0.15,"80+":-0.25};
+function ssLockHeight(key,lo,hi,f){
+  if(ssCache[key]!==undefined)return ssCache[key];
+  const span=hi-lo;
+  const target=lo+f*span;
+  const jitter=(Math.random()*2-1);
+  let v=Math.round(target+jitter);
+  v=Math.min(hi,Math.max(lo,v));
+  ssCache[key]=v;
+  return v;
+}
 function calcStatStrip(){
   const height=ssGet('height');
   const body=ssGet('body');
@@ -9420,7 +9432,15 @@ function calcStatStrip(){
   let heightStr='—';
   if(height){
     const hr=heightToInchesRange(height);
-    heightStr=hr?inchesToHeightStr(ssLock('height',hr[0],hr[1])):height;
+    if(!hr){
+      heightStr=height;
+    } else if(!ageL || !frameL){
+      heightStr=height;                       // deps not all spun yet -> show the bracket range
+    } else {
+      let f=(SS_HEIGHT_FRAC[frameL]??0.5)+(SS_HEIGHT_AGE[ageL]??0);
+      f=Math.min(1,Math.max(0,f));
+      heightStr=inchesToHeightStr(ssLockHeight('height',hr[0],hr[1],f));
+    }
   }
   return{height:heightStr,weight:weightStr,bra:braStr,bust:bustStr,waist:waistStr,hips:hipsStr,foot:footStr,proj:projStr};
 }
