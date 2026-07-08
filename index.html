@@ -136,7 +136,7 @@
 .stat-value.updating{color:var(--text)}
 .stat-divider{width:1px;height:12px;background:var(--border);flex-shrink:0}
 .stat-row-divider{height:1px;background:var(--border);margin:0 12px}
-body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;padding-top:calc(var(--safe-top) + 56px)}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;padding-top:calc(var(--safe-top) + 86px)}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(120,0,0,.09),transparent 55%),radial-gradient(ellipse at 85% 50%,rgba(40,0,70,.09),transparent 55%);pointer-events:none;z-index:0}
 header{width:100%;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:relative;z-index:1;flex-wrap:wrap;gap:8px}
 .title{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--accent);letter-spacing:3px;text-shadow:0 0 30px rgba(192,18,28,.5)}
@@ -444,6 +444,16 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
     <div class="stat-item"><span class="stat-label">Foot</span><span class="stat-value" id="statFoot">—</span></div>
     <div class="stat-divider"></div>
     <div class="stat-item"><span class="stat-label">Proj</span><span class="stat-value" id="statProj">—</span></div>
+  </div>
+  <div class="stat-row-divider"></div>
+  <div class="stat-row">
+    <div class="stat-item"><span class="stat-label">Age</span><span class="stat-value" id="statAppAge">—</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat-item"><span class="stat-label">Hands</span><span class="stat-value" id="statHands">—</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat-item"><span class="stat-label">Lips</span><span class="stat-value" id="statLips">—</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat-item"><span class="stat-label">Color</span><span class="stat-value" id="statColor">—</span></div>
   </div>
 </div>
 <header>
@@ -9387,7 +9397,7 @@ const SS_THICKW_MAP={'Very thin — barely any mass, bone visible, no softness':
 const SS_TSHAPE_MAP={'Cylindrical — even thickness top to bottom, no taper':0,'Tapered — fuller at top near hip, narrows toward knee':3,'Flared — wider at the mid-thigh, narrows above and below':2,'Front heavy — most mass on the front, quadricep dominant':2,'Back heavy — most mass on the back, hamstring and under-butt dominant':5,'Outer heavy — saddlebag, mass sits on the outer thigh':3,'Inner heavy — mass concentrated on inner thigh':3,'Muscular — defined muscle shape visible through the skin':4};
 const SS_AGE_MAP={'18-19':-3,'20-24':0,'25-29':0,'30-35':3,'36-40':6,'41-50':10,'51-60':12,'60-70':10,'71-80':6,'80+':4};
 const SS_MUSCLE_MAP={'very defined, low body fat, hard muscle':8,'athletic lean, clearly works out':6,'athletic thick, muscle under curves':6,'thick but noticeably toned legs':4,'strong thick thighs, soft everywhere else':4,'lightly toned, subtle arm and leg definition':3,'soft with strong legs underneath':3,'full soft body, strong arms from carrying weight':2,'curvy with slight arm definition':2,'naturally lean, slight tone without effort':1,'soft with subtle leg tone':1,'toned midsection, visible but soft abs':1,'thick and soft, pillowy feel':0,'soft all over, no visible tone':0,'very soft all over, pillowy':0,'completely soft, no definition visible':0,'extremely soft, skin folds with movement':0,'skinny fat, soft despite small frame':-3};
-const SS_ASS_W_MAP={'Barely there':-3,'Small':-1,'Average':0,'Full':3,'Large':6,'Huge':10,'Obscene':15,'Flat':-5,'Inverted':-5};
+const SS_ASS_W_MAP={'Inverted':-6,'Barely there':-4,'Flat':-3,'Small':-1,'Average':0,'Full':3,'Large':6,'Huge':10,'Obscene':15};
 const SS_BAND_BASE={'Bulimic':26,'Anorexic':28,'Thin':30,'Slim':30,'Petite':28,'Slim Thick':32,'Average':34,'Curvy':34,'Upside Down Triangle':36,'Mid Size':36,'Mid Thick':38,'Thick':40,'Chubby':40,'Thicker':42,'Meatball':42,'Thickest':44,'Chunky':44,'BBW':48,'SSBBW':56,'USSBBW':64};
 const SS_BAND_H={"<4'0\"":-4,"4'1\"-4'5\"":-4,"4'6\"-4'10\"":-2,"4'11\"-5'2\"":-2,"5'3\"-5'7\"":0,"5'8\"-5'11\"":2,"6'0\"-6'5\"":4,">6'6\"":6};
 const SS_CUP_PROJ={'A':1,'B':2,'C':3,'D':4,'DD':5,'DDD':6,'E':6,'F':7,'G':8,'H':9,'I':10,'J':11,'K':12,'L':13,'M':14,'N+':15};
@@ -9585,10 +9595,379 @@ const SS_STOMACH_MAP={
   'significant tissue laxity across the full frame, mass heavy and low, skin surface dramatically loosened from underlying structure — navel position shifted upward from tissue drop, surrounding skin folded, depth not readable':7,
 };
 const SS_HIPS_BASE={'Bulimic':[27,30],'Anorexic':[29,33],'Thin':[32,35],'Slim':[33,36],'Petite':[31,35],'Slim Thick':[36,40],'Average':[36,39],'Curvy':[38,44],'Upside Down Triangle':[33,37],'Mid Size':[39,43],'Mid Thick':[43,47],'Thick':[45,50],'Chubby':[45,50],'Thicker':[49,54],'Meatball':[49,54],'Thickest':[52,58],'Chunky':[52,60],'BBW':[58,70],'SSBBW':[70,86],'USSBBW':[86,108]};
-const SS_ASS_HIP_MAP={'Flat':-4,'Inverted':-4,'Barely there':-2,'Small':-1,'Average':0,'Full':2,'Large':5,'Huge':8,'Obscene':14};
+const SS_ASS_HIP_MAP={'Inverted':-5,'Barely there':-3,'Flat':-2,'Small':-1,'Average':0,'Full':2,'Large':5,'Huge':8,'Obscene':14};
 const SS_THICK_HIP_MAP={'Very thin — barely any mass, bone visible, no softness':-3,'Slim — slender, little fat or muscle, tapers cleanly':-1,'Average — proportionate, nothing remarkable':0,'Full — noticeable thickness, fills out clothes':1,'Thick — substantial mass, clearly prominent':3,'Very thick — extremely full, significant presence':5,'Disproportionate — much thicker than the rest of the body would suggest':8,'Long and slim — extended length with minimal mass':-1,'Short and thick — compact with significant mass':2};
 const SS_FOOT_H={"<4'0\"":4,"4'1\"-4'5\"":4.5,"4'6\"-4'10\"":5.5,"4'11\"-5'2\"":6.5,"5'3\"-5'7\"":7.5,"5'8\"-5'11\"":8.5,"6'0\"-6'5\"":9.5,">6'6\"":11};
-const SS_PROJ_BASE={'Flat':[1,2],'Inverted':[1,2],'Barely there':[2,3],'Small':[3,5],'Average':[4,6],'Full':[5,7],'Large':[6,9],'Huge':[8,12],'Obscene':[11,15]};
+const SS_PROJ_BASE={'Inverted':[1,1],'Barely there':[1,2],'Flat':[2,3],'Small':[3,5],'Average':[4,6],'Full':[5,7],'Large':[6,9],'Huge':[8,12],'Obscene':[11,15]};
+// ── Bust modifiers ──
+const SS_BREAST_SHAPE_BUST={
+  'Round':0,'Teardrop':0,'Oval':0,'Gummy bear':0,'Relaxed':0,'Asymmetrical':0,'Close set':0,
+  'Separated with valley':0,'Full cleavage natural':0,'No natural cleavage':0,'High attachment':0,
+  'Low attachment':0,'Level':0,'Perky':0,'Buoyant':0,'Upper pole full':0,'Bottom heavy':0,'East-West':0,
+  'Wide base':1,'Pillow':1,'Spreads to the Sides':1,'No-Gap / Uniboob':1,'Stuck on':1,'Veiny':1,
+  'Stretch marked':1,'Side set':1,
+  'Overflow':2,'Shelf on Muscle':2,'Half-Dome':2,'Ski slope':2,'Sloped':2,
+  'Cone / Pointed':-1,'Long & Pointed':-1,'Tapered Point':-1,'Narrow Tube':-1,'Narrow base':-1,
+  'Athletic':-1,'Barely there':-1,'Deflated':-1,'Post-feeding':-1,
+  'Pendulous':1.5,'Heavy Droop':1.5,'Chandelier':1.5,'Waterfall':1.5,'Cone with droop':1.5,
+  'Weighted':1.5,'Puffy Narrow-Base':1.5,
+};
+const SS_BREAST_SHAPE_60_BUST={
+  'Slight drop':0.5,'One side dropped more':0.5,'Soft settled mound':0.5,'Noticeable drop':0.5,
+  'Still full but dropped':1,'Full with deep under-fold':1,
+  'Heavy and pendulous':1.5,'Wide and heavy with lateral drift':1.5,'Significant drop':1.5,'Heavy low-hanging':1.5,
+  'Extremely long pendulous breasts that hang well past the navel like heavy empty sacks':0,
+  'completely deflated skin-only breasts reduced to thin wrinkled tubes':0,
+  'heavy low-hanging breasts with deep folds and almost no volume left':0,
+  'paper-thin empty breast sacks that swing heavily with every movement':0,
+  'Wide spread':0,'Flat with wide base':0,'Deflated with drop':0,'Narrow and elongated':0,
+};
+const SS_BREAST_FIRMNESS_BUST={
+  'Rock solid':-1,'Very firm':-1,'Taut':-1,'Silicone-like':-1,
+  'Firm':0,'Medium':0,'Bouncy':0,'Dense':0,'Gummy':0,'Supple':0,'Uneven':0,
+  'Very soft':0.5,'Jiggly':0.5,'Spongy':0.5,
+  'Doughy':1,'Saggy':1,'Floppy':1,'Watery':1,'Weighted':1,'Pillowy':1,
+};
+const SS_BREAST_POSITION_BUST={
+  'High on chest':-1,
+  'Average height':0,'Close set':0,'Average spacing':0,'Level':0,'Uneven':0,
+  'Low on chest':1,'Wide set':1,'Symmastia':1,
+};
+// ── Band modifiers ──
+const SS_BACK_BAND={
+  'Narrow shoulders — shoulder width is small relative to hips':-2,
+  'Visible spine — vertebrae visible down the center':-1,
+  'Average shoulders — proportionate width':0,
+  'Smooth back — no visible spine or muscle definition':0,
+  'Bra strap indent — skin shows the line even without a bra':1,
+  'Dimples of Venus — two small indents at the base of the spine above the ass':0,
+  'Long back — torso is long relative to legs':0,
+  'Short back — torso is short relative to legs':0,
+  'Defined back muscles — muscle groups visible on either side of the spine':1,
+  'Soft back — no definition, smooth and full':0,
+  'Broad shoulders — wider than average, commands presence':2,
+  'Back fat visible — rolls or fullness around the bra line area':2,
+};
+const SS_COLLARBONE_BAND={
+  'Prominent — clearly visible, creates a defined line across the chest':-2,
+  'Subtly visible — present but not dramatic':-1,
+  'Hidden — not visible, covered by soft tissue':0,
+  'Sharp and angular — very defined, almost bony':-2,
+  'Soft and rounded — visible but with a gentle curve, not angular':-1,
+  'Asymmetrical — one side more prominent than the other':-1,
+  'With visible hollow — the supraclavicular hollow above is deep and noticeable':-2,
+};
+// ── Body proportions modifiers ──
+const SS_BODY_PROP_WAIST={
+  'Long torso, shorter legs — waist sits high, legs appear shorter relative to body':0,
+  'Long legs, shorter torso — legs dominate the silhouette, waist sits low':0,
+  'Balanced — torso and legs roughly equal, proportions feel harmonious':0,
+  'Short torso, high waist — compact midsection, legs appear to start very high':-1,
+  'Low waist, extended midsection — waist sits lower, torso appears longer':1,
+  'Leggy — legs disproportionately long relative to everything else':0,
+  'Compact overall — both torso and legs short, low center of gravity':0,
+  'Long limbed — both arms and legs carry extra length relative to torso':0,
+  'Top heavy proportion — torso longer and fuller, legs shorter and slimmer':2,
+  'Bottom heavy proportion — legs longer and fuller, torso compact above':-1,
+  'Heavy top and bottom with short waist — fullness above and below, midsection compact':1,
+  'Long limbed and full — height and volume together, limbs both long and heavy':1,
+};
+const SS_BODY_PROP_HIP={
+  'Long torso, shorter legs — waist sits high, legs appear shorter relative to body':0,
+  'Long legs, shorter torso — legs dominate the silhouette, waist sits low':0,
+  'Balanced — torso and legs roughly equal, proportions feel harmonious':0,
+  'Short torso, high waist — compact midsection, legs appear to start very high':0,
+  'Low waist, extended midsection — waist sits lower, torso appears longer':0,
+  'Leggy — legs disproportionately long relative to everything else':0,
+  'Compact overall — both torso and legs short, low center of gravity':0,
+  'Long limbed — both arms and legs carry extra length relative to torso':0,
+  'Top heavy proportion — torso longer and fuller, legs shorter and slimmer':-2,
+  'Bottom heavy proportion — legs longer and fuller, torso compact above':2,
+  'Heavy top and bottom with short waist — fullness above and below, midsection compact':2,
+  'Long limbed and full — height and volume together, limbs both long and heavy':1,
+};
+const SS_BODY_PROP_W={
+  'Long torso, shorter legs — waist sits high, legs appear shorter relative to body':0,
+  'Long legs, shorter torso — legs dominate the silhouette, waist sits low':0,
+  'Balanced — torso and legs roughly equal, proportions feel harmonious':0,
+  'Short torso, high waist — compact midsection, legs appear to start very high':0,
+  'Low waist, extended midsection — waist sits lower, torso appears longer':0,
+  'Leggy — legs disproportionately long relative to everything else':0,
+  'Compact overall — both torso and legs short, low center of gravity':0,
+  'Long limbed — both arms and legs carry extra length relative to torso':0,
+  'Top heavy proportion — torso longer and fuller, legs shorter and slimmer':3,
+  'Bottom heavy proportion — legs longer and fuller, torso compact above':2,
+  'Heavy top and bottom with short waist — fullness above and below, midsection compact':4,
+  'Long limbed and full — height and volume together, limbs both long and heavy':3,
+};
+const SS_BODY_PROP_BAND={
+  'Long torso, shorter legs — waist sits high, legs appear shorter relative to body':0,
+  'Long legs, shorter torso — legs dominate the silhouette, waist sits low':0,
+  'Balanced — torso and legs roughly equal, proportions feel harmonious':0,
+  'Short torso, high waist — compact midsection, legs appear to start very high':0,
+  'Low waist, extended midsection — waist sits lower, torso appears longer':0,
+  'Leggy — legs disproportionately long relative to everything else':0,
+  'Compact overall — both torso and legs short, low center of gravity':0,
+  'Long limbed — both arms and legs carry extra length relative to torso':0,
+  'Top heavy proportion — torso longer and fuller, legs shorter and slimmer':2,
+  'Bottom heavy proportion — legs longer and fuller, torso compact above':-1,
+  'Heavy top and bottom with short waist — fullness above and below, midsection compact':2,
+  'Long limbed and full — height and volume together, limbs both long and heavy':1,
+};
+// ── Redistribution modifiers (60+ only) ──
+const SS_REDIST_WAIST={
+  'Midsection dominant — weight has gathered at waist and abdomen, limbs relatively slim':4,
+  'Hip and thigh spread — lower body has widened, waist definition reduced':1,
+  'Even redistribution — weight spread uniformly, overall softer silhouette':2,
+  'Upper body dominant — weight sits in chest, arms and back, lower body lighter':2,
+  'Apple pattern — significant midsection and bust, narrower hips and legs':5,
+  'Pear intensified — hips and thighs grown disproportionately relative to upper body':0,
+  'Deflated overall — volume lost everywhere, skin looser without major regional gain':0,
+  'Remained proportional — body softened but basic silhouette largely unchanged':1,
+  'Back and flank gain — weight concentrated at lower back and flanks, front relatively flat':2,
+  'Bust dominant redistribution — chest and upper body gained, waist and hips slimmer':1,
+};
+const SS_REDIST_HIP={
+  'Midsection dominant — weight has gathered at waist and abdomen, limbs relatively slim':-1,
+  'Hip and thigh spread — lower body has widened, waist definition reduced':4,
+  'Even redistribution — weight spread uniformly, overall softer silhouette':2,
+  'Upper body dominant — weight sits in chest, arms and back, lower body lighter':-1,
+  'Apple pattern — significant midsection and bust, narrower hips and legs':-2,
+  'Pear intensified — hips and thighs grown disproportionately relative to upper body':5,
+  'Deflated overall — volume lost everywhere, skin looser without major regional gain':0,
+  'Remained proportional — body softened but basic silhouette largely unchanged':1,
+  'Back and flank gain — weight concentrated at lower back and flanks, front relatively flat':1,
+  'Bust dominant redistribution — chest and upper body gained, waist and hips slimmer':-1,
+};
+const SS_REDIST_W={
+  'Midsection dominant — weight has gathered at waist and abdomen, limbs relatively slim':3,
+  'Hip and thigh spread — lower body has widened, waist definition reduced':3,
+  'Even redistribution — weight spread uniformly, overall softer silhouette':2,
+  'Upper body dominant — weight sits in chest, arms and back, lower body lighter':2,
+  'Apple pattern — significant midsection and bust, narrower hips and legs':4,
+  'Pear intensified — hips and thighs grown disproportionately relative to upper body':3,
+  'Deflated overall — volume lost everywhere, skin looser without major regional gain':-3,
+  'Remained proportional — body softened but basic silhouette largely unchanged':1,
+  'Back and flank gain — weight concentrated at lower back and flanks, front relatively flat':2,
+  'Bust dominant redistribution — chest and upper body gained, waist and hips slimmer':3,
+};
+// ── Skin aging weight modifier ──
+const SS_SKIN_AGING_W={
+  'Fine surface wrinkling — small lines across most surfaces, especially hands and neck':0,
+  'Thin and delicate skin — skin crinkles easily, most visible on inner arms':-2,
+  'Age spots — pigmentation clusters on hands, chest, and face':0,
+  'Deep expression lines — significant lines around the mouth, forehead, and eyes':0,
+  'Loose neck skin — visible loose skin under chin and along neck, folds when tilted':0,
+  'Very thin skin on forearms — veins prominent, skin moves independently of tissue beneath':-2,
+  'Loose skin at upper arms and inner thighs — skin draped rather than taut':-1,
+  'Uneven pigmentation — areas of lightening and darkening across chest and shoulders':0,
+  'Sun damage dominant — rough and darkened skin, deep texture from years of UV exposure':0,
+  'Remarkably preserved — minimal surface aging despite age, smooth with slight softening':0,
+};
+// ── Ass projection hip modifier ──
+const SS_ASS_PROJ_HIP={
+  'Deep set — recessed, sits close to the body':0,
+  'Tucked — tucks under rather than projects outward':0,
+  'Dropped — sits low on the body':0,
+  'Minimal projection — barely extends outward':0,
+  'Moderate projection — average outward extension':0,
+  'Wide rather than deep — spreads laterally, minimal outward projection':1,
+  'Shelf — sits high, projects straight back, distinct ledge':1,
+  'Booty shelf — flat on top, strong outward projection below':1,
+  'High and tight — sits high, firm, compact projection':0,
+  'Perky — sits high regardless of size, defies gravity':0,
+  'Brazilian — high-set, full, round, lifted projection':1,
+  'Mounted — sits so high it looks placed on the lower back':1,
+  'Gravity defying — high and full with zero sag, almost unnatural':1,
+  'Deep rather than wide — projects significantly forward, narrow side to side':0,
+};
+// ── Ass shape hip modifier ──
+const SS_ASS_SHAPE_HIP={
+  'Round':0,'Bubble':0,'Heart':0,'Teardrop':0,'Onion':0,'Cantaloupe':0,'Apple':0,
+  'Square':0,'Wedge':0,'Ski slope':0,'Booty shelf':0,'Double bubble':0,
+  'Elongated cheeks':0,'Tall silhouette':0,'Separated':0,'Tight crack':0,'Creased':0,
+  'Under-butt visible from front':0,'Mismatched':0,'Petite round':0,
+  'Wide':2,'Pear':2,'Saddlebag':2,'Love handle merge':2,'Outer thigh overlap':2,
+  'Hip dominant':2,'Stacked':2,'Cakes':2,'Mommy':2,
+  'Disproportionate':1,'Pancake':1,'Banana fold':1,'Clapping':1,
+  'Narrow':-1,'Runner':-1,'Athletic':-1,'Sprinter':-1,
+  // 60plus
+  'Wide and soft':1,'Hips and ass grown together':1,'Wide shelf with inner thigh spread':1,'Massive and soft':1,
+  'Flat with wide hips':2,'Large and heavily dropped':2,
+  'More shelf at the top':0,'Full but sitting lower':0,'Surprisingly fuller':0,
+  'Soft and rounded':0,'Same shape but looser skin':0,'Square top':0,'Flatter and narrower':-1,
+};
+// ── Breast projection weight modifier ──
+const SS_PROJ_W={
+  'Flat — almost no projection, barely rises from the chest':0,
+  'Minimal — slight projection, noticeable but modest':0,
+  'Moderate — average projection, proportionate to size':0,
+  'Wide rather than deep — spreads laterally, minimal forward projection':0,
+  'Full — significant projection, clearly extends outward':1,
+  'Deep rather than wide — narrow from front but projects significantly forward':2,
+  'High — dramatic forward projection, extends well past average for size':2,
+  'Extreme — maximum projection, almost defies gravity':3,
+};
+// ── Thigh thickness waist modifier ──
+const SS_THICK_WAIST={
+  'Very thin — barely any mass, bone visible, no softness':0,
+  'Slim — slender, little fat or muscle, tapers cleanly':0,
+  'Average — proportionate, nothing remarkable':0,
+  'Long and slim — extended length with minimal mass':0,
+  'Full — noticeable thickness, fills out clothes':0,
+  'Short and thick — compact with significant mass':0.5,
+  'Thick — substantial mass, clearly prominent':0.5,
+  'Very thick — extremely full, significant presence':1,
+  'Disproportionate — much thicker than the rest of the body would suggest':1,
+};
+// ── Foot modifiers ──
+const SS_BODY_FOOT={
+  'Bulimic':-1,'Anorexic':-1,'Thin':-0.5,'Slim':-0.5,'Petite':-1,
+  'Slim Thick':0,'Average':0,'Curvy':0,'Upside Down Triangle':0,'Mid Size':0,
+  'Mid Thick':0.5,'Thick':0.5,'Thicker':0.5,'Thickest':0.5,'Chubby':0.5,'Meatball':0.5,
+  'Chunky':1,'BBW':1,'SSBBW':1.5,'USSBBW':2,
+};
+const SS_FRAME_FOOT={
+  'Narrow frame — small bones throughout, delicate joints, slight overall structure':-0.5,
+  'Fine-boned — small wrists, ankles, delicate joints throughout':-0.5,
+  'Petite frame — small overall bone structure, compact joints, slight build':-0.5,
+  'Even frame — shoulders and hips roughly equal width, straight up and down':0,
+  'Athletic frame — medium-wide shoulders, narrow hips, built for movement':0,
+  'Shoulder dominant — shoulders notably wider than hips, inverted taper':0,
+  'Hip dominant — hips wider than shoulders, classic hourglass base':0,
+  'Tall and rangy — long bones, open joints, frame built for height':0.5,
+  'Wide frame — broad bone structure, shoulders and hips carry width':0.5,
+  'Heavy-boned — thick wrists, dense joints, frame carries weight visibly':0.5,
+  'Heavy-set with wide hips — dense frame concentrated at the lower body':0.5,
+  'Tall wide frame — height combined with broad bone structure throughout':1,
+  'Large and wide frame — broad bones throughout, shoulders and hips both wide and heavy':1,
+};
+const SS_AGE_FOOT={'18-19':0,'20-24':0,'25-29':0,'30-35':0,'36-40':0,'41-50':0,'51-60':0,'60-70':0.5,'71-80':0.5,'80+':1};
+// ── New stat: Hands ──
+const SS_HAND_BASE={
+  'small soft hands, delicate fingers':[5.5,6.0],
+  'medium hands, well proportioned':[6.5,7.0],
+  'large hands, strong looking':[7.0,7.5],
+  'long slender fingers, elegant':[6.5,7.0],
+  'short stubby fingers, wide palm':[6.0,6.5],
+  'rough calloused hands, worked hard':[6.5,7.0],
+  'soft manicured hands, well kept':[6.0,6.5],
+  'bitten nails, nervous habit':[6.0,6.5],
+  'long natural nails, unpolished':[6.5,7.0],
+  'visible veins, slender hands':[6.5,7.0],
+  'puffy soft hands, smooth':[6.5,7.0],
+};
+const SS_HAND_FRAME={
+  'Narrow frame — small bones throughout, delicate joints, slight overall structure':-0.5,
+  'Fine-boned — small wrists, ankles, delicate joints throughout':-0.5,
+  'Petite frame — small overall bone structure, compact joints, slight build':-0.5,
+  'Even frame — shoulders and hips roughly equal width, straight up and down':0,
+  'Athletic frame — medium-wide shoulders, narrow hips, built for movement':0,
+  'Shoulder dominant — shoulders notably wider than hips, inverted taper':0,
+  'Hip dominant — hips wider than shoulders, classic hourglass base':0,
+  'Tall and rangy — long bones, open joints, frame built for height':0.5,
+  'Wide frame — broad bone structure, shoulders and hips carry width':0.5,
+  'Heavy-boned — thick wrists, dense joints, frame carries weight visibly':0.5,
+  'Heavy-set with wide hips — dense frame concentrated at the lower body':0,
+  'Tall wide frame — height combined with broad bone structure throughout':0.5,
+  'Large and wide frame — broad bones throughout, shoulders and hips both wide and heavy':1,
+};
+const SS_HAND_H={"<4'0\"":-1,"4'1\"-4'5\"":-0.5,"4'6\"-4'10\"":-0.5,"4'11\"-5'2\"":0,"5'3\"-5'7\"":0,"5'8\"-5'11\"":0.5,"6'0\"-6'5\"":0.5,">6'6\"":1};
+// ── New stat: Lips vocabulary ──
+const SS_LIPS_VOCAB={
+  'barely-there thin lips, almost no volume':'paper thin slit',
+  'very thin lips, tight and matte':'tight dry slit',
+  'thin lips, natural matte finish':'thin flat lips',
+  'thin heart-shaped lips, defined cupid bow':'thin bowed lips',
+  'thin wide lips, pale and dry':'thin wide slit',
+  'thin pouty lips, naturally glossy':'slim wet pout',
+  'average lips, soft matte, neutral tone':'soft average lips',
+  'average lips, naturally glossy, warm tone':'soft wet lips',
+  'average wide lips, full cupid bow':'wide bowed mouth',
+  'average heart-shaped lips, glossy pink':'glossy bowed lips',
+  'average lips, pierced, glossy':'pierced wet lips',
+  'medium-full lips, plump and matte':'fat matte lips',
+  'medium-full wide lips, glossy finish':'fat wide mouth',
+  'medium-full pouty lips, deep tone':'fat pouty lips',
+  'medium-full lips, dark pigmented, matte and dry':'big dark lips',
+  'full lips, very plump and glossy':'fat sloppy lips',
+  'full wide lips, pillow-like, natural tone':'big wide mouth',
+  'full pouty lips, dark glossy finish':'fat wet pout',
+  'full lips, dark pigmented, matte and dry':'huge dark lips',
+  'full heart-shaped lips, deep berry tone':'big sloppy mouth',
+  'huge full lips, DSL, very glossy':'thick wet DSLs',
+  'huge wide lips, extremely plump, matte':'huge sloppy DSLs',
+  'enormous pillow lips, DSL, natural tone':'fat pillow DSLs',
+};
+const SS_MOUTH_MOD={
+  'Small tight mouth with shallow depth, thick tongue close to roof, and firm inner cheeks':'tight',
+  'Average width mouth with moderate depth, smooth tongue, and soft yielding inner cheeks':'',
+  'Wide mouth with good depth, long mobile tongue, and spacious inner cheek area':'wide',
+  'Very wide generous mouth showing prominent upper gums, broad textured tongue, loose soft inner cheeks':'wide',
+  'Narrow shallow mouth where thick tongue fills most space near roof, tighter inner cheeks':'tight',
+  'Deeper mouth cavity with noticeable roof-to-tongue gap, thinner agile tongue, and plush inner cheeks':'deep',
+  'Medium depth mouth with low-resting tongue and moderately full soft inner cheeks':'',
+  'Wider mouth with visible gummy smile line, fuller central tongue, and pillowy cheek enclosure':'wide',
+  'Small compact mouth with minimal gum show, short thick tongue, and snug inner cheeks':'tight',
+  'Deep wide mouth with long smooth tongue and roomy soft inner cheek space':'deep',
+  'Shallow narrow mouth showing little gum, broad flat tongue pressing toward roof, firmer cheeks':'tight',
+  'Generous width mouth with strong upper gum visibility, pointed mobile tongue, and yielding outer cheek contour':'wide',
+  'Average depth mouth with veined tongue and balanced soft inner cheek fullness':'',
+  'Shallow wide mouth with broad tongue and noticeable loose inner cheek tissue':'wide',
+  'Deep narrow mouth with long tongue that has good side mobility and tighter cheek walls':'deep',
+  'Medium mouth with slight outer cheek roundness, textured tongue, and moderate roof distance':'',
+  'Spacious deep mouth showing balanced gums, smooth mobile tongue, and very soft plush inner cheeks':'deep',
+  'Tight small mouth with thick tongue close to roof, minimal gum, and firm enclosing inner cheeks':'tight',
+};
+// ── New stat: Apparent Age modifiers ──
+const SS_AGE_BODY_MOD={
+  'Bulimic':4,'Anorexic':4,'Thin':-1,'Slim':-1,'Petite':0,
+  'Slim Thick':-1,'Average':0,'Curvy':0,'Upside Down Triangle':0,'Mid Size':0,
+  'Mid Thick':0,'Thick':1,'Thicker':1,'Thickest':1,'Chubby':1,'Meatball':1,
+  'Chunky':2,'BBW':1,'SSBBW':2,'USSBBW':3,
+};
+const SS_AGE_MUSCLE_MOD={
+  'very defined, low body fat, hard muscle':-4,
+  'athletic lean, clearly works out':-3,
+  'athletic thick, muscle under curves':-2,
+  'thick but noticeably toned legs':-1,
+  'strong thick thighs, soft everywhere else':-1,
+  'lightly toned, subtle arm and leg definition':-1,
+  'soft with strong legs underneath':0,
+  'full soft body, strong arms from carrying weight':0,
+  'curvy with slight arm definition':0,
+  'naturally lean, slight tone without effort':-1,
+  'soft with subtle leg tone':0,
+  'toned midsection, visible but soft abs':-1,
+  'thick and soft, pillowy feel':1,
+  'soft all over, no visible tone':1,
+  'very soft all over, pillowy':2,
+  'completely soft, no definition visible':1,
+  'extremely soft, skin folds with movement':2,
+  'skinny fat, soft despite small frame':2,
+};
+const SS_AGE_SKIN_MOD={
+  'Incredibly silky — the softest skin imaginable, almost unreal':-3,
+  'Baby soft — smooth and plush, yields gently to touch':-2,
+  'Smooth and even — consistent texture, no rough patches':-1,
+  'Lightly textured — slight natural texture, mostly smooth':0,
+  'Average — normal skin feel, nothing remarkable':0,
+  'Slightly dry — could use lotion, especially on elbows and knees':1,
+  'Rough on elbows and knees — noticeably coarser at joints':1,
+  'Dry and ashy — visibly dry, especially on darker skin tones':2,
+};
+const SS_AGE_AGING_MOD={
+  'Fine surface wrinkling — small lines across most surfaces, especially hands and neck':2,
+  'Thin and delicate skin — skin crinkles easily, most visible on inner arms':4,
+  'Age spots — pigmentation clusters on hands, chest, and face':3,
+  'Deep expression lines — significant lines around the mouth, forehead, and eyes':5,
+  'Loose neck skin — visible loose skin under chin and along neck, folds when tilted':4,
+  'Very thin skin on forearms — veins prominent, skin moves independently of tissue beneath':5,
+  'Loose skin at upper arms and inner thighs — skin draped rather than taut':3,
+  'Uneven pigmentation — areas of lightening and darkening across chest and shoulders':2,
+  'Sun damage dominant — rough and darkened skin, deep texture from years of UV exposure':4,
+  'Remarkably preserved — minimal surface aging despite age, smooth with slight softening':-8,
+};
 const SS_PROJ_WHEEL={'Deep set — recessed, sits close to the body':-2,'Tucked — tucks under rather than projects outward':-2,'Wide rather than deep — spreads laterally, minimal outward projection':-2,'Dropped — sits low on the body':-1,'Minimal projection — barely extends outward':-1,'Moderate projection — average outward extension':0,'High and tight — sits high, firm, compact projection':1,'Perky — sits high regardless of size, defies gravity':1,'Shelf — sits high, projects straight back, distinct ledge':2,'Booty shelf — flat on top, strong outward projection below':2,'Brazilian — high-set, full, round, lifted projection':2,'Mounted — sits so high it looks placed on the lower back':2,'Deep rather than wide — projects significantly forward, narrow side to side':2,'Gravity defying — high and full with zero sag, almost unnatural':3};
 const SS_PROJ_SHAPE={'Pancake — wide but very thin, no projection':-2,'Wide — spreads laterally more than it projects':-2,'Runner — flat and toned, minimal projection, clearly trained':-2,'Hip dominant — hips much wider than ass, ass looks smaller by comparison':-1,'Mommy — softer, lower set, spread wider, lost its shape':-1,'Saddlebag — outer thigh fat connects into ass, no clear boundary':-1,'Wedge — wider at top near lower back, narrows toward thighs':-1,'Ski slope — flat across top, curves dramatically outward toward bottom':-1,'Bubble — round with more pop and lift':1,'Apple — round and full, projects evenly in all directions':1,'Onion — extremely round and symmetrical, almost perfect sphere':1,'Cantaloupe — very round and dense, firm':1,'Booty shelf — flat on top, strong outward projection below':1,'Double bubble — two very distinct cheeks, defined split down center':1,'Narrow — more depth than width, small side-to-side':1,'Sprinter — muscular and round, athletic but with significant projection':1,'Stacked — so much mass it creates visible folds or shelves':1,'Disproportionate — much larger than the body would suggest':1,'Cakes — very full, very round, stacked, the whole package':2};
 const SS_PROJ_BODY={'Bulimic':-1,'Anorexic':-1,'Thin':-0.5,'Slim':-0.5,'Petite':-0.5,'Slim Thick':0,'Average':0,'Curvy':0,'Upside Down Triangle':0,'Mid Size':0,'Mid Thick':0.5,'Thick':0.5,'Chubby':0.5,'Thicker':1,'Meatball':1,'Thickest':1,'Chunky':1,'BBW':1.5,'SSBBW':2,'USSBBW':3};
@@ -9760,20 +10139,35 @@ function calcStatStrip(){
   const height=ssGet('height');
   const body=ssGet('body');
   const cup=ssGet('cup_size');
-  const thickL=ssGet('thigh_thickness');
+  const thickL=ssGetAny('thigh_thickness');
   const ageL=ssGet('age');
   const assL=ssGet('ass_size');
   const assShapeL=ssGet('ass_shape')||ssGet('ass_shape_60plus');
   const assProjL=ssGet('ass_projection');
-  const stomachL=ssGet('stomach')||ssGet('stomach_60plus');
+  const stomachL=ssGetAny('stomach_thin','stomach_mid','stomach_bbw')||ssGetAny('stomach_thin_60plus','stomach_mid_60plus','stomach_bbw_60plus');
   const backL=ssGet('back');
   const frameL=ssGet('frame_bone_structure');
   const muscleL=ssGetAny('muscle_thin','muscle_mid','muscle_bbw');
   const waistWheelL=ssGetAny('waist_thin','waist_mid','waist_bbw');
-  const bg=body?detectBodyGroup(body):'mid';
+  const breastShapeL=ssGet('breast_shape')||ssGet('breast_shape_60plus');
+  const breastFirmL=ssGet('breast_firmness');
+  const breastPosL=ssGet('breast_position');
+  const breastProjL=ssGet('breast_projection');
+  const collarboneL=ssGet('collarbone');
+  const bodyPropL=ssGet('body_proportions');
+  const redistL=ssGet('body_redistribution_60plus');
+  const skinAgingL=ssGet('skin_aging_60plus');
+  const handL=ssGet('hands');
+  const lipsL=ssGetAny('lips_light','lips_medium','lips_dark');
+  const mouthL=ssGet('mouth_bundle');
+  const raceL=ssGet('race');
+  const skinToneL=ssGetAny('skin_light','skin_medium','skin_dark');
+  const skinGlowL=ssGetAny('skin_glow_light','skin_glow_medium','skin_glow_dark');
+  const skinSoftL=ssGet('skin_soft');
+  const is60=!!ageIs60plus;
 
-  // ── Weight ──
-  let weightStr='—';
+  // \u2500\u2500 Weight \u2500\u2500
+  let weightStr='\u2014';
   if(body){
     const base=SS_WEIGHT_BASE[body];
     if(base){
@@ -9788,27 +10182,40 @@ function calcStatStrip(){
       if(frameL){const fm=SS_FRAME_W[frameL]??0;lo+=fm;hi+=fm;}
       if(backL){const bkm=SS_BACK_W[backL]??0;lo+=bkm;hi+=bkm;}
       if(stomachL){const sw=SS_STOMACH_W[stomachL]??0;lo+=sw;hi+=sw;}
+      if(breastProjL){const pw=SS_PROJ_W[breastProjL]??0;lo+=pw;hi+=pw;}
+      if(bodyPropL){const bpw=SS_BODY_PROP_W[bodyPropL]??0;lo+=bpw;hi+=bpw;}
+      if(is60&&redistL){const rw=SS_REDIST_W[redistL]??0;lo+=rw;hi+=rw;}
+      if(is60&&skinAgingL){const saw=SS_SKIN_AGING_W[skinAgingL]??0;lo+=saw;hi+=saw;}
       lo=Math.min(620,Math.max(70,Math.round(lo)));hi=Math.min(620,Math.max(70,Math.round(hi)));
-      const allKnown=height&&cup&&thickL&&ageL&&assL&&muscleL&&frameL&&backL&&stomachL;
-      weightStr=allKnown?`~${ssLock('weight',lo,hi)} lbs`:`~${lo}–${hi} lbs`;
+      const allKnown=height&&cup&&thickL&&ageL&&assL&&muscleL&&frameL&&backL&&stomachL&&breastProjL&&bodyPropL&&(!is60||(redistL&&skinAgingL));
+      weightStr=allKnown?`~${ssLock('weight',lo,hi)} lbs`:`~${lo}\u2013${hi} lbs`;
     }
   }
 
-  // ── Bra + Bust ──
-  let braStr='—',bustStr='—';
+  // \u2500\u2500 Bra + Bust \u2500\u2500
+  let braStr='\u2014',bustStr='\u2014';
   if(body&&cup){
     let band=SS_BAND_BASE[body]??34;
     if(height)band+=(SS_BAND_H[height]??0);
+    if(backL)band+=(SS_BACK_BAND[backL]??0);
+    if(collarboneL)band+=(SS_COLLARBONE_BAND[collarboneL]??0);
+    if(bodyPropL)band+=(SS_BODY_PROP_BAND[bodyPropL]??0);
     band=Math.round(band/2)*2;
-    braStr=body==='USSBBW'?'60+'+cup:band+cup;
+    const braAllKnown=height&&backL&&collarboneL&&bodyPropL;
+    braStr=braAllKnown?(body==='USSBBW'?'60+'+cup:band+cup):`~${Math.round(band-2)}\u2013${Math.round(band+2)}`+cup;
     const shoulderMod=backL?(SS_BACK_BUST[backL]??0):0;
-    const projWheelL=ssGet('breast_projection');
-    const projMod=projWheelL?(SS_PROJ_BUST[projWheelL]??0):0;
-    bustStr=(band+(SS_CUP_PROJ[cup]??0)+shoulderMod+projMod)+'"';
+    const projMod=breastProjL?(SS_PROJ_BUST[breastProjL]??0):0;
+    const shapeMod=breastShapeL?((SS_BREAST_SHAPE_BUST[breastShapeL]!=null?SS_BREAST_SHAPE_BUST[breastShapeL]:(SS_BREAST_SHAPE_60_BUST[breastShapeL]??0))):0;
+    const firmMod=breastFirmL?(SS_BREAST_FIRMNESS_BUST[breastFirmL]??0):0;
+    const posMod=breastPosL?(SS_BREAST_POSITION_BUST[breastPosL]??0):0;
+    const bustBase=band+(SS_CUP_PROJ[cup]??0);
+    const bustTotal=Math.round(bustBase+shoulderMod+projMod+shapeMod+firmMod+posMod);
+    const bustAllKnown=backL&&breastProjL&&breastShapeL&&breastFirmL&&breastPosL;
+    bustStr=bustAllKnown?`${bustTotal}"`:`~${bustTotal-1}\u2013${bustTotal+1}"`;
   }
 
-  // ── Waist ──
-  let waistStr='—';
+  // \u2500\u2500 Waist \u2500\u2500
+  let waistStr='\u2014';
   if(body){
     const wbase=SS_WAIST_BASE[body];
     if(wbase){
@@ -9818,14 +10225,17 @@ function calcStatStrip(){
         lo+=(SS_WAIST_RATIO[wkey]??0);hi+=(SS_WAIST_RATIO[wkey]??0);
       }
       if(stomachL){const sm=SS_STOMACH_MAP[stomachL]??0;lo+=sm;hi+=sm;}
+      if(thickL){const tw=SS_THICK_WAIST[thickL]??0;lo+=tw;hi+=tw;}
+      if(bodyPropL){const bpw=SS_BODY_PROP_WAIST[bodyPropL]??0;lo+=bpw;hi+=bpw;}
+      if(is60&&redistL){const rw=SS_REDIST_WAIST[redistL]??0;lo+=rw;hi+=rw;}
       lo=Math.min(90,Math.max(16,Math.round(lo)));hi=Math.min(90,Math.max(16,Math.round(hi)));
-      const allKnown=waistWheelL&&stomachL;
-      waistStr=allKnown?`~${ssLock('waist',lo,hi)}"`:`~${lo}–${hi}"`;
+      const allKnown=waistWheelL&&stomachL&&thickL&&bodyPropL&&(!is60||redistL);
+      waistStr=allKnown?`~${ssLock('waist',lo,hi)}"`:`~${lo}\u2013${hi}"`;
     }
   }
 
-  // ── Hips ──
-  let hipsStr='—';
+  // \u2500\u2500 Hips \u2500\u2500
+  let hipsStr='\u2014';
   if(body){
     const hbase=SS_HIPS_BASE[body];
     if(hbase){
@@ -9833,23 +10243,30 @@ function calcStatStrip(){
       if(assL){const am=SS_ASS_HIP_MAP[assL]??0;lo+=am;hi+=am;}
       if(thickL){const tm=SS_THICK_HIP_MAP[thickL]??0;lo+=tm;hi+=tm;}
       if(waistWheelL){const hm=SS_HIP_RATIO[waistWheelL]??0;lo+=hm;hi+=hm;}
+      if(assProjL){const apm=SS_ASS_PROJ_HIP[assProjL]??0;lo+=apm;hi+=apm;}
+      if(assShapeL){const asm=SS_ASS_SHAPE_HIP[assShapeL]??0;lo+=asm;hi+=asm;}
+      if(bodyPropL){const bph=SS_BODY_PROP_HIP[bodyPropL]??0;lo+=bph;hi+=bph;}
+      if(is60&&redistL){const rh=SS_REDIST_HIP[redistL]??0;lo+=rh;hi+=rh;}
       lo=Math.min(130,Math.max(24,Math.round(lo)));hi=Math.min(130,Math.max(24,Math.round(hi)));
-      const allKnown=assL&&thickL;
-      hipsStr=allKnown?`~${ssLock('hips',lo,hi)}"`:`~${lo}–${hi}"`;
+      const allKnown=assL&&thickL&&assProjL&&assShapeL&&bodyPropL&&(!is60||redistL);
+      hipsStr=allKnown?`~${ssLock('hips',lo,hi)}"`:`~${lo}\u2013${hi}"`;
     }
   }
 
-  // ── Foot ──
-  let footStr='—';
+  // \u2500\u2500 Foot \u2500\u2500
+  let footStr='\u2014';
   if(height){
     let size=SS_FOOT_H[height]??7.5;
-    if(bg==='thin')size=Math.max(4,size-0.5);
-    else if(bg==='bbw')size=Math.min(13,size+0.5);
-    footStr=size+'W';
+    if(body)size+=(SS_BODY_FOOT[body]??0);
+    if(frameL)size+=(SS_FRAME_FOOT[frameL]??0);
+    if(ageL)size+=(SS_AGE_FOOT[ageL]??0);
+    size=Math.min(13,Math.max(4,Math.round(size*2)/2));
+    const allKnown=body&&frameL;
+    footStr=allKnown?size+'W':`~${Math.round((size-0.5)*2)/2}\u2013${Math.round((size+0.5)*2)/2}W`;
   }
 
-  // ── Projection ──
-  let projStr='—';
+  // \u2500\u2500 Projection \u2500\u2500
+  let projStr='\u2014';
   if(assL&&SS_PROJ_BASE[assL]){
     let lo=SS_PROJ_BASE[assL][0],hi=SS_PROJ_BASE[assL][1];
     if(assProjL){const pm=SS_PROJ_WHEEL[assProjL]??0;lo+=pm;hi+=pm;}
@@ -9857,28 +10274,82 @@ function calcStatStrip(){
     if(body){const bm=SS_PROJ_BODY[body]??0;lo+=bm;hi+=bm;}
     lo=Math.min(16,Math.max(1,Math.round(lo)));hi=Math.min(16,Math.max(1,Math.round(hi)));
     const allKnown=assProjL&&assShapeL&&body;
-    projStr=allKnown?`~${ssLock('proj',lo,hi)}"`:`~${lo}–${hi}"`;
+    projStr=allKnown?`~${ssLock('proj',lo,hi)}"`:`~${lo}\u2013${hi}"`;
   }
 
-  let heightStr='—';
+  // \u2500\u2500 Height \u2500\u2500
+  let heightStr='\u2014';
   if(height){
     const hr=heightToInchesRange(height);
-    if(!hr){
-      heightStr=height;
-    } else if(!ageL || !frameL){
-      heightStr=height;                       // deps not all spun yet -> show the bracket range
-    } else {
+    if(!hr){heightStr=height;}
+    else if(!ageL||!frameL){heightStr=height;}
+    else{
       let f=(SS_HEIGHT_FRAC[frameL]??0.5)+(SS_HEIGHT_AGE[ageL]??0);
       f=Math.min(1,Math.max(0,f));
       heightStr=inchesToHeightStr(ssLockHeight('height',hr[0],hr[1],f));
     }
   }
-  return{height:heightStr,weight:weightStr,bra:braStr,bust:bustStr,waist:waistStr,hips:hipsStr,foot:footStr,proj:projStr};
+
+  // \u2500\u2500 Apparent Age \u2500\u2500
+  let ageStr='\u2014';
+  if(ageL){
+    const ageBrackets={'18-19':[18,19],'20-24':[20,24],'25-29':[25,29],'30-35':[30,35],'36-40':[36,40],'41-50':[41,50],'51-60':[51,60],'60-70':[60,70],'71-80':[71,80],'80+':[80,90]};
+    const bracket=ageBrackets[ageL];
+    if(bracket){
+      const actualMid=Math.round((bracket[0]+bracket[1])/2);
+      let adj=0;
+      if(body)adj+=(SS_AGE_BODY_MOD[body]??0);
+      if(muscleL)adj+=(SS_AGE_MUSCLE_MOD[muscleL]??0);
+      if(skinSoftL)adj+=(SS_AGE_SKIN_MOD[skinSoftL]??0);
+      if(is60&&skinAgingL)adj+=(SS_AGE_AGING_MOD[skinAgingL]??0);
+      const apparentMid=Math.round(actualMid+adj);
+      const lo=Math.max(18,Math.max(bracket[0]-10,apparentMid-3));
+      const hi=Math.min(bracket[1]+15,apparentMid+3);
+      const allKnown=body&&muscleL&&skinSoftL;
+      ageStr=allKnown?`~${ssLock('appAge',lo,hi)}`:`~${lo}\u2013${hi}`;
+    }
+  }
+
+  // \u2500\u2500 Hands \u2500\u2500
+  let handStr='\u2014';
+  if(handL&&SS_HAND_BASE[handL]){
+    const base=SS_HAND_BASE[handL];
+    let lo=base[0],hi=base[1];
+    if(frameL){const fm=SS_HAND_FRAME[frameL]??0;lo+=fm;hi+=fm;}
+    if(height){const hm=SS_HAND_H[height]??0;lo+=hm;hi+=hm;}
+    lo=Math.round(lo*2)/2;hi=Math.round(hi*2)/2;
+    const label=handL.split(',')[0].split(' ').slice(0,3).join(' ');
+    const mid=Math.round((lo+hi)/2*2)/2;
+    handStr=frameL?`${label} \u2014 ${mid}"`:  `${label} \u2014 ~${lo}\u2013${hi}"`;
+  }
+
+  // \u2500\u2500 Lips \u2500\u2500
+  let lipsStr='\u2014';
+  if(lipsL){
+    let desc=SS_LIPS_VOCAB[lipsL]||lipsL.split(',')[0].trim();
+    if(mouthL){const mod=SS_MOUTH_MOD[mouthL]||'';if(mod&&!desc.startsWith(mod))desc=mod+' '+desc;}
+    lipsStr=desc;
+  }
+
+  // \u2500\u2500 Color \u2500\u2500
+  let colorStr='\u2014';
+  if(raceL){
+    const subWheels=['white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub'];
+    let ethnicity=null;
+    for(const sw of subWheels){const r=ssGet(sw);if(r){ethnicity=r;break;}}
+    const anchor=ethnicity||raceL;
+    let toneDesc='';
+    if(skinToneL)toneDesc=skinToneL.split('\u2014')[0].trim().split(',')[0].trim().toLowerCase();
+    if(skinGlowL){const glow=skinGlowL.split('\u2014')[0].trim().split(',')[0].trim().toLowerCase();if(glow)toneDesc+=(toneDesc?', ':'')+glow;}
+    colorStr=toneDesc?`${anchor} \u2014 ${toneDesc}`:anchor;
+  }
+
+  return{height:heightStr,weight:weightStr,bra:braStr,bust:bustStr,waist:waistStr,hips:hipsStr,foot:footStr,proj:projStr,appAge:ageStr,hands:handStr,lips:lipsStr,color:colorStr};
 }
 
 function updateStatStrip(){
   const s=calcStatStrip();
-  const map={statHeight:s.height,statWeight:s.weight,statBra:s.bra,statBust:s.bust,statWaist:s.waist,statHips:s.hips,statFoot:s.foot,statProj:s.proj};
+  const map={statHeight:s.height,statWeight:s.weight,statBra:s.bra,statBust:s.bust,statWaist:s.waist,statHips:s.hips,statFoot:s.foot,statProj:s.proj,statAppAge:s.appAge,statHands:s.hands,statLips:s.lips,statColor:s.color};
   Object.entries(map).forEach(([id,val])=>{
     const el=document.getElementById(id);
     if(!el)return;
