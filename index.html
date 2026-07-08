@@ -129,7 +129,7 @@
 }
 /* ── STAT STRIP ── */
 #statStrip{position:fixed;top:var(--safe-top);left:0;right:0;z-index:998;background:rgba(12,12,26,.97);border-bottom:1px solid var(--border);display:flex;flex-direction:column;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.stat-row{display:flex;align-items:center;justify-content:center;height:28px;gap:0}.stat-row:last-of-type{height:auto;min-height:44px;align-items:flex-start;padding:4px 0}.stat-row:last-of-type .stat-item{align-items:flex-start;flex-direction:column}.stat-row:last-of-type .stat-value{white-space:normal;word-break:break-word;max-width:80px;line-height:1.3;font-size:.68rem}
+.stat-row{display:flex;align-items:center;justify-content:center;height:28px;gap:0}.stat-row:last-of-type{height:auto;min-height:44px;align-items:flex-start;padding:4px 0;justify-content:stretch}.stat-row:last-of-type .stat-item{align-items:flex-start;flex-direction:column;flex:1;min-width:0;overflow:hidden}.stat-row:last-of-type .stat-item:nth-child(1){flex:1.5}.stat-row:last-of-type .stat-item:nth-child(3){flex:2}.stat-row:last-of-type .stat-item:nth-child(5){flex:2.5}.stat-row:last-of-type .stat-item:nth-child(7){flex:3}.stat-row:last-of-type .stat-value{white-space:normal;word-break:break-word;line-height:1.3;font-size:.68rem;width:100%}
 .stat-item{display:flex;align-items:center;gap:6px;padding:0 14px}
 .stat-label{font-size:.56rem;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;font-family:'Rajdhani',sans-serif;white-space:nowrap}
 .stat-value{font-size:.75rem;color:var(--gold);font-weight:700;font-family:'Rajdhani',sans-serif;min-width:44px;transition:color .3s;white-space:nowrap}
@@ -8401,6 +8401,15 @@ function computeNext(fromId,label,seg){
   // (overrides any old branch:'ass_skin_texture'/'ass_firmness' baked into some segments from template)
   if(fromId==='ass_size')return nextEnabled('ass_shape');
   // ── 60+ AGE SKIP LOGIC removed: all 60+ ages now route through the full normal sequence ──
+  // personality_60plus → religious_guilt_60plus (explicit override for 60+ guilt chain)
+  if(fromId==='personality_60plus')return nextEnabled('religious_guilt_60plus');
+  // religious_guilt_60plus → maternal_guilt_60plus (conditional) or next in seq
+  if(fromId==='religious_guilt_60plus'){
+    const _mode=results.find(r=>r.wheelId==='mode')?.label||'';
+    if(_mode==='Mother')return nextEnabled('maternal_guilt_60plus');
+    return nextEnabled('height');
+  }
+  if(fromId==='maternal_guilt_60plus')return nextEnabled('height');
   // ── END LABEL OVERRIDES ──
   if(seg&&seg.branch){if(seg.branch==='RESTART')return'RESTART';if(seg.branch==='DONE')return'DONE';if(seg.branch==='CAT:Hair')return nextEnabled(hairW());if(seg.branch==='CAT:Nipple')return nextEnabled('nipple_size');if(seg.branch==='CAT:Ass')return nextEnabled('ass_size');if(seg.branch==='CAT:Thighs')return nextEnabled('thigh_thickness');if(seg.branch==='CAT:PhysicalDetail')return nextEnabled('shave');if(WHEEL_DEFS[seg.branch])return seg.branch;}
   if(fromId==='amount'&&label==='Start over')return'RESTART';
@@ -10312,17 +10321,64 @@ function calcStatStrip(){
 
   // \u2500\u2500 Hands \u2500\u2500
   let handStr='\u2014';
-  if(handL&&SS_HAND_BASE[handL]){
-    const base=SS_HAND_BASE[handL];
+  if(handL){
+    const SS_HAND_TIER={
+      'small soft hands, delicate fingers':'XS',
+      'medium hands, well proportioned':'M',
+      'large hands, strong looking':'L',
+      'long slender fingers, elegant':'M',
+      'short stubby fingers, wide palm':'S',
+      'rough calloused hands, worked hard':'M',
+      'soft manicured hands, well kept':'S',
+      'bitten nails, nervous habit':null,
+      'long natural nails, unpolished':'M',
+      'visible veins, slender hands':'S',
+      'puffy soft hands, smooth':'M',
+    };
+    const SS_HAND_DESC={
+      'small soft hands, delicate fingers':'soft, delicate',
+      'medium hands, well proportioned':'well proportioned',
+      'large hands, strong looking':'strong',
+      'long slender fingers, elegant':'long slender fingers',
+      'short stubby fingers, wide palm':'short stubby, wide palm',
+      'rough calloused hands, worked hard':'rough, calloused',
+      'soft manicured hands, well kept':'soft, manicured',
+      'bitten nails, nervous habit':'bitten nails',
+      'long natural nails, unpolished':'long natural nails',
+      'visible veins, slender hands':'visible veins, slender',
+      'puffy soft hands, smooth':'puffy, smooth',
+    };
+    function deriveTier(fr,ht){
+      const fineF=['Narrow frame \u2014 small bones throughout, delicate joints, slight overall structure','Fine-boned \u2014 small wrists, ankles, delicate joints throughout','Petite frame \u2014 small overall bone structure, compact joints, slight build'];
+      const wideF=['Wide frame \u2014 broad bone structure, shoulders and hips carry width','Heavy-boned \u2014 thick wrists, dense joints, frame carries weight visibly','Large and wide frame \u2014 broad bones throughout, shoulders and hips both wide and heavy','Tall wide frame \u2014 height combined with broad bone structure throughout','Heavy-set with wide hips \u2014 dense frame concentrated at the lower body'];
+      const tallH=[">6'6\"","6'0\"-6'5\""];
+      const shortH=["<4'0\"","4'1\"-4'5\"","4'6\"-4'10\""];
+      const isFine=fr&&fineF.includes(fr);
+      const isWide=fr&&wideF.includes(fr);
+      const isTall=ht&&tallH.includes(ht);
+      const isShort=ht&&shortH.includes(ht);
+      if(isWide&&isTall)return'XL';
+      if(isWide)return'L';
+      if(isFine&&isShort)return'XS';
+      if(isFine)return'S';
+      if(isTall)return'L';
+      if(isShort)return'S';
+      return'M';
+    }
+    const base=SS_HAND_BASE[handL]||[6.0,6.5];
     let lo=base[0],hi=base[1];
     if(frameL){const fm=SS_HAND_FRAME[frameL]??0;lo+=fm;hi+=fm;}
     if(height){const hm=SS_HAND_H[height]??0;lo+=hm;hi+=hm;}
     lo=Math.round(lo*2)/2;hi=Math.round(hi*2)/2;
-    const label=handL.split(',')[0].split(' ').slice(0,3).join(' ');
     const mid=Math.round((lo+hi)/2*2)/2;
-    handStr=frameL?`${label} \u2014 ${mid}"`:  `${label} \u2014 ~${lo}\u2013${hi}"`;
+    const tierVal=SS_HAND_TIER[handL];
+    const resolvedTier=tierVal!==undefined&&tierVal!==null?tierVal:(frameL?deriveTier(frameL,height):null);
+    const desc=SS_HAND_DESC[handL]||'';
+    const sizeStr=resolvedTier?(resolvedTier+' \u2014 '+mid+'"'):(mid+'"');
+    const allKnown=!!frameL;
+    if(allKnown){handStr=desc?desc+' \u2014 '+sizeStr:sizeStr;}
+    else{handStr=desc?desc+' \u2014 ~'+lo+'\u2013'+hi+'"':'~'+lo+'\u2013'+hi+'"';}
   }
-
   // \u2500\u2500 Lips \u2500\u2500
   let lipsStr='\u2014';
   if(lipsL){
