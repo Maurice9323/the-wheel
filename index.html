@@ -131,6 +131,13 @@
 #statStrip{position:fixed;top:var(--safe-top);left:0;right:0;z-index:998;background:rgba(12,12,26,.97);border-bottom:1px solid var(--border);display:flex;flex-direction:column;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .stat-row{display:flex;align-items:center;justify-content:center;height:28px;gap:0}
 .stat-row:last-of-type{height:auto;min-height:36px;align-items:stretch}
+.stat-row:last-of-type .stat-item{align-items:flex-start;flex-direction:column;padding:4px 8px;min-width:0}
+.stat-row:last-of-type .stat-value{white-space:normal;word-break:break-word;width:100%;font-size:.7rem;line-height:1.3}
+.stat-row:last-of-type .stat-item:nth-child(1){flex:.75}
+.stat-row:last-of-type .stat-item:nth-child(3){flex:2}
+.stat-row:last-of-type .stat-item:nth-child(5){flex:2}
+.stat-row:last-of-type .stat-item:nth-child(7){flex:4}
+.stat-row:last-of-type{height:auto;min-height:36px;align-items:stretch}
 .stat-row:last-of-type .stat-item{align-items:flex-start;flex-direction:column;padding:4px 8px;min-width:0;overflow:hidden}
 .stat-row:last-of-type .stat-value{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:.7rem;line-height:1.3}
 .stat-row:last-of-type .stat-item:nth-child(1){flex:.5}
@@ -9882,49 +9889,62 @@ const SS_HAND_FRAME={
 const SS_HAND_H={"<4'0\"":-1,"4'1\"-4'5\"":-0.5,"4'6\"-4'10\"":-0.5,"4'11\"-5'2\"":0,"5'3\"-5'7\"":0,"5'8\"-5'11\"":0.5,"6'0\"-6'5\"":0.5,">6'6\"":1};
 // ── New stat: Lips vocabulary ──
 const SS_LIPS_VOCAB={
-  'barely-there thin lips, almost no volume':'paper thin slit',
-  'very thin lips, tight and matte':'tight dry slit',
-  'thin lips, natural matte finish':'thin flat lips',
-  'thin heart-shaped lips, defined cupid bow':'thin bowed lips',
-  'thin wide lips, pale and dry':'thin wide slit',
-  'thin pouty lips, naturally glossy':'slim wet pout',
-  'average lips, soft matte, neutral tone':'soft average lips',
-  'average lips, naturally glossy, warm tone':'soft wet lips',
-  'average wide lips, full cupid bow':'wide bowed mouth',
-  'average heart-shaped lips, glossy pink':'glossy bowed lips',
-  'average lips, pierced, glossy':'pierced wet lips',
-  'medium-full lips, plump and matte':'fat matte lips',
-  'medium-full wide lips, glossy finish':'fat wide mouth',
-  'medium-full pouty lips, deep tone':'fat pouty lips',
-  'medium-full lips, dark pigmented, matte and dry':'big dark lips',
-  'full lips, very plump and glossy':'fat sloppy lips',
-  'full wide lips, pillow-like, natural tone':'big wide mouth',
-  'full pouty lips, dark glossy finish':'fat wet pout',
-  'full lips, dark pigmented, matte and dry':'huge dark lips',
-  'full heart-shaped lips, deep berry tone':'big sloppy mouth',
-  'huge full lips, DSL, very glossy':'thick wet DSLs',
-  'huge wide lips, extremely plump, matte':'huge sloppy DSLs',
-  'enormous pillow lips, DSL, natural tone':'fat pillow DSLs',
+  'barely-there thin lips, almost no volume':'paper thin lips, dry tight mouth',
+  'very thin lips, tight and matte':'tight dry lips, small mouth',
+  'thin lips, natural matte finish':'flat dry lips, closed mouth',
+  'thin heart-shaped lips, defined cupid bow':'thin cupid bow, dry mouth',
+  'thin wide lips, pale and dry':'thin stretched lips, wide dry mouth',
+  'thin pouty lips, naturally glossy':'slim glossy pout, wet mouth',
+  'average lips, soft matte, neutral tone':'soft lips, average mouth',
+  'average lips, naturally glossy, warm tone':'soft wet lips, warm wet mouth',
+  'average wide lips, full cupid bow':'wide cupid bow, open wet mouth',
+  'average heart-shaped lips, glossy pink':'glossy bow lips, wet mouth',
+  'average lips, pierced, glossy':'pierced glossy lips, wet mouth',
+  'medium-full lips, plump and matte':'fat lips, full dry mouth',
+  'medium-full wide lips, glossy finish':'fat wide lips, wet open mouth',
+  'medium-full pouty lips, deep tone':'fat pouty lips, wet mouth',
+  'medium-full lips, dark pigmented, matte':'big dark lips, dry mouth',
+  'full lips, very plump and glossy':'fat soaking lips, dripping mouth',
+  'full wide lips, pillow-like, natural tone':'big wide lips, full open mouth',
+  'full pouty lips, dark glossy finish':'fat dripping pout, soaking mouth',
+  'full lips, dark pigmented, matte and dry':'huge dark lips, tight wet mouth',
+  'full heart-shaped lips, deep berry tone':'big sloppy DSL mouth, dripping',
+  'huge full lips, DSL, very glossy':'thick wet DSLs, soaking mouth',
+  'huge wide lips, extremely plump, matte':'huge fat DSLs, wide open mouth',
+  'enormous pillow lips, DSL, natural tone':'fat pillow DSLs, dripping mouth',
 };
 const SS_MOUTH_MOD={
-  'Small tight mouth with shallow depth, thick tongue close to roof, and firm inner cheeks':'tight',
-  'Average width mouth with moderate depth, smooth tongue, and soft yielding inner cheeks':'',
-  'Wide mouth with good depth, long mobile tongue, and spacious inner cheek area':'wide',
-  'Very wide generous mouth showing prominent upper gums, broad textured tongue, loose soft inner cheeks':'wide',
-  'Narrow shallow mouth where thick tongue fills most space near roof, tighter inner cheeks':'tight',
-  'Deeper mouth cavity with noticeable roof-to-tongue gap, thinner agile tongue, and plush inner cheeks':'deep',
-  'Medium depth mouth with low-resting tongue and moderately full soft inner cheeks':'',
-  'Wider mouth with visible gummy smile line, fuller central tongue, and pillowy cheek enclosure':'wide',
-  'Small compact mouth with minimal gum show, short thick tongue, and snug inner cheeks':'tight',
-  'Deep wide mouth with long smooth tongue and roomy soft inner cheek space':'deep',
-  'Shallow narrow mouth showing little gum, broad flat tongue pressing toward roof, firmer cheeks':'tight',
-  'Generous width mouth with strong upper gum visibility, pointed mobile tongue, and yielding outer cheek contour':'wide',
-  'Average depth mouth with veined tongue and balanced soft inner cheek fullness':'',
-  'Shallow wide mouth with broad tongue and noticeable loose inner cheek tissue':'wide',
-  'Deep narrow mouth with long tongue that has good side mobility and tighter cheek walls':'deep',
-  'Medium mouth with slight outer cheek roundness, textured tongue, and moderate roof distance':'',
-  'Spacious deep mouth showing balanced gums, smooth mobile tongue, and very soft plush inner cheeks':'deep',
-  'Tight small mouth with thick tongue close to roof, minimal gum, and firm enclosing inner cheeks':'tight',
+  'Small tight mouth with shallow depth, thick tongue close to roof, and firm inner cheeks':'tight, shallow, thick tongue',
+  'Average width mouth with moderate depth, smooth tongue, and soft yielding inner cheeks':'average width, moderate depth',
+  'Wide mouth with good depth, long mobile tongue, and spacious inner cheek area':'wide, deep, mobile tongue',
+  'Very wide generous mouth showing prominent upper gums, broad textured tongue, loose soft inner cheeks':'wide, loose cheeks, broad tongue',
+  'Narrow shallow mouth where thick tongue fills most space near roof, tighter inner cheeks':'narrow, shallow, flat tongue',
+  'Deeper mouth cavity with noticeable roof-to-tongue gap, thinner agile tongue, and plush inner cheeks':'deep, agile tongue, plush cheeks',
+  'Medium depth mouth with low-resting tongue and moderately full soft inner cheeks':'medium depth, full cheeks',
+  'Wider mouth with visible gummy smile line, fuller central tongue, and pillowy cheek enclosure':'wide, pillowy cheeks, full tongue',
+  'Small compact mouth with minimal gum show, short thick tongue, and snug inner cheeks':'tight, compact, thick tongue',
+  'Deep wide mouth with long smooth tongue and roomy soft inner cheek space':'deep, wide, smooth tongue',
+  'Shallow narrow mouth showing little gum, broad flat tongue pressing toward roof, firmer cheeks':'shallow, narrow, flat tongue',
+  'Generous width mouth with strong upper gum visibility, pointed mobile tongue, and yielding outer cheek contour':'wide, pointed tongue, soft cheeks',
+  'Average depth mouth with veined tongue and balanced soft inner cheek fullness':'average depth, veined tongue',
+  'Shallow wide mouth with broad tongue and noticeable loose inner cheek tissue':'shallow, wide, loose cheeks',
+  'Deep narrow mouth with long tongue that has good side mobility and tighter cheek walls':'deep, narrow, mobile tongue',
+  'Medium mouth with slight outer cheek roundness, textured tongue, and moderate roof distance':'medium depth, textured tongue',
+  'Spacious deep mouth showing balanced gums, smooth mobile tongue, and very soft plush inner cheeks':'spacious, deep, smooth tongue',
+  'Tight small mouth with thick tongue close to roof, minimal gum, and firm enclosing inner cheeks':'tight, small, thick tongue',
+};
+const SS_THROAT_MOD={
+  'Strong Gag Reflex - Tight esophageal sphincter at 4 inches.':'strong gag, tight throat',
+  'Weak Gag Reflex - Relaxed throat allows easy 7-inch entry.':'weak gag, takes depth',
+  'Wide Esophageal Opening - Spacious throat for full-length glide.':'open throat, no resistance',
+  'Narrow Esophageal Tube - Constricted passage increases grip.':'narrow throat, tight grip',
+  'Elastic Throat Tissue - Highly stretchable for painless 7 inches.':'elastic throat, takes it all',
+  'Rigid Throat Muscles - Resistant to expansion beyond 5 inches.':'rigid throat, resists depth',
+  'Atrophied Throat Tone - Permanently too loose and slack.':'loose slack throat',
+  'Deep Uvula Position - Uvula sits far back for safe deep access.':'deep set, safe passage',
+  'Prominent Uvula - Forward uvula triggers gag at 3 inches.':'hair trigger gag',
+  'Long Flexible Tongue - Extended muscle reaches full 7-inch depth easily.':'reaches full depth',
+  'Short Broad Tongue - Wide flat surface limited to 4-inch broad contact.':'limited depth, broad contact',
 };
 // ── New stat: Apparent Age modifiers ──
 const SS_AGE_BODY_MOD={
@@ -10333,8 +10353,18 @@ function calcStatStrip(){
   // \u2500\u2500 Lips \u2500\u2500
   let lipsStr='\u2014';
   if(lipsL){
+    // Base vocab descriptor
     let desc=SS_LIPS_VOCAB[lipsL]||lipsL.split(',')[0].trim();
-    if(mouthL){const mod=SS_MOUTH_MOD[mouthL]||'';if(mod&&!desc.startsWith(mod))desc=mod+' '+desc;}
+    // Prepend mouth_bundle three-descriptor modifier
+    if(mouthL){
+      const mod=SS_MOUTH_MOD[mouthL]||'';
+      if(mod) desc=mod+' \u2014 '+desc;
+    }
+    // Append throat/gag only if oral_anatomy has fired a relevant segment
+    const oralL=ssGet('oral_anatomy');
+    if(oralL&&SS_THROAT_MOD[oralL]){
+      desc=desc+' / '+SS_THROAT_MOD[oralL];
+    }
     lipsStr=desc;
   }
 
