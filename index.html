@@ -130,27 +130,21 @@
 /* ── STAT STRIP ── */
 #statStrip{position:fixed;top:var(--safe-top);left:0;right:0;z-index:998;background:rgba(12,12,26,.97);border-bottom:1px solid var(--border);display:flex;flex-direction:column;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .stat-row{display:flex;align-items:center;justify-content:center;height:28px;gap:0}
-.stat-row:last-of-type{height:auto;min-height:36px;align-items:stretch}
-.stat-row:last-of-type .stat-item{align-items:flex-start;flex-direction:column;padding:4px 8px;min-width:0}
-.stat-row:last-of-type .stat-value{white-space:normal;word-break:break-word;width:100%;font-size:.7rem;line-height:1.3}
-.stat-row:last-of-type .stat-item:nth-child(1){flex:.75}
+.stat-row:last-of-type{height:auto;min-height:44px;align-items:flex-start}
+.stat-row:last-of-type .stat-item{align-items:flex-start;flex-direction:column;padding:4px 8px;min-width:0;flex-wrap:wrap}
+.stat-row:last-of-type .stat-value{white-space:normal;word-break:break-word;overflow:visible;width:100%;font-size:.7rem;line-height:1.3}
+.stat-row:last-of-type .stat-item:nth-child(1){flex:1}
 .stat-row:last-of-type .stat-item:nth-child(3){flex:2}
-.stat-row:last-of-type .stat-item:nth-child(5){flex:2}
+.stat-row:last-of-type .stat-item:nth-child(5){flex:4}
 .stat-row:last-of-type .stat-item:nth-child(7){flex:4}
-.stat-row:last-of-type{height:auto;min-height:36px;align-items:stretch}
-.stat-row:last-of-type .stat-item{align-items:flex-start;flex-direction:column;padding:4px 8px;min-width:0;overflow:hidden}
-.stat-row:last-of-type .stat-value{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:.7rem;line-height:1.3}
-.stat-row:last-of-type .stat-item:nth-child(1){flex:.5}
-.stat-row:last-of-type .stat-item:nth-child(3){flex:2}
-.stat-row:last-of-type .stat-item:nth-child(5){flex:2}
-.stat-row:last-of-type .stat-item:nth-child(7){flex:4}
+
 .stat-item{display:flex;align-items:center;gap:6px;padding:0 14px}
 .stat-label{font-size:.56rem;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;font-family:'Rajdhani',sans-serif;white-space:nowrap}
 .stat-value{font-size:.75rem;color:var(--gold);font-weight:700;font-family:'Rajdhani',sans-serif;min-width:44px;transition:color .3s;white-space:nowrap}
 .stat-value.updating{color:var(--text)}
 .stat-divider{width:1px;height:12px;background:var(--border);flex-shrink:0}
 .stat-row-divider{height:1px;background:var(--border);margin:0 12px}
-body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;padding-top:calc(var(--safe-top) + 86px)}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;padding-top:calc(var(--safe-top) + 86px);transition:padding-top 0.15s ease}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(120,0,0,.09),transparent 55%),radial-gradient(ellipse at 85% 50%,rgba(40,0,70,.09),transparent 55%);pointer-events:none;z-index:0}
 header{width:100%;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:relative;z-index:1;flex-wrap:wrap;gap:8px}
 .title{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--accent);letter-spacing:3px;text-shadow:0 0 30px rgba(192,18,28,.5)}
@@ -436,7 +430,18 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
 }
 }
 </style>
-<style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style></head>
+<style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}</style><style type="text/css">.styles-module_blinkingCursor__yugAC{color:inherit;font:inherit;left:3px;line-height:inherit;opacity:1;position:relative;top:0}.styles-module_blinking__9VXRT{animation-duration:.8s;animation-iteration-count:infinite;animation-name:styles-module_blink__rqfaf}@keyframes styles-module_blink__rqfaf{0%{opacity:1}to{opacity:0}}
+.even-weights-btn{background:rgba(100,100,200,.12);border:1px solid rgba(100,100,200,.3);color:#9999dd;padding:4px 10px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.72rem;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;min-height:28px;white-space:nowrap}
+.even-weights-btn:hover{background:rgba(100,100,200,.22)}
+.even-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2001;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.even-modal-overlay.show{opacity:1;pointer-events:all}
+.even-modal{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:300px;width:90%;text-align:center}
+.even-modal-title{font-family:'Cinzel Decorative',serif;font-size:.9rem;color:#9999dd;margin-bottom:8px}
+.even-modal-body{color:var(--text2);font-size:.8rem;margin-bottom:18px;line-height:1.5}
+.even-modal-btns{display:flex;gap:10px;justify-content:center}
+.even-btn-yes{background:rgba(100,100,200,.15);border:1px solid rgba(100,100,200,.4);color:#9999dd;padding:8px 20px;border-radius:6px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;min-height:40px;min-width:70px}
+.even-btn-no{background:transparent;border:1px solid var(--border);color:var(--text2);padding:8px 20px;border-radius:6px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;min-height:40px;min-width:70px}
+</style></head>
 <body data-new-gr-c-s-check-loaded="14.1287.0" data-gr-ext-installed="" style="isolation: isolate;">
 <!-- PIN GATE -->
 <div id="statStrip">
@@ -715,6 +720,7 @@ Clip Skip: 2</div>
       <div class="ep-row" style="margin-bottom:10px">
         <input class="ep-input" id="editWheelName" type="text" placeholder="Wheel name..." style="margin-bottom:0;flex:1">
         <button type="button" class="btn" onclick="saveWheelName()" style="padding: 5px 10px; font-size: 0.72rem; margin: 0px;">Save</button>
+        <button type="button" class="even-weights-btn" id="evenWeightsBtnEl" onclick="openEvenWeights(document.getElementById('editWheelSelect').value)">⚖ Even</button>
       </div>
       <!-- Position -->
       <label class="ep-label">Position in Sequence</label>
@@ -9892,12 +9898,12 @@ const SS_LIPS_VOCAB={
   'barely-there thin lips, almost no volume':'paper thin lips, dry tight mouth',
   'very thin lips, tight and matte':'tight dry lips, small mouth',
   'thin lips, natural matte finish':'flat dry lips, closed mouth',
-  'thin heart-shaped lips, defined cupid bow':'thin cupid bow, dry mouth',
+  'thin heart-shaped lips, defined cupid bow':'thin cupid bow lips, dry mouth',
   'thin wide lips, pale and dry':'thin stretched lips, wide dry mouth',
   'thin pouty lips, naturally glossy':'slim glossy pout, wet mouth',
   'average lips, soft matte, neutral tone':'soft lips, average mouth',
   'average lips, naturally glossy, warm tone':'soft wet lips, warm wet mouth',
-  'average wide lips, full cupid bow':'wide cupid bow, open wet mouth',
+  'average wide lips, full cupid bow':'wide cupid bow lips, wet open mouth',
   'average heart-shaped lips, glossy pink':'glossy bow lips, wet mouth',
   'average lips, pierced, glossy':'pierced glossy lips, wet mouth',
   'medium-full lips, plump and matte':'fat lips, full dry mouth',
@@ -9908,7 +9914,7 @@ const SS_LIPS_VOCAB={
   'full wide lips, pillow-like, natural tone':'big wide lips, full open mouth',
   'full pouty lips, dark glossy finish':'fat dripping pout, soaking mouth',
   'full lips, dark pigmented, matte and dry':'huge dark lips, tight wet mouth',
-  'full heart-shaped lips, deep berry tone':'big sloppy DSL mouth, dripping',
+  'full heart-shaped lips, deep berry tone':'big sloppy DSLs, dripping mouth',
   'huge full lips, DSL, very glossy':'thick wet DSLs, soaking mouth',
   'huge wide lips, extremely plump, matte':'huge fat DSLs, wide open mouth',
   'enormous pillow lips, DSL, natural tone':'fat pillow DSLs, dripping mouth',
@@ -10384,6 +10390,14 @@ function calcStatStrip(){
   return{height:heightStr,weight:weightStr,bra:braStr,bust:bustStr,waist:waistStr,hips:hipsStr,foot:footStr,proj:projStr,appAge:ageStr,hands:handStr,lips:lipsStr,color:colorStr};
 }
 
+function updateBodyPadding(){
+  const strip = document.getElementById('statStrip');
+  if(!strip) return;
+  const h = strip.getBoundingClientRect().height;
+  const safeTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-top'))||0;
+  document.body.style.paddingTop = h + 'px';
+}
+
 function updateStatStrip(){
   const s=calcStatStrip();
   const map={statHeight:s.height,statWeight:s.weight,statBra:s.bra,statBust:s.bust,statWaist:s.waist,statHips:s.hips,statFoot:s.foot,statProj:s.proj,statAppAge:s.appAge,statHands:s.hands,statLips:s.lips,statColor:s.color};
@@ -10394,6 +10408,7 @@ function updateStatStrip(){
     setTimeout(()=>el.classList.remove('updating'),400);
     el.textContent=val;
   });
+  updateBodyPadding();
 }
 
 function resetStatStrip(){
@@ -12715,6 +12730,46 @@ function refreshWheelSelect(){
   }
 }
 
+
+// ── Even Weights ──
+const EVEN_EXCLUDE_PATTERNS = [
+  /^origin_/,/^white_/,/^latina$/,/^black_/,/^north_asian$/,/^south_asian$/,
+  /^persian_sub$/,/^indian_sub$/,/^native_sub$/,/^pacific_sub$/,
+  /^skin_light$/,/^skin_medium$/,/^skin_dark$/,
+  /^skin_soft$/,/^skin_temp$/,
+  /^eyes_light$/,/^eyes_medium$/,/^eyes_dark$/,
+  /^skin_glow_/,/^lips_light$/,/^lips_medium$/,/^lips_dark$/,
+  /^hair_col_/,/^nipple_col_/,/^labia_col_/,
+];
+function isEvenExcluded(wid){
+  return EVEN_EXCLUDE_PATTERNS.some(p=>p.test(wid));
+}
+let _pendingEvenWheelId = null;
+function openEvenWeights(wid){
+  if(isEvenExcluded(wid)) return;
+  _pendingEvenWheelId = wid;
+  const def = WHEEL_DEFS[wid];
+  const name = def ? (def.name||wid) : wid;
+  const count = def ? def.segments.length : 0;
+  document.getElementById('evenWeightsModalBody').textContent =
+    'Set all ' + count + ' segments of "' + name + '" to equal weight (10)?';
+  document.getElementById('evenWeightsModal').classList.add('show');
+}
+function cancelEvenWeights(){
+  document.getElementById('evenWeightsModal').classList.remove('show');
+  _pendingEvenWheelId = null;
+}
+function confirmEvenWeights(){
+  document.getElementById('evenWeightsModal').classList.remove('show');
+  const wid = _pendingEvenWheelId;
+  _pendingEvenWheelId = null;
+  if(!wid || !WHEEL_DEFS[wid]) return;
+  WHEEL_DEFS[wid].segments.forEach(s => { s.weight = 10; });
+  if(wid === currentWheelId) drawWheel(currentAngle);
+  autoSaveActive();
+  renderEditPanel();
+}
+
 function renderEditPanel(){
   // Rebuild dropdown from WHEEL_ORDER so it reflects current order
   const sel=document.getElementById('editWheelSelect');
@@ -13340,6 +13395,8 @@ function checkPin(){
 // ═══════════════ INIT ═══════════════
 function toggleAuto(){ autoAdvance=!autoAdvance; const b=document.getElementById('autoBtn'); if(b){b.textContent='Auto: '+(autoAdvance?'On':'Off'); b.classList.toggle('active',autoAdvance);} if(autoAdvance&&!spinning&&document.getElementById('spinBtn')&&!document.getElementById('spinBtn').disabled) doSpin(); }
 function startApp(){
+  updateBodyPadding();
+  window.addEventListener('resize', updateBodyPadding);
   initApp().then(()=>{renderWheelUI();drawWheel(0);});
 }
 
@@ -13391,4 +13448,15 @@ if(window.storage){
 
 <div id="deepseek-ai"></div>
 <div id="deepseek-ai"></div>
-<div id="deepseek-ai"></div></body></html>
+<div id="deepseek-ai"></div>
+<div class="even-modal-overlay" id="evenWeightsModal">
+  <div class="even-modal">
+    <div class="even-modal-title">⚖ Even Weights</div>
+    <div class="even-modal-body" id="evenWeightsModalBody">Set all segments to equal weight?</div>
+    <div class="even-modal-btns">
+      <button class="even-btn-no" onclick="cancelEvenWeights()">Cancel</button>
+      <button class="even-btn-yes" onclick="confirmEvenWeights()">Even Out</button>
+    </div>
+  </div>
+</div>
+</body></html>
