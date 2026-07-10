@@ -8674,8 +8674,9 @@ function detectHairGroup(race,sub){const l=sub||race;if(NORTH_ASIAN_SET.has(l))r
 const GROUP_MAPS_KEY='thewheel-groupmaps-v1';
 const GROUP_MAPS_DEFAULT={
   bodyGroup:{
-    thin:['Bulimic','Anorexic','Thin','Slim','Petite'],
-    mid:['Slim Thick','Average','Mid Size','Mid Thick','Thick','Thicker','Thickest','Chubby','Meatball','Chunky','Curvy','Upside Down Triangle'],
+    thin:['Bulimic','Anorexic','Thin','Slim','Petite','Slim Thick'],
+    mid:['Curvy','Average','Mid Size','Mid Thick','Thick'],
+    plus:['Upside Down Triangle','Chubby','Thicker','Meatball','Thickest','Chunky'],
     bbw:['BBW','SSBBW','USSBBW'],
   },
   ageGroup:{
@@ -8745,7 +8746,7 @@ function assignGroup(mapKey,label,bucket){
   saveGroupMaps();
 }
 
-function detectBodyGroup(l){return lookupGroup('bodyGroup',l)||(/BBW|SSBBW|USSBBW/.test(l)?'bbw':/Chubby|Thicker|Meatball|Thickest|Chunky/.test(l)?'plus':/Thin|Slim|Petite|Anorexic|Bulimic|Slim Thick|Average|Curvy/.test(l)?'thin':'mid');}
+function detectBodyGroup(l){return lookupGroup('bodyGroup',l)||(/BBW|SSBBW|USSBBW/.test(l)?'bbw':/Upside Down Triangle|Chubby|Thicker|Meatball|Thickest|Chunky/.test(l)?'plus':/Thin|Slim|Petite|Anorexic|Bulimic|Slim Thick/.test(l)?'thin':'mid');}
 function detectAgeGroup(l){return lookupGroup('ageGroup',l)||'young';}
 function detectHeightGroup(l){return lookupGroup('heightGroup',l)||'average';}
 function detectAssSizeGroup(l){return lookupGroup('assSizeGroup',l)||'average';}
@@ -9369,7 +9370,7 @@ computeNext=function(fromId,label,seg){
 function _spread60(seq){
   seq=seq.filter(id=>!/_60plus$/.test(id));
   if(!(ageIs60plus==='60-70'||ageIs60plus==='71-80'||ageIs60plus==='80+'))return seq;
-  const REP={breast_shape:'breast_shape_60plus',nipple_size:'nipple_60plus',ass_shape:'ass_shape_60plus',stomach:'stomach_60plus',arms_shoulders:'arms_shoulders_60plus',personality:'personality_60plus',emotional:'emotional_response_60plus',bond_threat:'bond_threat_60plus'};
+  const REP={breast_shape:'breast_shape_60plus',nipple_size:'nipple_60plus',ass_shape:'ass_shape_60plus',stomach_thin:'stomach_thin_60plus',stomach_mid:'stomach_mid_60plus',stomach_bbw:'stomach_bbw_60plus',stomach_plus:'stomach_plus_60plus',arms_shoulders:'arms_shoulders_60plus',personality:'personality_60plus',emotional:'emotional_response_60plus',bond_threat:'bond_threat_60plus'};
   seq=seq.map(id=>REP[id]||id);
   function insAfter(anchors,ins){for(let i=0;i<seq.length;i++){if(anchors.includes(seq[i])){if(!seq.includes(ins))seq.splice(i+1,0,ins);return;}}}
   insAfter(['body'],'body_redistribution_60plus');
