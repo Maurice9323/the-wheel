@@ -9038,8 +9038,8 @@ function computeNext(fromId,label,seg){
   if(fromId==='thigh_inner')return nextEnabled('thigh_texture');
   if(fromId==='thigh_texture')return nextEnabled(bodyW('stomach'));
   // ── Full body ──
-  if(fromId==='stomach_thin'||fromId==='stomach_mid'||fromId==='stomach_bbw')return nextEnabled('legs');
-  if(fromId==='stomach_thin_60plus'||fromId==='stomach_mid_60plus'||fromId==='stomach_bbw_60plus')return nextEnabled('legs');
+  if(fromId==='stomach_thin'||fromId==='stomach_mid'||fromId==='stomach_bbw'||fromId==='stomach_plus')return nextEnabled('legs');
+  if(fromId==='stomach_thin_60plus'||fromId==='stomach_mid_60plus'||fromId==='stomach_bbw_60plus'||fromId==='stomach_plus_60plus')return nextEnabled('legs');
   if(fromId==='legs')return nextEnabled('back');
   if(fromId==='back')return nextEnabled('collarbone');
   if(fromId==='collarbone')return nextEnabled('arms_shoulders');
