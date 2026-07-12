@@ -9866,7 +9866,7 @@ const SS_CUP_W={'A':0,'B':1,'C':2,'D':3,'DD':5,'DDD':6,'E':7,'F':8,'G':9,'H':12,
 const SS_THICKW_MAP={'Very thin — barely any mass, bone visible, no softness':-8,'Slim — slender, little fat or muscle, tapers cleanly':-4,'Average — proportionate, nothing remarkable':0,'Full — noticeable thickness, fills out clothes':5,'Thick — substantial mass, clearly prominent':12,'Very thick — extremely full, significant presence':20,'Disproportionate — much thicker than the rest of the body would suggest':28,'Long and slim — extended length with minimal mass':-3,'Short and thick — compact with significant mass':10};
 const SS_TSHAPE_MAP={'Cylindrical — even thickness top to bottom, no taper':0,'Tapered — fuller at top near hip, narrows toward knee':3,'Flared — wider at the mid-thigh, narrows above and below':2,'Front heavy — most mass on the front, quadricep dominant':2,'Back heavy — most mass on the back, hamstring and under-butt dominant':5,'Outer heavy — saddlebag, mass sits on the outer thigh':3,'Inner heavy — mass concentrated on inner thigh':3,'Muscular — defined muscle shape visible through the skin':4};
 const SS_AGE_MAP={'18-19':-3,'20-24':0,'25-29':0,'30-35':3,'36-40':6,'41-50':10,'51-60':12,'60-70':10,'71-80':6,'80+':4};
-const SS_MUSCLE_MAP={'very defined, low body fat, hard muscle':8,'athletic lean, clearly works out':6,'athletic thick, muscle under curves':6,'thick but noticeably toned legs':4,'strong thick thighs, soft everywhere else':4,'lightly toned, subtle arm and leg definition':3,'soft with strong legs underneath':3,'full soft body, strong arms from carrying weight':2,'curvy with slight arm definition':2,'naturally lean, slight tone without effort':1,'soft with subtle leg tone':1,'toned midsection, visible but soft abs':1,'thick and soft, pillowy feel':0,'soft all over, no visible tone':0,'very soft all over, pillowy':0,'completely soft, no definition visible':0,'extremely soft, skin folds with movement':0,'skinny fat, soft despite small frame':-3};
+const SS_MUSCLE_MAP={'very defined, low body fat, hard muscle':8,'athletic lean, clearly works out':6,'athletic thick, muscle under curves':6,'thick but noticeably toned legs':4,'strong thick thighs, soft everywhere else':4,'lightly toned, subtle arm and leg definition':3,'soft with strong legs underneath':3,'full soft body, strong arms from carrying weight':2,'curvy with slight arm definition':2,'naturally lean, slight tone without effort':1,'soft with subtle leg tone':1,'toned midsection, visible but soft abs':1,'thick and soft, pillowy feel':0,'soft all over, no visible tone':0,'very soft all over, pillowy':0,'completely soft, no definition visible':0,'extremely soft, skin folds with movement':0,'skinny fat, soft despite small frame':-3,'soft all over, no visible tone, mass present everywhere':0,'very soft through the midsection, legs carry more definition than the rest':1,'soft and heavy through the torso, arms and shoulders show residual strength':3,'thick and soft everywhere, dense feel beneath the surface softness':4,'soft midsection with noticeably stronger legs, thighs and calves defined beneath the weight':2,'soft upper body, lower body carries more muscle density beneath the fat':3,'heavy and soft all over with a solid frame underneath, bone structure reads through the mass':5,'arms strong and full, midsection soft and heavy, strength concentrated in the upper body':4,'soft and pillowy through the full body, skin folds with movement at the arms and belly':0,'thick soft thighs with some muscle density beneath, midsection and arms fully soft':2,'heavy soft body with strong core underneath, posture upright despite the mass':5,'full soft body, glutes firm beneath the outer softness, lower body has density the upper body lacks':4,'soft and heavy throughout, arms carry surprising strength from bearing the body weight':3,'completely soft, no definition visible anywhere, mass moves freely with motion':0};
 const SS_ASS_W_MAP={'Inverted':-6,'Barely there':-4,'Flat':-3,'Small':-1,'Average':0,'Full':3,'Large':6,'Huge':10,'Obscene':15};
 const SS_BAND_BASE={'Bulimic':[24,26],'Anorexic':[26,28],'Thin':[28,30],'Slim':[28,30],'Petite':[26,28],'Slim Thick':[30,32],'Average':[32,34],'Curvy':[34,36],'Upside Down Triangle':[36,38],'Mid Size':[34,36],'Mid Thick':[34,36],'Thick':[38,40],'Chubby':[40,42],'Thicker':[40,42],'Meatball':[40,42],'Thickest':[42,44],'Chunky':[44,46],'BBW':[46,48],'SSBBW':[54,56],'USSBBW':[62,64]};
 const SS_BAND_H={"<4'0\"":-4,"4'1\"-4'5\"":-4,"4'6\"-4'10\"":-2,"4'11\"-5'2\"":-2,"5'3\"-5'7\"":0,"5'8\"-5'11\"":2,"6'0\"-6'5\"":4,">6'6\"":6};
@@ -9909,6 +9909,21 @@ const SS_WAIST_RATIO={
   'hip breadth spreads wide and full, waist circumference tapers hard against that width':-5,
   'waist narrows sharply on a full heavy frame, hip mass extending wide on both sides of the taper':-6,
   'waist tapers deep, hips carry wide and heavy — span differential between the two pronounced on a fat frame':-7,
+  // waist_plus
+  'waist and hip width nearly indistinct, soft mass distributes evenly with no measurable narrowing':5,
+  'soft heavy midsection, low contrast between waist and hip circumference, figure reads full and round':4,
+  'belly pushes forward, waist reads level with hip width from the front':5,
+  'full midsection with a soft taper beneath the mass, waist sits inward by a few inches':2,
+  'mild inward narrowing at the waist, hip span edges past the surrounding softness':1,
+  'waist and hips read as distinct measurements, soft definition present through the fullness':0,
+  'waist narrows inward on a full frame, hourglass proportion emerging beneath the mass':-1,
+  'waist pulls inward measurably, hip width extends clearly beyond on a heavy frame':-2,
+  'wide heavy hip span, waist narrows back considerably from that width':-3,
+  'hip breadth spreads full and wide, waist tapers against it':-4,
+  'waist narrows sharply on a heavy frame, hips extend wide on both sides':-5,
+  'waist tapers deep, hips carry wide and heavy \u2014 span differential pronounced on a plus frame':-6,
+  'upper body reads wider than hips, waist and hip circumference nearly equal, mass concentrated above':4,
+  'waist reads wider than hips from the front, apple distribution, lateral spread dominant':5
 };
 const SS_HIP_RATIO={
   'torso runs flat from ribcage to hip, no measurable narrowing':-2,
@@ -10063,6 +10078,21 @@ const SS_STOMACH_MAP={
   'tissue density consistent with prior baseline, aging change present but not dominant, mass sits where it always did with only a slight increase in laxity — navel partially visible, depth readable at closer range':3,
   'mass has dropped significantly lower, apron longer and heavier, tissue across the full midsection looser and more pendulous — navel sits considerably higher than before, depth not visible from the front':7,
   'significant tissue laxity across the full frame, mass heavy and low, skin surface dramatically loosened from underlying structure — navel position shifted upward from tissue drop, surrounding skin folded, depth not readable':7,
+    // stomach_plus
+  'soft rounded belly, even distribution, gentle forward projection — innie, moderate depth, partially surrounded by soft tissue':1,
+  'lower belly pouch prominent, upper belly softer and flatter, clear separation between zones — innie, moderate depth, sits above the projection':1,
+  'two soft rolls visible at rest, shallow horizontal crease between them — innie, depth compressed within upper roll':2,
+  'belly projects forward below the navel, upper belly comparatively flat — innie, moderate depth, sits above the projection':1,
+  'even soft projection from ribcage to hip, midsection rounds forward continuously — innie, depth shallow relative to surrounding softness':2,
+  'upper belly fuller and more projected, weight sits above the navel — innie, shallow, tissue above pulls surface taut':2,
+  'mass extends laterally as much as it projects forward, midsection wide and broad — innie, centered in broad surface, moderate depth':3,
+  'full belly with soft waist taper still visible beneath the mass — innie, depth clear against the soft surface':1,
+  'lower belly surface textured, soft tissue full beneath — innie, moderate depth, sits among surface texture':1,
+  'midsection distended and taut, bloated appearance at rest — innie, indent compressed, shallow and wide':3,
+  'dense and full, mass moves as one unit with mild jiggle at the lower belly — innie, moderate depth':2,
+  'lower belly hangs forward and low, upper belly softer and rounder — innie, depth partially visible above the hang':3,
+  'skin loose at the lower belly, tighter above, two distinct surface textures visible — innie, moderate depth in upper section':2,
+  'soft belly with outie navel projecting forward, belly rounds outward around it — projection visible against the full soft surface':1,
 };
 const SS_HIPS_BASE={'Bulimic':[27,30],'Anorexic':[29,33],'Thin':[32,35],'Slim':[33,36],'Petite':[31,35],'Slim Thick':[38,44],'Average':[36,39],'Curvy':[40,46],'Upside Down Triangle':[32,36],'Mid Size':[39,43],'Mid Thick':[45,50],'Thick':[48,54],'Chubby':[46,52],'Thicker':[52,58],'Meatball':[36,41],'Thickest':[58,66],'Chunky':[55,63],'BBW':[58,70],'SSBBW':[70,86],'USSBBW':[86,108]};
 const SS_ASS_HIP_MAP={'Inverted':-5,'Barely there':-3,'Flat':-2,'Small':-1,'Average':0,'Full':2,'Large':5,'Huge':8,'Obscene':14};
@@ -10612,6 +10642,21 @@ const SS_STOMACH_W={
   'tissue density consistent with prior baseline, aging change present but not dominant, mass sits where it always did with only a slight increase in laxity — navel partially visible, depth readable at closer range':2,
   'mass has dropped significantly lower, apron longer and heavier, tissue across the full midsection looser and more pendulous — navel sits considerably higher than before, depth not visible from the front':3,
   'significant tissue laxity across the full frame, mass heavy and low, skin surface dramatically loosened from underlying structure — navel position shifted upward from tissue drop, surrounding skin folded, depth not readable':3,
+    // stomach_plus
+  'soft rounded belly, even distribution, gentle forward projection — innie, moderate depth, partially surrounded by soft tissue':1,
+  'lower belly pouch prominent, upper belly softer and flatter, clear separation between zones — innie, moderate depth, sits above the projection':1,
+  'two soft rolls visible at rest, shallow horizontal crease between them — innie, depth compressed within upper roll':2,
+  'belly projects forward below the navel, upper belly comparatively flat — innie, moderate depth, sits above the projection':1,
+  'even soft projection from ribcage to hip, midsection rounds forward continuously — innie, depth shallow relative to surrounding softness':2,
+  'upper belly fuller and more projected, weight sits above the navel — innie, shallow, tissue above pulls surface taut':2,
+  'mass extends laterally as much as it projects forward, midsection wide and broad — innie, centered in broad surface, moderate depth':3,
+  'full belly with soft waist taper still visible beneath the mass — innie, depth clear against the soft surface':1,
+  'lower belly surface textured, soft tissue full beneath — innie, moderate depth, sits among surface texture':1,
+  'midsection distended and taut, bloated appearance at rest — innie, indent compressed, shallow and wide':2,
+  'dense and full, mass moves as one unit with mild jiggle at the lower belly — innie, moderate depth':2,
+  'lower belly hangs forward and low, upper belly softer and rounder — innie, depth partially visible above the hang':3,
+  'skin loose at the lower belly, tighter above, two distinct surface textures visible — innie, moderate depth in upper section':2,
+  'soft belly with outie navel projecting forward, belly rounds outward around it — projection visible against the full soft surface':1,
 };
 const SS_PROJ_BUST={"Flat — almost no projection, barely rises from the chest":-2,"Minimal — slight projection, noticeable but modest":-1,"Moderate — average projection, proportionate to size":0,"Wide rather than deep — spreads laterally, minimal forward projection":0,"Full — significant projection, clearly extends outward":1,"Deep rather than wide — narrow from front but projects significantly forward":2,"High — dramatic forward projection, extends well past average for size":2,"Extreme — maximum projection, almost defies gravity":4};
 
@@ -10647,7 +10692,7 @@ function calcStatStrip(){
   const assL=ssGet('ass_size');
   const assShapeL=ssGet('ass_shape')||ssGet('ass_shape_60plus');
   const assProjL=ssGet('ass_projection');
-  const stomachL=ssGetAny('stomach_thin','stomach_mid','stomach_bbw')||ssGetAny('stomach_thin_60plus','stomach_mid_60plus','stomach_bbw_60plus');
+  const stomachL=ssGetAny('stomach_thin','stomach_mid','stomach_bbw','stomach_plus','stomach_plus_60plus')||ssGetAny('stomach_thin_60plus','stomach_mid_60plus','stomach_bbw_60plus');
   const backL=ssGet('back');
   const frameL=ssGet('frame_bone_structure');
   const muscleL=ssGetAny('muscle_thin','muscle_mid','muscle_bbw','muscle_plus');
