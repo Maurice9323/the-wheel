@@ -6392,13 +6392,52 @@ position:{name:"Position / Pose",segments:[
   {label:'leaning against wall, one leg up',weight:10},
 ]},
 feet:{name:"Feet",segments:[
-  {label:'high arch, long slender toes, soft soles',weight:20},
-  {label:'high arch, medium toes, soft smooth soles',weight:22},
-  {label:'medium arch, long toes, soft soles',weight:18},
-  {label:'medium arch, short toes, soft soles',weight:20},
-  {label:'low arch, wide foot, soft soles',weight:14},
-  {label:'small petite feet, high arch, soft soles',weight:16},
-  {label:'wide feet, short toes, thick soles',weight:8},
+  {label:'high arch, egyptian toe, long slender toes, dainty overall',weight:10},
+  {label:'high arch, egyptian toe, medium toes, average overall',weight:10},
+  {label:'high arch, greek toe, long toes, average overall',weight:10},
+  {label:'high arch, square toe, medium toes, average overall',weight:10},
+  {label:'high arch, medium toes, soft soles, average overall',weight:10},
+  {label:'medium arch, egyptian toe, long toes, average overall',weight:10},
+  {label:'medium arch, greek toe, medium toes, average overall',weight:10},
+  {label:'medium arch, tapered toe, short toes, dainty overall',weight:10},
+  {label:'medium arch, square toe, medium toes, wide overall',weight:10},
+  {label:'low arch, square toe, short toes, wide overall',weight:10},
+  {label:'low arch, wide foot, broad overall, long toes',weight:10},
+  {label:'small petite foot, high arch, tapered toe, dainty overall',weight:10},
+  {label:'medium arch, tapered toe, medium toes, average overall',weight:10},
+  {label:'wide feet, square toe, short toes, broad overall',weight:10},
+]},
+feet_skin:{name:"Feet — Skin & Nails",segments:[
+  {label:'smooth even skin, nails trimmed and polished, even tone throughout',weight:10},
+  {label:'smooth even skin, nails natural and clean, even tone throughout',weight:10},
+  {label:'smooth even skin, nails painted deep color, even tone with slightly darker sole line',weight:10},
+  {label:'soft skin with slight dryness at the heel, nails natural and unpolished, even tone',weight:10},
+  {label:'dry skin at the heel, nails short and natural, darker sole line visible',weight:10},
+  {label:'dry cracked heels, nails unpolished and slightly grown out, darker soles',weight:10},
+  {label:'cracked heels, rough dry skin overall, nails neglected and uneven, uneven tone',weight:10},
+  {label:'soft smooth skin, nails manicured with french tip, even tone throughout',weight:10},
+  {label:'soft smooth skin, nails painted bright color, slightly darker around the heel',weight:10},
+  {label:'calloused ball of foot, dry heel, nails short and natural, even tone',weight:10},
+  {label:'calloused heel and ball, rough skin overall, nails unpolished and short, darker soles',weight:10},
+  {label:'very soft smooth skin, nails long and manicured with gel, perfectly even tone',weight:10},
+  {label:'soft skin, nails medium length natural with clear coat, slightly darker sole line',weight:10},
+  {label:'rough skin throughout, nails neglected and overgrown, uneven tone with darker soles',weight:10},
+]},
+feet_detail:{name:"Feet — Detail",segments:[
+  {label:'barely any veins visible, slender delicate ankle, barely padded soles',weight:10},
+  {label:'faint veins across the top, slender ankle, soft padded soles',weight:10},
+  {label:'visible veins running across the top, average ankle, lightly padded soles',weight:10},
+  {label:'prominent veins across the top and sides, average ankle, firm soles',weight:10},
+  {label:'prominent veins, thick sturdy ankle, firm soles with light wear pattern',weight:10},
+  {label:'no veins visible, smooth surface, slender ankle, no wear',weight:10},
+  {label:'no veins visible, average ankle, soft padded soles, light wear at ball',weight:10},
+  {label:'slight bone visibility at the top, slender ankle, minimal padding',weight:10},
+  {label:'bones visible across the top, slender delicate ankle, thin soles with wear at ball',weight:10},
+  {label:'smooth surface, no veins or bones, average ankle, thick padded soles',weight:10},
+  {label:'smooth surface, thick sturdy ankle, heavily padded soles, wear pattern at heel and ball',weight:10},
+  {label:'visible veins and slight bone definition, average ankle, worn soles with heel callous',weight:10},
+  {label:'prominent veins and visible bone structure, thick ankle, worn soles throughout',weight:10},
+  {label:'very prominent veins, delicate slender ankle, thin soles, no wear',weight:10},
 ]},
 skin_soft:{name:"Skin Softness",segments:[
   {label:'incredibly silky, like touching water',weight:18},
@@ -8539,7 +8578,7 @@ const WHEEL_ORDER=[
   'body_hair',
   'hands',
   'position',
-  'feet',
+  'feet','feet_skin','feet_detail',
   'skin_soft',
   'nat_scent',
   'skin_temp',
@@ -9066,7 +9105,9 @@ function computeNext(fromId,label,seg){
   if(fromId==='body_hair')return nextEnabled('hands');
   if(fromId==='hands')return nextEnabled('position');
   if(fromId==='position')return nextEnabled('feet');
-  if(fromId==='feet')return nextEnabled('skin_soft');
+  if(fromId==='feet')return nextEnabled('feet_skin');
+  if(fromId==='feet_skin')return nextEnabled('feet_detail');
+  if(fromId==='feet_detail')return nextEnabled('skin_soft');
   // ── Sensory ──
   if(fromId==='skin_soft')return nextEnabled('nat_scent');
   if(fromId==='nat_scent')return nextEnabled('skin_temp');
@@ -10343,6 +10384,23 @@ const SS_FRAME_FOOT={
   'Large and wide frame — broad bones throughout, shoulders and hips both wide and heavy':1,
 };
 const SS_AGE_FOOT={'18-19':0,'20-24':0,'25-29':0,'30-35':0,'36-40':0,'41-50':0,'51-60':0,'60-70':0.5,'71-80':0.5,'80+':1};
+const SS_FEET_MOD={
+  'high arch, egyptian toe, long slender toes, dainty overall':-0.5,
+  'high arch, egyptian toe, medium toes, average overall':0,
+  'high arch, greek toe, long toes, average overall':0.5,
+  'high arch, square toe, medium toes, average overall':0,
+  'high arch, medium toes, soft soles, average overall':0,
+  'medium arch, egyptian toe, long toes, average overall':0.5,
+  'medium arch, greek toe, medium toes, average overall':0,
+  'medium arch, tapered toe, short toes, dainty overall':-1,
+  'medium arch, square toe, medium toes, wide overall':0.5,
+  'low arch, square toe, short toes, wide overall':0.5,
+  'low arch, wide foot, broad overall, long toes':1,
+  'small petite foot, high arch, tapered toe, dainty overall':-1,
+  'medium arch, tapered toe, medium toes, average overall':0,
+  'wide feet, square toe, short toes, broad overall':0.5,
+};
+
 // ── New stat: Hands ──
 const SS_HAND_BASE={
   'small soft hands, delicate fingers':[5.5,6.0],
@@ -10804,12 +10862,14 @@ function calcStatStrip(){
   // \u2500\u2500 Foot \u2500\u2500
   let footStr='\u2014';
   if(height){
+    const feetL=ssGet('feet');
     let size=SS_FOOT_H[height]??7.5;
     if(body)size+=(SS_BODY_FOOT[body]??0);
     if(frameL)size+=(SS_FRAME_FOOT[frameL]??0);
     if(ageL)size+=(SS_AGE_FOOT[ageL]??0);
+    if(feetL)size+=(SS_FEET_MOD[feetL]??0);
     size=Math.min(13,Math.max(4,Math.round(size*2)/2));
-    const allKnown=body&&frameL;
+    const allKnown=body&&frameL&&feetL;
     footStr=allKnown?size+'W':`~${Math.round((size-0.5)*2)/2}\u2013${Math.round((size+0.5)*2)/2}W`;
   }
 
@@ -11964,7 +12024,7 @@ function generateNarrative(){
   const waist=ga('waist_thin','waist_mid','waist_bbw','waist_plus');
   const shave=gv('shave');
   const hands=gv('hands');
-  const feet=gv('feet');
+  const feet=gv('feet','feet_skin','feet_detail');
   const nipSize=gv('nipple_size');
   const nipType=gv('nipple_type');
   const personality=gv('personality'),financial=gv('financial'),sexExp=gv('sex_exp');
