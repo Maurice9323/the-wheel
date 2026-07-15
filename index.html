@@ -9294,7 +9294,7 @@ function computeNext(fromId,label,seg){
   if(fromId==='stomach_thin'||fromId==='stomach_mid'||fromId==='stomach_bbw'||fromId==='stomach_plus')return nextEnabled(bodyW('legs'));
   if(fromId==='stomach_thin_60plus'||fromId==='stomach_mid_60plus'||fromId==='stomach_bbw_60plus'||fromId==='stomach_plus_60plus')return nextEnabled(bodyW('legs'));
   if(fromId.startsWith('legs_'))return nextEnabled(bodyW('back'));
-  if(fromId.startsWith('back_'))return nextEnabled(bodyW('arms'));
+  if(fromId.startsWith('back_'))return nextEnabled('collarbone');
   if(fromId==='collarbone')return nextEnabled(bodyW('arms'));
   if(fromId.startsWith('arms_'))return nextEnabled('body_proportions');
   if(fromId==='body_proportions')return nextEnabled('frame_bone_structure');
@@ -11850,267 +11850,351 @@ const ETHNIC_MAP={
 };
 
 function buildSDPrompt(){
+  // ── helpers ──
+  const gv=id=>{const r=results.find(r=>r.wheelId===id);return r?r.label:null;};
+  const ga=(...ids)=>{for(const id of ids){const v=gv(id);if(v)return v;}return null;};
+  const clean=s=>s?s.split('—')[0].split(',')[0].trim():'';
+  const first=s=>s?s.split(',')[0].trim():'';
+
+  // ── Raw results ──
   const race=gv('race');
-  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian',
-    'persian_sub','indian_sub','native_sub','pacific_sub');
+  const raceSub=ga('white_euro','latina','black_afro','north_asian','south_asian','persian_sub','indian_sub','native_sub','pacific_sub');
+  const age=gv('age'), height=gv('height'), amount=gv('amount');
   const body=gv('body');
-  const assSize=gv('ass_size'),assShape=(gv('ass_shape')||gv('ass_shape_60plus')),assProj=gv('ass_projection'),assFirm=gv('ass_firmness');
-  const cup=gv('cup_size'),breastShape=(gv('breast_shape')||gv('breast_shape_60plus')),breastFirm=gv('breast_firmness'),breastProj=gv('breast_projection');
-  const thighThick=gv('thigh_thickness'),thighShape=gv('thigh_shape'),thighInner=gv('thigh_inner');
-  const nipSize=(gv('nipple_size')||gv('nipple_60plus')),nipType=gv('nipple_type'),nipPlacement=gv('nipple_placement');
-  const nipCol=ga('nipple_col_light','nipple_col_medium','nipple_col_dark');
-  const areolaSize=gv('areola_size'),areolaText=gv('areola_texture');
-  const stomach=(gv('stomach')||gv('stomach_60plus')),legs=gv('legs'),back=gv('back'),collarbone=gv('collarbone');
   const skin=ga('skin_light','skin_medium','skin_dark');
+  const cup=gv('cup_size');
+  const breastShape=gv('breast_shape')||gv('breast_shape_60plus');
+  const breastFirm=gv('breast_firmness');
+  const breastProj=gv('breast_projection');
+  const assSize=gv('ass_size');
+  const assShape=gv('ass_shape')||gv('ass_shape_60plus');
+  const assProj=gv('ass_projection');
+  const assFirm=gv('ass_firmness');
+  const thighThick=gv('thigh_thickness');
+  const thighShape=gv('thigh_shape');
+  const thighInner=gv('thigh_inner');
+  const stomachRaw=ga('stomach_thin','stomach_mid','stomach_plus','stomach_bbw','stomach_thin_60plus','stomach_mid_60plus','stomach_plus_60plus','stomach_bbw_60plus');
+  const legsRaw=ga('legs_thin','legs_mid','legs_plus','legs_bbw');
+  const backRaw=ga('back_thin','back_mid','back_plus','back_bbw');
+  const armsRaw=ga('arms_thin','arms_mid','arms_plus','arms_bbw','arms_thin_60plus','arms_mid_60plus','arms_plus_60plus','arms_bbw_60plus');
+  const collarbone=gv('collarbone');
+  const nipSize=gv('nipple_size')||gv('nipple_60plus');
+  const nipType=gv('nipple_type');
+  const nipPlacement=gv('nipple_placement');
+  const nipCol=ga('nipple_col_light','nipple_col_medium','nipple_col_dark');
+  const areolaSize=gv('areola_size');
+  const areolaText=gv('areola_texture');
   const eyes=ga('eyes_light','eyes_medium','eyes_dark');
   const lips=ga('lips_light','lips_medium','lips_dark');
-  const faceShape=gv('face_shape'),faceRating=gv('face');
+  const faceShape=gv('face_shape');
+  const faceRating=gv('face');
   const hair=ga('hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark');
   const hairCol=ga('hair_col_light','hair_col_north_asian','hair_col_medium','hair_col_dark');
-  const position=gv('position'),kink=gv('kink');
-  const location=gv('location'),amount=gv('amount'),age=gv('age'),height=gv('height');
+  const position=gv('position');
+  const kink=gv('kink');
+  const location=gv('location');
+  const skinAging=gv('skin_aging_60plus');
+  const bodyRedist=gv('body_redistribution_60plus');
+  const hairAging=gv('hair_aging_60plus');
+  const vaginalAging=gv('vaginal_aging_60plus');
 
   // ── Identity ──
-  const ethnic=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||`${race.toLowerCase()} woman`;
-  const ageMap={'18-19':'18 year old','20-24':'early 20s','25-29':'mid 20s','30-35':'early 30s','36-40':'late 30s','41-50':'40s','51-60':'50s','60+':'60s'};
-  const ageTag=ageMap[age]||'';
-  const htMap={"<4'0\"":"very short, 4ft","4'1\"-4'5\"":"short, 4ft3","4'6\"-4'10\"":"short, 4ft8","4'11\"-5'2\"":"5ft1","5'3\"-5'7\"":"5ft5","5'8\"-5'11\"":"tall, 5ft9","6'0\"-6'5\"":"very tall, 6ft1",">6'6\"":"extremely tall"};
-  const htTag=htMap[height]||'';
-  const amtMap={'One':'solo','2-3':'two women','4-7':'small group of women','8-10':'multiple women','11+':'many women'};
-  const amtTag=amtMap[amount]||'solo';
+  const ETHNIC_MAP={
+    'white_us':'white american woman','white_euro':'european woman',
+    'latina':'latina woman','black_afro':'black woman','black_us':'black american woman',
+    'north_asian':'east asian woman','south_asian':'south asian woman',
+    'persian_sub':'middle eastern woman','indian_sub':'indian woman',
+    'native_sub':'native american woman','pacific_sub':'pacific islander woman',
+  };
+  const ethnic=ETHNIC_MAP[raceSub]||ETHNIC_MAP[race]||`${(race||'').toLowerCase()} woman`;
+  const AGE_MAP={'18-19':'18 year old','20-24':'early 20s','25-29':'mid 20s','30-35':'early 30s','36-40':'late 30s','41-50':'40s','51-60':'50s','60-70':'60s','71-80':'70s','80+':'80s'};
+  const ageTag=AGE_MAP[age]||'';
+  const HT_MAP={"<4'0\"":"very short","4'1\"-4'5\"":"short, 4ft3","4'6\"-4'10\"":"short, 4ft8","4'11\"-5'2\"":"5ft1","5'3\"-5'7\"":"5ft5","5'8\"-5'11\"":"tall, 5ft9","6'0\"-6'5\"":"very tall, 6ft2",">6'6\"":"extremely tall"};
+  const htTag=HT_MAP[height]||'';
+  const AMT_MAP={'One':'solo','2-3':'two women','4-7':'small group of women','8-10':'multiple women','11+':'many women'};
+  const amtTag=AMT_MAP[amount]||'solo';
 
-  // ── Skin tone — clean to color keywords only ──
-  const skinClean=skin
-    ? skin.split(',').slice(0,2).join(',')
-        .replace(/\b(undertones?|complexion|tone)\b/gi,'')
-        .replace(/\s{2,}/g,' ').trim()
-    : '';
+  // ── Skin ──
+  const skinClean=skin?skin.split(',').slice(0,2).join(',').replace(/\b(undertones?|complexion|tone)\b/gi,'').replace(/\s{2,}/g,' ').trim():'';
+  const skinAgingTag=skinAging?clean(skinAging):'';
 
-  // ── Body — translate wheel labels to SD-readable descriptors ──
-  const bodyMap={
+  // ── Body type ──
+  const BODY_MAP={
     'Bulimic':'extremely underweight, emaciated figure',
     'Anorexic':'very thin, gaunt, underweight',
     'Thin':'slim thin figure, lean body',
     'Slim':'slim figure',
     'Petite':'petite slim figure, small frame',
-    'Slim Thick':'slim waist, thick thighs and hips, hourglass figure',
-    'Average':'average build, normal body type',
+    'Slim Thick':'slim waist, thick thighs and hips',
+    'Average':'average build',
     'Mid Size':'medium build, soft curves',
     'Mid Thick':'medium thick build, curvy',
-    'Thick':'thick curvy figure, full hips and thighs',
-    'Thicker':'very thick curvy body, wide hips',
-    'Thickest':'extremely thick, very wide hips and thighs',
+    'Thick':'thick curvy figure, full hips',
+    'Thicker':'very thick, wide hips and thighs',
+    'Thickest':'extremely thick, very wide hips',
     'Chubby':'chubby soft body, round figure',
-    'Meatball':'very chubby, round soft body',
-    'Chunky':'chunky heavyset figure',
-    'Curvy':'curvy hourglass figure, full bust and hips',
-    'Upside Down Triangle':'broad shoulders, narrow hips, inverted triangle figure',
-    'BBW':'bbw, large curvy body, plus size',
+    'Meatball':'very chubby, round apple shaped body',
+    'Chunky':'chunky heavyset figure, dense build',
+    'Curvy':'curvy hourglass figure',
+    'Upside Down Triangle':'broad shoulders, narrow hips',
+    'BBW':'bbw, large plus size body',
     'SSBBW':'ssbbw, super size plus figure',
     'USSBBW':'extremely plus size, very large body',
   };
-  const bodyTag=bodyMap[body]||body?.toLowerCase()||'';
-  // Ass system → SD tags
-  const assSizeMap={
-    'Barely there':'flat butt','Small':'small butt','Average':'average sized ass',
-    'Full':'full round ass','Large':'large ass','Huge':'huge ass, massive butt',
-    'Obscene':'obscenely large ass, enormous butt','Flat':'flat butt','Inverted':'flat no ass',
-  };
-  const assShapeCore=assShape?assShape.split(' —')[0].toLowerCase():'';
-  const assProjCore=assProj?assProj.split(' —')[0].toLowerCase():'';
-  const assFirmCore=assFirm?assFirm.split(' —')[0].toLowerCase():'';
-  const assTag=[
-    assSizeMap[assSize]||'',
-    assShapeCore?`${assShapeCore} ass shape`:'',
-    assProjCore?`${assProjCore} ass projection`:'',
-    assFirmCore?`${assFirmCore} ass`:'',
-  ].filter(Boolean).join(', ');
-  // Cup + breast system → SD tags
-  const cupMap={
-    'A':'small breasts, A cup','B':'small perky breasts, B cup',
-    'C':'medium breasts, C cup','D':'large breasts, D cup',
+  const bodyTag=BODY_MAP[body]||body?.toLowerCase()||'';
+  const bodyRedistTag=bodyRedist?clean(bodyRedist):'';
+
+  // ── Breasts ──
+  const CUP_MAP={
+    'A':'small breasts, A cup','B':'small breasts, B cup',
+    'C':'medium breasts, C cup','D':'full breasts, D cup',
     'DD':'large full breasts, DD cup','DDD':'very large breasts, DDD cup',
     'E':'huge breasts, E cup','F':'huge full breasts, F cup','G':'massive breasts, G cup',
     'H':'enormous breasts, H cup','I':'enormous breasts, I cup','J':'massive heavy breasts, J cup',
     'K':'gigantic breasts, K cup','L':'gigantic heavy breasts, L cup',
     'M':'impossibly large breasts, M cup','N+':'cartoonishly large breasts',
   };
-  const breastShapeCore=breastShape?breastShape.split(' —')[0].toLowerCase():'';
-  const breastFirmCore=breastFirm?breastFirm.split(' —')[0].toLowerCase():'';
-  const breastProjCore=breastProj?breastProj.split(' —')[0].toLowerCase():'';
-  const cupTag=[
-    cup?(cupMap[cup]||`${cup} cup breasts`):'',
-    breastShapeCore?`${breastShapeCore} breasts`:'',
-    breastFirmCore?`${breastFirmCore} breast texture`:'',
-    breastProjCore?`${breastProjCore} breast projection`:'',
-  ].filter(Boolean).join(', ');
-  // Thigh/body tags
-  const thighTag=[
-    thighThick?thighThick.split(' —')[0].toLowerCase()+' thighs':'',
-    thighShape?thighShape.split(' —')[0].toLowerCase()+' thigh shape':'',
-    thighInner?thighInner.split(' —')[0].toLowerCase():'',
-  ].filter(Boolean).join(', ');
-  const stomachTag=stomach?stomach.split(' —')[0].toLowerCase():'';
-  const legsTag=legs?legs.split(' —')[0].toLowerCase():'';
-  const collarboneTag=collarbone?collarbone.split(' —')[0].toLowerCase()+' collarbone':'';
+  const cupTag=cup?(CUP_MAP[cup]||`${cup} cup breasts`):'';
+  const bShapeTag=breastShape?clean(breastShape)+' breasts':'';
+  const bFirmTag=breastFirm?clean(breastFirm):'';
+  const bProjTag=breastProj?clean(breastProj)+' projection':'';
+  const nipSizeTag=nipSize?clean(nipSize)+' nipples':'';
+  const nipTypeTag=nipType?clean(nipType):'';
+  const nipPlaceTag=nipPlacement?clean(nipPlacement):'';
+  const nipColTag=nipCol?first(nipCol):'';
+  const areolaTag=areolaSize?clean(areolaSize)+' areola':'';
+  const areolaTexTag=areolaText?clean(areolaText)+' areola texture':'';
+  const breastParts=[cupTag,bShapeTag,bFirmTag,bProjTag,nipSizeTag,nipTypeTag,nipPlaceTag,nipColTag,areolaTag,areolaTexTag].filter(Boolean).join(', ');
 
-  // ── Face rating — surgical: descriptor in positive, beauty terms in negative for low ratings ──
-  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
-  const ratingDescMap={
-    1:'plain face, unattractive features, ordinary looks',
-    2:'plain face, unattractive features, ordinary looks',
-    3:'below average face, plain features, not pretty',
-    4:'below average face, ordinary looks',
-    5:'average face, girl next door',
-    6:'average attractive face, pleasant features',
-    7:'beautiful face, pretty',
-    8:'beautiful face, very pretty, attractive',
-    9:'stunning face, highly attractive, gorgeous',
-    10:'perfect face, breathtaking beauty, flawless features',
+  // ── Ass ──
+  const ASS_SIZE_MAP={
+    'Barely there':'flat ass','Flat':'flat ass','Inverted':'no ass',
+    'Small':'small ass','Average':'average ass','Full':'full round ass',
+    'Large':'large ass','Huge':'huge ass','Obscene':'enormous ass',
   };
-  const faceDesc=ratingDescMap[ratingNum]||'';
+  const assSizeTag=ASS_SIZE_MAP[assSize]||'';
+  const assShapeTag=assShape?clean(assShape)+' ass shape':'';
+  const assProjTag=assProj?clean(assProj):'';
+  const assFirmTag=assFirm?clean(assFirm)+' ass':'';
+  const assParts=[assSizeTag,assShapeTag,assProjTag,assFirmTag].filter(Boolean).join(', ');
 
-  // ── Negative prompt changes based on face rating ──
-  // Low rating (1-4): suppress beauty terms so SD cannot drift upward
-  // High rating (9-10): suppress ugly/plain terms so SD holds the beauty
-  // Mid rating: standard negative only
-  const negBeautySuppress=ratingNum>0&&ratingNum<=4
-    ?' beautiful face, (gorgeous:1.3), (pretty:1.2), (flawless:1.2), perfect face, stunning, attractive face,':'';
-  const negUglySuppress=ratingNum>=9
-    ?' ugly, unattractive, plain, ordinary,':'';
-  // Only include 'ugly' in base negative for mid/high ratings — low ratings want plain so do not block it
-  const includeUglyInBase=ratingNum===0||ratingNum>=5;
+  // ── Thighs ──
+  const thighTag=[
+    thighThick?clean(thighThick)+' thighs':'',
+    thighShape?clean(thighShape)+' thigh shape':'',
+    thighInner?clean(thighInner):'',
+  ].filter(Boolean).join(', ');
 
-  // ── Face shape — clean label ──
-  const faceShapeTag=faceShape
-    ? faceShape.replace(/\bface\b/gi,'').replace(/,.*$/,'').trim() : '';
+  // ── Stomach — distill long label to short SD tag ──
+  const stomachTag=stomachRaw?stomachRaw.split('—')[0].split(',')[0].replace(/\binnie\b/gi,'').replace(/\boutie\b/gi,'outie navel').trim():'';
 
-  // ── Eyes — first descriptor only, drop prose qualifiers ──
-  const eyesTag=eyes
-    ? eyes.split(',')[0]
-        .replace(/\b(round and wide|soft and distant|sharp and intense|warm and soft|deep and round|golden tone|smooth lid|subtle fold|heavy lid|doe-like|catlike|sad expression|sleepy look|expressive|intense)\b/gi,'')
-        .replace(/\s{2,}/g,' ').trim()
-    : '';
+  // ── Legs — distill long label to short SD tag ──
+  // Extract key descriptors: length, thigh contact, calf, ankle, veins
+  function distillLegs(raw){
+    if(!raw) return '';
+    const tags=[];
+    if(/very long|disproportionate|long legs/.test(raw)) tags.push('long legs');
+    else if(/short leg|short.*leg/.test(raw)) tags.push('short legs');
+    else tags.push('average length legs');
+    if(/thigh gap|do not touch|barely.*touch|faint.*shadow/.test(raw)) tags.push('thigh gap');
+    else if(/heavy overlap|chafing|enormous.*thigh|press.*weight/.test(raw)) tags.push('heavy thigh overlap');
+    else if(/inner.*contact|press.*together|full.*contact|touch.*mid|touch.*throughout/.test(raw)) tags.push('thighs touching');
+    if(/slim.*calf|calves.*barely|barely.*calf/.test(raw)) tags.push('slim calves');
+    else if(/thick.*calf|calf.*wide|wide.*calf|very thick calf|cankle/.test(raw)) tags.push('thick calves');
+    else if(/defined.*calf|calf.*defined|athletic.*calf/.test(raw)) tags.push('defined calves');
+    if(/varicose/.test(raw)) tags.push('varicose veins');
+    else if(/vein.*visible|visible.*vein/.test(raw)) tags.push('visible leg veins');
+    if(/shin.*visible|shin.*sharp|shin.*angular|shin.*bone/.test(raw)) tags.push('visible shin bone');
+    if(/bow.?leg/.test(raw)) tags.push('bow legged');
+    if(/knock.?knee/.test(raw)) tags.push('knock kneed');
+    if(/cellulite/.test(raw)) tags.push('leg cellulite');
+    if(/under.?thigh.*crease|crease.*front/.test(raw)) tags.push('under-thigh crease visible');
+    if(/inner.*thigh.*dark|dark.*inner.*thigh/.test(raw)) tags.push('inner thigh darkening');
+    if(/ankle.*thick|thick.*ankle|ankle.*blend/.test(raw)) tags.push('thick ankles');
+    else if(/ankle.*slim|slim.*ankle|ankle.*defined|ankle.*delicate/.test(raw)) tags.push('slim ankles');
+    return tags.join(', ');
+  }
 
-  // ── Lips — core descriptor, no prefix adjectives, no duplicate 'lips' ──
-  const lipsRaw=lips?lips.split(',')[0]
-    .replace(/^(barely-there |very |medium-full |medium |full |huge |enormous |thin |average )/i,'')
-    .replace(/\blips?\b/gi,'').trim():'';
-  const lipsTag=lipsRaw?`${lipsRaw} lips`:'';
+  // ── Back — distill long label to short SD tag ──
+  function distillBack(raw){
+    if(!raw) return '';
+    const tags=[];
+    if(/narrow shoulder/.test(raw)) tags.push('narrow shoulders');
+    else if(/broad shoulder|broad.*upper back/.test(raw)) tags.push('broad shoulders');
+    else tags.push('average shoulders');
+    if(/spine.*visible|vertebrae.*visible|every.*vertebra/.test(raw)) tags.push('visible spine');
+    if(/shoulder blade.*visible|shoulder blade.*angular|wing/.test(raw)) tags.push('visible shoulder blades');
+    if(/defined.*back.*muscle|back.*muscle.*defined|latissimus/.test(raw)) tags.push('defined back muscles');
+    if(/three.*roll|stacked.*roll|roll.*stacking|multiple.*roll/.test(raw)) tags.push('multiple back rolls');
+    else if(/two.*roll|two.*ridg|two.*clear/.test(raw)) tags.push('two back rolls');
+    else if(/one.*roll|single.*roll|soft.*roll|slight.*roll|back fat.*roll|bra.*roll/.test(raw)) tags.push('back fat roll at bra line');
+    else if(/back fat|soft.*swell|fullness.*bra/.test(raw)) tags.push('back fat');
+    if(/bra.*strap.*buried|strap.*invisible|strap.*disappear|buried.*tissue/.test(raw)) tags.push('bra strap buried');
+    else if(/bra.*strap.*deep|bra.*strap.*indent/.test(raw)) tags.push('deep bra strap indent');
+    else if(/bra.*strap.*faint|bra.*strap.*slight|bra.*strap.*clear/.test(raw)) tags.push('bra strap indent');
+    if(/side.*spillover|spillover.*side|spill.*past|extends.*side/.test(raw)) tags.push('back fat side spillover');
+    if(/lower back.*shelf|shelf.*above.*ass/.test(raw)) tags.push('lower back shelf');
+    if(/dimple.*venus|venus.*dimple/.test(raw)) tags.push('dimples of venus');
+    if(/stretch mark/.test(raw)) tags.push('stretch marks on back');
+    return tags.join(', ');
+  }
 
-  // ── Hair — split combined label cleanly ──
-  // combined hair label: "long box braids, chest length" — take first part for style, drop length prose
-  const hairStyle=hair
-    ? hair.split(',')[0]
-        .replace(/\b(very|with|and|natural|sleek|glossy|defined|voluminous)\b/gi,'')
-        .replace(/\s{2,}/g,' ').trim()
-    : '';
-  const hairColorTag=hairCol?hairCol.split(',')[0].trim():'';
-  const hairTag=[hairColorTag,hairStyle].filter(Boolean).join(', ');
+  // ── Arms — distill long label to short SD tag ──
+  function distillArms(raw){
+    if(!raw) return '';
+    const tags=[];
+    if(/long.*arm|arm.*long/.test(raw)) tags.push('long arms');
+    else if(/short.*arm|arm.*short/.test(raw)) tags.push('short arms');
+    if(/enormous.*upper|very heavy.*arm|massive.*upper|arm.*enormous/.test(raw)) tags.push('very large upper arms');
+    else if(/very full upper|full heavy upper|heavy upper/.test(raw)) tags.push('full upper arms');
+    else if(/slim.*arm|fine.*arm|very slim|lean.*arm/.test(raw)) tags.push('slim arms');
+    else if(/soft.*upper|average.*arm/.test(raw)) tags.push('soft upper arms');
+    if(/bingo wing.*massive|enormous.*bingo|bingo.*enormous|bingo.*massive/.test(raw)) tags.push('massive bingo wings');
+    else if(/bingo wing.*heavy|heavy.*bingo|bingo.*heavy|bingo.*significant/.test(raw)) tags.push('heavy bingo wings');
+    else if(/bingo wing|underarm.*drape|drape.*underarm/.test(raw)) tags.push('bingo wings');
+    if(/elbow fold.*deep.*wide|deep.*wide.*elbow|multiple.*fold.*elbow|enormous.*elbow fold/.test(raw)) tags.push('deep wide elbow fold');
+    else if(/elbow fold.*deep|deep.*elbow fold|heavy.*elbow fold|pronounced.*elbow fold/.test(raw)) tags.push('deep elbow fold');
+    else if(/elbow fold.*moderate|moderate.*elbow|consistent.*elbow|clear.*pocket.*elbow/.test(raw)) tags.push('elbow fold');
+    else if(/slight.*elbow|elbow.*tuck|barely.*fold|elbow.*gather|papery.*fold/.test(raw)) tags.push('slight elbow fold');
+    else if(/no elbow fold|no fold|absolutely no fold|no.*fold at all/.test(raw)) tags.push('no elbow fold');
+    if(/crep|paper|translucent|thinn.*skin|skin.*thinn/.test(raw)) tags.push('crepey arm skin');
+    if(/vein.*prominent|vein.*visible|forearm.*vein|prominent.*vein/.test(raw)) tags.push('visible arm veins');
+    if(/stretch mark.*arm|arm.*stretch/.test(raw)) tags.push('stretch marks on arms');
+    if(/defined.*shoulder|shoulder.*cap|deltoid/.test(raw)) tags.push('defined shoulder cap');
+    if(/athletic.*arm|bicep.*defined|muscle.*visible/.test(raw)) tags.push('defined bicep');
+    return tags.join(', ');
+  }
 
-  // ── Pose — clean prose qualifiers ──
-  const poseClean=position
-    ? position
-        .replace(/,\s*(hands at sides|looking back over shoulder|facing (camera|away)|hands on (knees|surface))\b/gi,'')
-        .replace(/\b(upright|slightly)\b/gi,'')
-        .replace(/\s{2,}/g,' ').trim()
-    : '';
+  const legsTag=distillLegs(legsRaw);
+  const backTag=distillBack(backRaw);
+  const armsTag=distillArms(armsRaw);
 
-  // ── Expression from kink ──
-  const exprMap={
-    'Super Dom':'fierce commanding stare, dominant',
-    'Med Dom':'confident dominant expression',
-    'Light Dom':'playful smirk',
-    'Gentle Dom':'calm assertive gaze',
-    'Normal':'relaxed expression, direct eye contact',
-    'Gentle Sub':'soft shy eyes',
-    'Light Sub':'soft submissive gaze',
-    'Med Sub':'downcast submissive eyes, vulnerable expression',
-    'Super Sub':'vacant submissive expression, broken look',
-    'Free Use':'blank passive expression, empty unfocused eyes',
+  // ── Collarbone ──
+  const collarboneTag=collarbone?clean(collarbone)+' collarbone':'';
+
+  // ── Face ──
+  const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
+  const FACE_MAP={
+    1:'plain face, unattractive features',2:'plain face, unattractive features',
+    3:'below average face, plain features',4:'below average face, ordinary looks',
+    5:'average face, girl next door',6:'average attractive face, pleasant features',
+    7:'beautiful face, pretty',8:'beautiful face, very pretty',
+    9:'stunning face, highly attractive',10:'perfect face, breathtaking beauty',
+  };
+  const faceDesc=FACE_MAP[ratingNum]||'';
+  const faceShapeTag=faceShape?faceShape.replace(/\bface\b/gi,'').replace(/,.*$/,'').trim()+' face shape':'';
+  const eyesTag=eyes?eyes.split(',')[0].replace(/\b(round and wide|soft and distant|sharp and intense|warm and soft|deep and round|golden tone|smooth lid|subtle fold|heavy lid|doe-like|catlike|sad expression|sleepy look|expressive|intense)\b/gi,'').replace(/\s{2,}/g,' ').trim():'';
+  const lipsRaw2=lips?lips.split(',')[0].replace(/^(barely-there |very |medium-full |medium |full |huge |enormous |thin |average )/i,'').replace(/\blips?\b/gi,'').trim():'';
+  const lipsTag=lipsRaw2?`${lipsRaw2} lips`:'';
+
+  // ── Hair ──
+  const hairStyle=hair?hair.split(',')[0].replace(/\b(very|with|and|natural|sleek|glossy|defined|voluminous)\b/gi,'').replace(/\s{2,}/g,' ').trim():'';
+  const hairColTag=hairCol?hairCol.split(',')[0].trim():'';
+  const hairAgingTag=hairAging?clean(hairAging):'';
+  const hairTag=[hairAgingTag||hairColTag,hairStyle].filter(Boolean).join(', ');
+
+  // ── Pose / expression ──
+  const poseClean=position?position.replace(/,\s*(hands at sides|looking back over shoulder|facing (camera|away)|hands on (knees|surface))\b/gi,'').replace(/\b(upright|slightly)\b/gi,'').replace(/\s{2,}/g,' ').trim():'';
+  const EXPR_MAP={
+    'Super Dom':'fierce commanding stare','Med Dom':'confident dominant expression',
+    'Light Dom':'playful smirk','Gentle Dom':'calm assertive gaze',
+    'Normal':'relaxed expression, direct eye contact','Gentle Sub':'soft shy eyes',
+    'Light Sub':'soft submissive gaze','Med Sub':'downcast submissive eyes',
+    'Super Sub':'vacant submissive expression','Free Use':'blank passive expression',
     'Unwilling':'wide frightened eyes, tense expression',
   };
-  const exprTag=exprMap[kink]||'direct eye contact';
+  const exprTag=EXPR_MAP[kink]||'direct eye contact';
 
-  // ── Location → background + lighting (separate, not combined) ──
-  const bgMap={
-    'City (Georgetown)':'on a city street, urban backdrop',
-    "Basement (Mom's)":'in a dim basement, concrete walls, bare bulb lighting',
-    'Dungeon (Castle)':'in a stone dungeon, medieval torchlit interior',
-    'Boat (Mini-yacht)':'on a yacht deck, ocean in background',
-    'International (Airbnb)':'in a modern luxury apartment',
-    'Secluded Ranch (WV)':'in a rustic ranch interior, wood walls',
-    'Secluded Mansion':'in a grand mansion interior, marble floors',
-    'Condo (Downtown)':'in a modern condo, city skyline visible through window',
-    'Shitty Apartment':'in a small rundown apartment',
-    'Suburbs (Davidsonville)':'in a suburban bedroom',
-    'Townhouse (VA)':'in a townhouse interior',
-    'School (QAS)':'in a school hallway, lockers in background',
-    'Church (Baptist)':'in a church interior, wooden pews',
+  // ── Location / lighting ──
+  const BG_MAP={
+    'City (Georgetown)':'city street, urban backdrop',
+    "Basement (Mom's)":'dim basement, concrete walls',
+    'Dungeon (Castle)':'stone dungeon, torchlit interior',
+    'Boat (Mini-yacht)':'yacht deck, ocean background',
+    'International (Airbnb)':'modern luxury apartment interior',
+    'Secluded Ranch (WV)':'rustic ranch interior, wood walls',
+    'Secluded Mansion':'grand mansion interior, marble floors',
+    'Condo (Downtown)':'modern condo interior, city skyline through window',
+    'Shitty Apartment':'small rundown apartment interior',
+    'Suburbs (Davidsonville)':'suburban bedroom interior',
+    'Townhouse (VA)':'townhouse interior',
+    'School (QAS)':'school hallway, lockers in background',
+    'Church (Baptist)':'church interior, wooden pews',
   };
-  const lightingMap={
-    "Basement (Mom's)":'single harsh overhead bulb, high contrast shadows',
-    'Dungeon (Castle)':'dramatic flickering torchlight, deep shadows, chiaroscuro',
-    'Condo (Downtown)':'neon city glow through windows, cool blue rim light',
-    'Church (Baptist)':'soft warm light through stained glass, ethereal glow',
-    'School (QAS)':'harsh flat fluorescent overhead light',
-    'Secluded Mansion':'warm soft chandelier light',
-    'Secluded Ranch (WV)':'warm golden lantern light, soft shadows',
+  const LIGHT_MAP={
+    "Basement (Mom's)":'harsh overhead lighting, high contrast shadows',
+    'Dungeon (Castle)':'dramatic torchlight, deep shadows',
+    'Condo (Downtown)':'neon city glow, cool blue rim light',
+    'Church (Baptist)':'soft warm stained glass light',
+    'School (QAS)':'harsh fluorescent overhead light',
+    'Secluded Mansion':'warm chandelier light',
+    'Secluded Ranch (WV)':'warm golden lantern light',
     'Boat (Mini-yacht)':'natural golden daylight, ocean reflections',
   };
-  const bgTag=bgMap[location]||'neutral dark studio background';
-  const lightTag=lightingMap[location]||'soft studio lighting, slight rim light';
+  const bgTag=BG_MAP[location]||'neutral dark studio background';
+  const lightTag=LIGHT_MAP[location]||'soft studio lighting, slight rim light';
 
-  // ── Build positive prompt ──
-  // Weights only on: ethnic (1.4), body (1.3), skin (1.3) — everything else clean
-  const posTags=[
+  // ── Negative prompt ──
+  const negBeautySuppress=ratingNum>0&&ratingNum<=4?' beautiful face, (gorgeous:1.3), (pretty:1.2), perfect face, stunning,':'';
+  const negUglySuppress=ratingNum>=9?' ugly, unattractive, plain, ordinary,':'';
+  const includeUglyInBase=ratingNum===0||ratingNum>=5;
+  const neg=`(worst quality:1.4), (bad quality:1.3), cartoon, anime, illustration, 3d render, deformed, bad anatomy, extra limbs, extra fingers, missing fingers,${includeUglyInBase?' ugly,':''} blurry, out of focus, watermark, text, signature, clothing, dressed, underwear, airbrushed, plastic skin, duplicate body`+negBeautySuppress+negUglySuppress;
+
+  // ── Build positive prompt in order ──
+  const pos=[
+    // Identity
     `(${ethnic}:1.4)`,
     ageTag,
     htTag,
     amtTag,
+    // Skin
     skinClean?`(${skinClean}:1.3)`:'',
+    skinAgingTag,
+    // Body type
     bodyTag?`(${bodyTag}:1.3)`:'',
-    cupTag||'',
-    assTag||'',
-    nipSize?nipSize.split(' —')[0].toLowerCase()+' nipples':'',
-    nipType?nipType.split(' —')[0].toLowerCase():'',
-    nipPlacement?nipPlacement.split(' —')[0].toLowerCase()+' nipple placement':'',
-    nipCol?nipCol.split(',')[0].trim():'',
-    areolaSize?areolaSize.split(' —')[0].toLowerCase()+' areola':'',
-    areolaText?areolaText.split(' —')[0].toLowerCase()+' areola texture':'',
-    thighTag||'',
-    stomachTag||'',
-    legsTag||'',
-    collarboneTag||'',
-    faceDesc||'',
-    faceShapeTag?`${faceShapeTag} face shape`:'',
-    eyesTag||'',
-    lipsTag||'',
-    hairTag||'',
+    bodyRedistTag,
+    // Breasts
+    breastParts?`(${breastParts}:1.2)`:'',
+    // Ass
+    assParts?`(${assParts}:1.2)`:'',
+    // Thighs
+    thighTag,
+    // Stomach
+    stomachTag,
+    // Legs
+    legsTag,
+    // Back
+    backTag,
+    // Arms
+    armsTag,
+    // Collarbone
+    collarboneTag,
+    // Face
+    faceDesc,
+    faceShapeTag,
+    eyesTag,
+    lipsTag,
+    // Hair
+    hairTag,
+    // Pose / expression
     'nude, completely naked, no clothing',
-    poseClean||'',
-    exprTag||'',
+    poseClean,
+    exprTag,
+    // Location / lighting
     bgTag,
     lightTag,
+    // Technical
     'full body shot, full length',
     'photorealistic, RAW photo, 8k uhd, DSLR',
     'best quality, sharp focus, detailed skin',
-  ].filter(Boolean);
+  ].filter(Boolean).join(', ');
 
-  // ── Negative prompt — base + face penalty for low ratings ──
-  const negBase=`(worst quality:1.4), (bad quality:1.3), cartoon, anime, illustration, 3d render, deformed, bad anatomy, extra limbs, extra fingers, missing fingers,${includeUglyInBase?' ugly,':''} blurry, out of focus, watermark, text, signature, clothing, dressed, underwear, airbrushed, plastic skin, duplicate body`;
-  const neg=negBase+negBeautySuppress+negUglySuppress;
-
-  posTags.push(...[gv('breast_shape_60plus'),gv('ass_shape_60plus'),gv('nipple_60plus'),gv('stomach_60plus'),gv('skin_aging_60plus'),gv('hair_aging_60plus'),gv('body_redistribution_60plus'),gv('vaginal_aging_60plus'),gv('arms_shoulders_60plus')].filter(Boolean));
-  posTags.push(...[gv('breast_length'),gv('nipple_length'),gv('labia_shape'),gv('clit_size'),gv('clit_look')].filter(Boolean).map(v=>v.split(' — ')[0]));
-  const posText=posTags.join(', ');
   const posEl=document.getElementById('posText');
   const negEl=document.getElementById('negText');
-  if(posEl) posEl.textContent=posText;
+  if(posEl) posEl.textContent=pos;
   if(negEl) negEl.textContent=neg;
-  buildComfyUI(posText,neg);
+  buildComfyUI(pos,neg);
 }
-
 function switchOutputTab(tab){
   const sd=document.getElementById('tabContentSD');
   const lustify=document.getElementById('tabContentLustify');
@@ -12673,7 +12757,7 @@ const WHEEL_CATEGORIES = {
   'Thighs':['thigh_thickness','thigh_shape','thigh_inner','thigh_texture'],
   'Full Body':['stomach_thin','stomach_mid','stomach_bbw','stomach_plus','stomach_plus_60plus','stomach_thin_60plus','stomach_mid_60plus','stomach_bbw_60plus','legs_thin','legs_mid','legs_plus','legs_bbw','back_thin','back_mid','back_plus','back_bbw','collarbone','arms_thin','arms_mid','arms_plus','arms_bbw','arms_thin_60plus','arms_mid_60plus','arms_plus_60plus','arms_bbw_60plus','body_proportions','frame_bone_structure'],
   'Lower':['labia_size','labia_shape','clit_size','clit_look','labia_col_light','labia_col_medium','labia_col_dark','vaginal_moisture','vaginal_sensation_me','vaginal_sensation_her','vaginal_enthusiasm','vaginal_anatomy','vaginal_psychology','vaginal_depth','squirt_anatomy','squirt_sensation_me','squirt_sensation_her','squirt_enthusiasm','squirt_threshold','squirt_psychology','squirt_fluid'],
-  'Physical Detail':['shave','cleavage','body_hair','hands','position','feet'],
+  'Physical Detail':['shave','cleavage','body_hair','hands','position','feet','feet_skin','feet_detail'],
   'Sensory':['skin_soft','nat_scent','skin_temp','touch_resp'],
   'Character':['financial','personality','education','intelligence','street_smarts','sex_exp','acquired','mental_state','emotional','bond_threat','voice','language','bond_threat_60plus','emotional_response_60plus','personality_60plus','maternal_guilt_60plus','religious_guilt_60plus'],
   'Scenario':['kink','amount','mode','length','disobedience','punishment','location','fav_part','bonus','pegging_enthusiasm','pegging_sensation','general_abuse','baby_talk','breeding_gate','breeding_wheel','wife_variety','wife_enthusiasm','wife_situation','wife_acts','lover_variety','lover_enthusiasm','lover_situation','lover_acts','fwb_variety','fwb_enthusiasm','fwb_situation','fwb_acts','pet_variety','pet_enthusiasm','pet_situation','pet_acts','slave_variety','slave_enthusiasm','slave_situation','slave_acts','sub_variety','sub_enthusiasm','sub_situation','sub_acts','spiteful_friend_variety','spiteful_friend_enthusiasm','spiteful_friend_situation','spiteful_friend_acts','superior_variety','superior_enthusiasm','superior_situation','superior_acts','subordinate_variety','subordinate_enthusiasm','subordinate_situation','subordinate_acts','housekeeper_variety','housekeeper_enthusiasm','housekeeper_situation','housekeeper_acts','groomed_protege_variety','groomed_protege_enthusiasm','groomed_protege_situation','groomed_protege_acts'],
