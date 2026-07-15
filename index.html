@@ -11216,6 +11216,7 @@ function calcStatStrip(){
 
   // \\u2500\\u2500 Hands \\u2500\\u2500
   let handStr='\u2014';
+  if(body){handStr=body;}
   if(handL){
     const SS_HAND_TIER={
       'small soft hands, delicate fingers':'XS',
@@ -11264,6 +11265,16 @@ function calcStatStrip(){
     let lo=base[0],hi=base[1];
     if(frameL){const fm=SS_HAND_FRAME[frameL]??0;lo+=fm;hi+=fm;}
     if(height){const hm=SS_HAND_H[height]??0;lo+=hm;hi+=hm;}
+    const SS_HAND_BODY={
+      'Bulimic':-0.5,'Anorexic':-0.5,
+      'Thin':-0.25,'Slim':-0.25,'Petite':-0.25,
+      'Slim Thick':0,'Average':0,'Curvy':0,
+      'Mid Size':0.25,'Mid Thick':0.25,'Thick':0.25,'Upside Down Triangle':0.25,
+      'Chubby':0.5,'Thicker':0.5,'Meatball':0.5,
+      'Thickest':0.75,'Chunky':0.75,
+      'BBW':1.0,'SSBBW':1.25,'USSBBW':1.5,
+    };
+    if(body){const bm=SS_HAND_BODY[body]??0;lo+=bm;hi+=bm;}
     lo=Math.round(lo*2)/2;hi=Math.round(hi*2)/2;
     const mid=Math.round((lo+hi)/2*2)/2;
     const tierVal=SS_HAND_TIER[handL];
@@ -11271,8 +11282,9 @@ function calcStatStrip(){
     const desc=SS_HAND_DESC[handL]||'';
     const sizeStr=resolvedTier?(resolvedTier+' \u2014 '+mid+'"'):(mid+'"');
     const allKnown=!!frameL;
-    if(allKnown){handStr=desc?desc+' \u2014 '+sizeStr:sizeStr;}
-    else{handStr=desc?desc+' \u2014 ~'+lo+'\u2013'+hi+'"':'~'+lo+'\u2013'+hi+'"';}
+    const bodyPrefix=body?body+' \u2014 ':'';
+    if(allKnown){handStr=bodyPrefix+(desc?desc+' \u2014 '+sizeStr:sizeStr);}
+    else{handStr=bodyPrefix+(desc?desc+' \u2014 ~'+lo+'\u2013'+hi+'"':'~'+lo+'\u2013'+hi+'"');}
   }
 
   // \u2500\u2500 Lips \u2500\u2500
