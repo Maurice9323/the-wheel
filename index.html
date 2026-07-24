@@ -12208,6 +12208,8 @@ function buildSDPrompt(){
   const ga=(...ids)=>{for(const id of ids){const v=gv(id);if(v)return v;}return null;};
   const clean=s=>s?s.split('\u2014')[0].split(',')[0].trim():'';
   const first=s=>s?s.split(',')[0].trim():'';
+  // rich() keeps up to 3 descriptors from a label instead of just the first clause
+  const rich=(s,noun)=>{if(!s)return '';const parts=s.replace(/\u2014/g,',').split(',').map(x=>x.trim()).filter(Boolean).slice(0,3);if(!parts.length)return '';return noun?parts[0]+' '+noun+(parts.length>1?', '+parts.slice(1).join(', '):''):parts.join(', ');};
 
   // ── Raw results ──
   const race=gv('race');
@@ -12326,6 +12328,33 @@ function buildSDPrompt(){
   const bodyTag=BODY_MAP[body]||body?.toLowerCase()||'';
   const bodyRedistTag=bodyRedist?clean(bodyRedist):'';
 
+  // ── Facial fullness — driven by the body wheel so the face always matches the body ──
+  const FACE_FULL_MAP={
+    'Bulimic':'gaunt face, sunken cheeks, sharp facial bones',
+    'Anorexic':'gaunt thin face, hollow cheeks, prominent cheekbones',
+    'Thin':'slim face, defined jawline',
+    'Slim':'slim face, defined jawline',
+    'Petite':'small delicate face, defined jawline',
+    'Slim Thick':'slim face, soft jawline',
+    'Average':'balanced facial fullness, soft jawline',
+    'Curvy':'soft facial fullness, gentle jawline',
+    'Upside Down Triangle':'angular face, defined jawline',
+    'Mid Size':'soft cheeks, gentle jawline',
+    'Mid Thick':'soft full cheeks, rounded jawline',
+    'Thick':'full cheeks, soft rounded jawline',
+    'Thicker':'full round cheeks, soft chin',
+    'Thickest':'very full cheeks, soft double chin',
+    'Chubby':'full round face, chubby cheeks, slight double chin',
+    'Meatball':'very round full face, chubby cheeks, double chin',
+    'Chunky':'full heavy face, thick neck, double chin',
+    'BBW':'round full face, double chin, very full cheeks',
+    'SSBBW':'very round heavy face, prominent double chin, very full cheeks, thick neck',
+    'USSBBW':'extremely full round face, heavy double chin, buried jawline, very thick neck',
+  };
+  const is60P=/^(60-70|71-80|80\+)$/.test(age||'');
+  let faceFullTag=FACE_FULL_MAP[body]||'';
+  if(is60P){faceFullTag=faceFullTag?faceFullTag+', aged face, jowls, sagging skin along the jaw':'aged face, jowls, sagging jawline';}
+
   // ── Breasts — all anchored ──
   const CUP_MAP={
     'A':'small breasts, A cup','B':'small breasts, B cup',
@@ -12337,7 +12366,7 @@ function buildSDPrompt(){
     'M':'impossibly large breasts, M cup','N+':'cartoonishly large breasts',
   };
   const cupTag=cup?(CUP_MAP[cup]||`${cup} cup breasts`):'';
-  const bShapeTag=breastShape?clean(breastShape)+' breast shape':'';
+  const bShapeTag=rich(breastShape,'breast shape');
   // Breast firmness — anchored descriptors
   const BFIRM_MAP={
     'Rock solid':'rock solid firm breasts','Very firm':'very firm breasts','Firm':'firm breasts',
@@ -12374,8 +12403,8 @@ function buildSDPrompt(){
     'Small':'small ass','Average':'average ass','Full':'full round ass',
     'Large':'large ass','Huge':'huge ass','Obscene':'enormous ass',
   };
-  const assSizeTag=ASS_SIZE_MAP[assSize]||'';
-  const assShapeTag=assShape?clean(assShape)+' ass shape':'';
+  const assSizeTag=ASS_SIZE_MAP[assSize]||(assSize?assSize.toLowerCase()+' ass':'');
+  const assShapeTag=rich(assShape,'ass shape');
   // Ass projection — anchored
   const ASSPR_MAP={
     'Brazilian':'Brazilian butt projection','Mounted':'high mounted ass projection',
@@ -12407,8 +12436,11 @@ function buildSDPrompt(){
   ].filter(Boolean).join(', ');
 
   // ── Stomach ──
-  const stomachTag=stomachRaw?stomachRaw.split('\u2014')[0].split(',')[0]
-    .replace(/\binnie\b/gi,'').replace(/\boutie\b/gi,'outie navel').trim():'';
+  let stomachTag='';
+  if(stomachRaw){
+    const st=rich(stomachRaw.replace(/\binnie\b/gi,'').replace(/\boutie\b/gi,'outie navel'),null);
+    stomachTag=/belly|stomach|midsection|abdomen|roll|apron|muffin/i.test(st)?st:(st?st+' stomach':'');
+  }
 
   // ── Legs ──
   function distillLegs(raw){
@@ -12504,10 +12536,14 @@ function buildSDPrompt(){
   };
   const faceDesc=FACE_MAP[ratingNum]||'';
   const faceShapeTag=faceShape?faceShape.replace(/\bface\b/gi,'').replace(/,.*$/,'').trim()+' face shape':'';
-  const eyeClean=eyes?eyes.split(',')[0].replace(/\b(round and wide|soft and distant|sharp and intense|warm and soft|deep and round|golden tone|smooth lid|subtle fold|heavy lid|doe-like|catlike|sad expression|sleepy look|expressive|intense)\b/gi,'').replace(/\s{2,}/g,' ').trim():'';
-  const eyesTag=eyeClean?eyeClean+' eyes':'';
-  const lipsRaw2=lips?lips.split(',')[0].replace(/^(barely-there |very |medium-full |medium |full |huge |enormous |thin |average )/i,'').replace(/\blips?\b/gi,'').trim():'';
-  const lipsTag=lipsRaw2?lipsRaw2+' lips':'';
+  let eyesTag='';
+  if(eyes){
+    const ep=eyes.split(',').map(s=>s.trim()).filter(Boolean);
+    const eyeCol=ep[0]||'';
+    const eyeShape=(ep[1]||'').replace(/\b(expression|look)\b/gi,'').replace(/\s{2,}/g,' ').trim();
+    eyesTag=[eyeCol,eyeShape].filter(Boolean).join(' ')+' eyes';
+  }
+  const lipsTag=lips?lips.split(',').slice(0,2).join(', ').replace(/\blips?\b/gi,'').replace(/\s{2,}/g,' ').replace(/\s+,/g,',').trim()+' lips':'';
   // Nose — labels are already SD-friendly short phrases
   const noseTag=nose?first(nose):'';
   // Eyebrows — labels are already SD-friendly
@@ -12557,7 +12593,7 @@ function buildSDPrompt(){
   const identity=[`(${ethnic}:1.4)`,ageTag,htTag].filter(Boolean).join(', ');
   const skinTags=[skinClean?`(${skinClean}:1.3)`:'',skinAgingTag].filter(Boolean).join(', ');
   const bodyFull=[bodyTag?`(${bodyTag}:1.3)`:'',bodyRedistTag].filter(Boolean).join(', ');
-  const faceTags=[faceDesc,faceShapeTag,eyesTag,browsTag,noseTag,lipsTag,mouthTag,cheekTag].filter(Boolean).join(', ');
+  const faceTags=[faceDesc,faceFullTag,faceShapeTag,eyesTag,browsTag,noseTag,lipsTag,mouthTag,cheekTag].filter(Boolean).join(', ');
   const techBase='photorealistic, RAW photo, DSLR, 8k uhd, sharp focus, detailed skin texture';
   const greyBG='neutral grey background, flat even studio lighting, even illumination, no shadows';
 
