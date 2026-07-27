@@ -557,9 +557,8 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
       </div>
     </div>
     <div class="output-actions" style="margin-bottom:10px">
-      <button type="button" class="btn-copy" onclick="copyPart('pos')">Copy All</button>
-      <button type="button" class="btn-copy neg" onclick="copyPart('neg')">Copy Negative</button>
-      <button type="button" class="btn-copy both" onclick="copyPart('both')">Copy Both</button>
+      <button type="button" id="btnCopyNeg" class="btn-copy neg" onclick="copyPart('neg')">Copy Negative</button>
+      <button type="button" id="btnCopyBoth" class="btn-copy both" onclick="copyPart('both')">Copy Both</button>
       <button type="button" class="btn-restart-out" onclick="restartAll()">Spin Again</button>
     </div>
   </div>
@@ -12212,6 +12211,8 @@ function buildSDPrompt(){
   const first=s=>s?s.split(',')[0].trim():'';
   // rich() keeps up to 3 descriptors from a label instead of just the first clause
   const rich=(s,noun)=>{if(!s)return '';const parts=s.replace(/\u2014/g,',').split(',').map(x=>x.trim()).filter(Boolean).slice(0,3);if(!parts.length)return '';return noun?parts[0]+' '+noun+(parts.length>1?', '+parts.slice(1).join(', '):''):parts.join(', ');};
+  // key() extracts just the lead descriptor before the em-dash for map lookups — labels are formatted 'Lead \u2014 detail, detail'
+  const key=s=>s?s.split('\u2014')[0].trim():'';
 
   // ── Raw results ──
   const race=gv('race');
@@ -12230,6 +12231,7 @@ function buildSDPrompt(){
   const thighThick=ga('thigh_thickness_thin','thigh_thickness_mid','thigh_thickness_plus','thigh_thickness_bbw');
   const thighShape=ga('thigh_shape_thin','thigh_shape_mid','thigh_shape_plus','thigh_shape_bbw');
   const thighInner=ga('thigh_inner_thin','thigh_inner_mid','thigh_inner_plus','thigh_inner_bbw');
+  const thighTexture=ga('thigh_texture_thin','thigh_texture_mid','thigh_texture_plus','thigh_texture_bbw','thigh_texture_thin_60plus','thigh_texture_mid_60plus','thigh_texture_plus_60plus','thigh_texture_bbw_60plus');
   const stomachRaw=ga('stomach_thin','stomach_mid','stomach_plus','stomach_bbw','stomach_thin_60plus','stomach_mid_60plus','stomach_plus_60plus','stomach_bbw_60plus');
   const legsRaw=ga('legs_thin','legs_mid','legs_plus','legs_bbw');
   const backRaw=ga('back_thin','back_mid','back_plus','back_bbw');
@@ -12259,6 +12261,11 @@ function buildSDPrompt(){
   const muscleRaw=ga('muscle_thin','muscle_mid','muscle_plus','muscle_bbw');
   const stretchRaw=ga('stretch_thin','stretch_mid','stretch_plus','stretch_bbw');
   const celluRaw=ga('cellulite_thin','cellulite_mid','cellulite_plus','cellulite_bbw');
+  const ears=gv('ears');
+  const neck=gv('neck');
+  const location=gv('location');
+  const timeDay=gv('time_day');
+  const season=gv('season');
 
   // ── Identity ──
   const ETHNIC_MAP={
@@ -12372,27 +12379,25 @@ function buildSDPrompt(){
   // Breast firmness — anchored descriptors
   const BFIRM_MAP={
     'Rock solid':'rock solid firm breasts','Very firm':'very firm breasts','Firm':'firm breasts',
-    'Taut':'taut breast skin','Bouncy':'bouncy breasts','Supple':'supple breasts',
-    'Gummy':'soft gummy breasts','Medium':'medium firmness breasts',
-    'Soft':'soft breasts','Spongy':'spongy soft breasts','Doughy':'doughy soft breasts',
-    'Jiggly':'jiggly breasts','Pillowy':'pillowy soft breasts','Weighted':'weighted heavy breasts',
-    'Saggy':'saggy drooping breasts','Floppy':'floppy breasts','Watery':'watery soft breasts',
-    'Pendulous':'pendulous hanging breasts',
+    'Medium':'medium firmness breasts','Soft':'soft breasts','Very soft':'very soft breasts',
+    'Doughy':'doughy soft breasts','Saggy':'saggy drooping breasts','Bouncy':'bouncy breasts',
+    'Jiggly':'jiggly breasts','Dense':'dense firm breasts','Spongy':'spongy soft breasts',
+    'Floppy':'floppy breasts','Taut':'taut breast skin','Gummy':'soft gummy breasts',
+    'Watery':'watery soft breasts','Supple':'supple breasts','Weighted':'weighted heavy breasts',
+    'Uneven':'uneven firmness breasts','Pillowy':'pillowy soft breasts','Silicone-like':'unnaturally firm smooth breasts',
   };
-  const bFirmRaw=breastFirm?first(breastFirm):'';
-  const bFirmTag=BFIRM_MAP[bFirmRaw]||(bFirmRaw?bFirmRaw+' breasts':'');
+  const bFirmKey=breastFirm?key(breastFirm):'';
+  const bFirmTag=BFIRM_MAP[bFirmKey]||(bFirmKey?bFirmKey.toLowerCase()+' breasts':'');
   const bProjTag=breastProj?clean(breastProj)+' breast projection':'';
   // Nipple — anchored
   const nipSizeTag=nipSize?clean(nipSize)+' nipples':'';
   const NIPTYPE_MAP={
-    'Protruding — always erect':'protruding erect nipples',
-    'Slightly protruding — semi-erect at rest':'semi-erect nipples',
-    'Flat — flush with areola':'flat nipples',
-    'Inverted — slightly pulled in':'inverted nipples',
-    'Deeply inverted — fully pulled in':'deeply inverted nipples',
-    'Puffy — areola raised':'puffy raised nipples',
+    'protruding':'protruding erect nipples','slightly protruding':'semi-erect nipples',
+    'flat':'flat nipples','inverted':'inverted nipples','deeply inverted':'deeply inverted nipples',
+    'uneven':'uneven nipples, one protruding one flat',
   };
-  const nipTypeTag=nipType?(NIPTYPE_MAP[nipType]||clean(nipType)+' nipples'):'';
+  const nipTypeKey=nipType?first(nipType).toLowerCase():'';
+  const nipTypeTag=NIPTYPE_MAP[nipTypeKey]||(nipTypeKey?nipTypeKey+' nipples':'');
   const nipPlaceTag=nipPlacement?clean(nipPlacement)+' nipple placement':'';
   const nipColTag=nipCol?first(nipCol)+' nipple color':'';
   const areolaTag=areolaSize?clean(areolaSize)+' areola':'';
@@ -12409,25 +12414,26 @@ function buildSDPrompt(){
   const assShapeTag=rich(assShape,'ass shape');
   // Ass projection — anchored
   const ASSPR_MAP={
-    'Brazilian':'Brazilian butt projection','Mounted':'high mounted ass projection',
-    'Gravity defying':'gravity defying ass projection','Shelf':'shelf ass projection',
-    'Booty shelf':'booty shelf projection','Perky':'perky ass projection',
-    'High and tight':'high tight ass projection','Moderate projection':'moderate ass projection',
-    'Wide rather than deep':'wide flat ass projection','Minimal projection':'minimal ass projection',
     'Deep set':'deep set flat ass','Tucked':'tucked flat ass','Dropped':'dropped ass projection',
+    'Minimal projection':'minimal ass projection','Moderate projection':'moderate ass projection',
+    'Shelf':'shelf ass projection','Booty shelf':'booty shelf projection',
+    'High and tight':'high tight ass projection','Perky':'perky ass projection',
+    'Brazilian':'Brazilian butt projection','Mounted':'high mounted ass projection',
+    'Gravity defying':'gravity defying ass projection',
+    'Wide rather than deep':'wide flat ass projection','Deep rather than wide':'deep forward projecting ass',
   };
-  const asProjRaw=assProj?first(assProj):'';
-  const assProjTag=ASSPR_MAP[asProjRaw]||(asProjRaw?asProjRaw+' ass projection':'');
+  const asProjKey=assProj?key(assProj):'';
+  const assProjTag=ASSPR_MAP[asProjKey]||(asProjKey?asProjKey.toLowerCase()+' ass projection':'');
   // Ass firmness — anchored
   const ASFIRM_MAP={
-    'Firm and dense':'firm dense ass','Compact':'compact firm ass','Taut':'taut ass skin',
-    'Jiggly':'jiggly ass','Plush':'plush soft ass','Bouncy':'bouncy ass',
-    'Pillowy':'pillowy soft ass','Squishy':'squishy soft ass','Wobbly':'wobbly ass',
-    'Saggy':'saggy ass','Pendulous':'pendulous drooping ass','Floppy':'floppy soft ass',
-    'Spreading':'spreading soft ass','Overhanging':'overhanging ass',
+    'Plush':'plush soft ass','Pillowy':'pillowy soft ass','Squishy':'squishy soft ass',
+    'Jiggly':'jiggly ass','Wobbly':'wobbly ass','Firm and dense':'firm dense ass',
+    'Compact':'compact firm ass','Saggy':'saggy ass','Pendulous':'pendulous drooping ass',
+    'Floppy':'floppy soft ass','Spreading':'spreading soft ass','Overhanging':'overhanging ass',
+    'Dimpled surface':'dimpled cellulite ass','Dimpled lower back':'ass with lower back dimples',
   };
-  const asFirmRaw=assFirm?first(assFirm):'';
-  const assFirmTag=ASFIRM_MAP[asFirmRaw]||(asFirmRaw?asFirmRaw+' ass':'');
+  const asFirmKey=assFirm?key(assFirm):'';
+  const assFirmTag=ASFIRM_MAP[asFirmKey]||(asFirmKey?asFirmKey.toLowerCase()+' ass':'');
   const assParts=[assSizeTag,assShapeTag,assProjTag,assFirmTag].filter(Boolean).join(', ');
 
   // ── Thighs — anchored ──
@@ -12435,6 +12441,7 @@ function buildSDPrompt(){
     thighThick?clean(thighThick)+' thighs':'',
     thighShape?clean(thighShape)+' thigh shape':'',
     thighInner?clean(thighInner)+' inner thighs':'',
+    thighTexture?clean(thighTexture)+' thigh skin':'',
   ].filter(Boolean).join(', ');
 
   // ── Stomach ──
@@ -12526,6 +12533,17 @@ function buildSDPrompt(){
 
   // ── Collarbone ──
   const collarboneTag=collarbone?clean(collarbone)+' collarbone':'';
+  // Neck, ears, and shoulder context for face/headshot prompts (SD headshots usually show down to the shoulders)
+  const earsTag=ears?first(ears):'';
+  const neckTag=neck?first(neck):'';
+  const SHOULDER_MAP={
+    'thin':'narrow slim shoulders','mid':'average shoulders','plus':'broad soft shoulders','bbw':'broad heavy shoulders',
+  };
+  let shoulderGroup='mid';
+  if(/thin/.test(backRaw||'')) shoulderGroup='thin';
+  else if(/plus/.test(backRaw||'')) shoulderGroup='plus';
+  else if(/bbw/.test(backRaw||'')) shoulderGroup='bbw';
+  const shoulderTag=backRaw?(/narrow shoulder/i.test(backRaw)?'narrow shoulders':/broad shoulder/i.test(backRaw)?'broad shoulders':SHOULDER_MAP[shoulderGroup]):'';
 
   // ── Face ──
   const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
@@ -12553,10 +12571,12 @@ function buildSDPrompt(){
   // Cheeks — distill from label format 'High — defined cheek area near the bone'
   const CHEEK_MAP={
     'High':'high cheekbones','Low':'low full cheeks','Angular':'angular cheekbones',
-    'Rounded':'round soft cheeks','Dimples appear when smiling':'cheek dimples','Smooth':'smooth cheeks',
+    'Rounded':'round soft cheeks','Smooth':'smooth cheeks',
+    'Narrow contour':'narrow cheek contour','Wide contour':'wide cheek contour',
+    'Dimples appear when smiling':'cheek dimples',
   };
-  const cheekRaw=cheekO?cheekO.split('\u2014')[0].trim():'';
-  const cheekTag=CHEEK_MAP[cheekRaw]||(cheekRaw?cheekRaw.toLowerCase()+' cheeks':'');
+  const cheekKey=cheekO?key(cheekO):'';
+  const cheekTag=CHEEK_MAP[cheekKey]||(cheekKey?cheekKey.toLowerCase()+' cheeks':'');
   // Mouth width only — inner mouth details invisible on neutral closed mouth
   let mouthTag='';
   if(mouthB){
@@ -12605,7 +12625,8 @@ function buildSDPrompt(){
   const neg=`(worst quality:1.4), (bad quality:1.3), cartoon, anime, illustration, 3d render, deformed, bad anatomy, extra limbs, extra fingers, missing fingers, blurry, out of focus, watermark, text, signature, clothing, dressed, underwear, airbrushed, plastic skin, duplicate, multiple people${negBeautySuppress}${negUglySuppress}`;
 
   // ── FACE PROMPTS ──
-  const faceCore=[identity,skinTags,faceTags,hairTag].filter(Boolean).join(', ');
+  const neckShoulderTag=[neckTag,shoulderTag,earsTag].filter(Boolean).join(', ');
+  const faceCore=[identity,skinTags,faceTags,hairTag,neckShoulderTag].filter(Boolean).join(', ');
   const faceTech=`headshot, head only, 85mm portrait lens, ${greyBG}, ${techBase}`;
 
   const fFront=[faceCore,'front view, straight on, direct eye contact, neutral expression',faceTech].filter(Boolean).join(', ');
@@ -12648,31 +12669,86 @@ function buildSDPrompt(){
     `full body reference, 35mm lens, ${greyBG}, ${techBase}`,
   ].filter(Boolean).join(', ');
 
-  // ── Output — per-prompt selectable blocks ──
-  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const secHdr=t=>'<div style="font-size:.62rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:3px">'+t+'</div>';
-  const pBlock=(label,txt)=>'<div style="margin:0 0 10px"><div style="font-size:.56rem;color:var(--gold);opacity:.7;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">'+label+'</div><div style="user-select:text;-webkit-user-select:text;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:3px;padding:7px 9px;line-height:1.65">'+esc(txt)+'</div></div>';
+  // ── Full Creative — real scene with pose, expression, location, time, season ──
+  const poseL=gv('position');
+  const KINK_EXPR_MAP={
+    'Super Dom':'fierce commanding stare, chin raised',
+    'Med Dom':'direct dominant gaze',
+    'Light Dom':'playful smirk',
+    'Gentle Dom':'steady assertive gaze',
+    'Normal':'relaxed expression, direct eye contact',
+    'Gentle Sub':'shy downward glance, soft expression',
+    'Light Sub':'soft submissive gaze',
+    'Med Sub':'downcast submissive eyes',
+    'Super Sub':'vacant submissive expression',
+    'Free Use':'blank distant expression',
+    'Unwilling':'wide wary eyes, tense expression',
+  };
+  const BG_MAP={
+    'City (Georgetown)':'city street at storefront level, urban backdrop, brick rowhouses',
+    "Basement (Mom's)":'dim unfinished basement, concrete walls, exposed pipes',
+    'Dungeon (Castle)':'stone dungeon interior, torchlit walls, iron fixtures',
+    'Boat (Mini-yacht)':'yacht deck, polished wood and white fiberglass, open water behind',
+    'International (Airbnb)':'modern luxury apartment interior, minimalist furniture',
+    'Secluded Ranch (WV)':'rustic ranch house interior, exposed wood beams, lantern light',
+    'Secluded Mansion':'grand mansion interior, marble floors, tall windows',
+    'Condo (Downtown)':'modern condo interior, floor to ceiling windows, city skyline visible',
+    'Shitty Apartment':'small rundown apartment, worn furniture, cluttered space',
+    'Suburbs (Davidsonville)':'suburban bedroom interior, soft carpet, family home feel',
+    'Townhouse (VA)':'townhouse interior, staircase visible, warm domestic space',
+    'School (QAS)':'empty school classroom, desks and whiteboard, fluorescent fixtures',
+    'Church (Baptist)':'church interior, wooden pews, stained glass windows',
+  };
+  const LIGHT_MAP={
+    "Basement (Mom's)":'harsh single overhead bulb, high contrast shadows',
+    'Dungeon (Castle)':'dramatic flickering torchlight, deep shadows',
+    'Condo (Downtown)':'neon city glow through the glass, cool rim light',
+    'Church (Baptist)':'colored light through stained glass, soft haze',
+    'School (QAS)':'flat fluorescent overhead lighting',
+    'Secluded Mansion':'warm chandelier light, soft golden tone',
+    'Secluded Ranch (WV)':'warm lantern light, amber tones',
+    'Boat (Mini-yacht)':'bright natural daylight, water reflections',
+    'City (Georgetown)':'natural street light, storefront glow',
+    'International (Airbnb)':'soft recessed interior lighting',
+    'Shitty Apartment':'dim mixed lighting, single lamp',
+    'Suburbs (Davidsonville)':'soft warm bedroom lamp light',
+    'Townhouse (VA)':'warm household lighting',
+  };
+  const poseTag=poseL?poseL.toLowerCase():'standing upright, natural relaxed stance';
+  const kinkExpr=KINK_EXPR_MAP[kink]||'relaxed expression, direct eye contact';
+  const bgTag=BG_MAP[location]||(location?'interior setting':'');
+  const lightTag=LIGHT_MAP[location]||(location?'natural ambient lighting':'');
+  const timeTag=timeDay?timeDay.toLowerCase():'';
+  const seasonTag=season?season.toLowerCase():'';
+  const creative=[
+    bodyCore,
+    'nude, completely naked, no clothing',
+    poseTag,kinkExpr,
+    bgTag,lightTag,timeTag,seasonTag,
+    'full body shot, full length',
+    'photorealistic, RAW photo, DSLR, 8k uhd',
+    'best quality, sharp focus, detailed skin texture',
+  ].filter(Boolean).join(', ');
 
-  const outputHTML=
-    secHdr('Face Prompts')+
-    pBlock('Front Face',fFront)+
-    pBlock('Left Profile',fLeft)+
-    pBlock('Right Profile',fRight)+
-    pBlock('Left Angle',fAngleLeft)+
-    pBlock('Right Angle',fAngleRight)+
-    pBlock('Back of Head',fBack)+
-    secHdr('Body Prompts')+
-    pBlock('Front Body',bFront)+
-    pBlock('Left Side',bLeft)+
-    pBlock('Right Side',bRight)+
-    pBlock('Back Body',bBack)+
-    secHdr('Multi-View Sheets')+
-    pBlock('Face Reference Sheet',faceSheet)+
-    pBlock('Body Reference Sheet',bodySheet);
-
-  const posEl=document.getElementById('posText');
+  // ── Output — single cycling box, 13 prompts ──
+  window._sdPrompts=[
+    {l:'Front Face',t:fFront},
+    {l:'Left Profile',t:fLeft},
+    {l:'Right Profile',t:fRight},
+    {l:'Left Angle',t:fAngleLeft},
+    {l:'Right Angle',t:fAngleRight},
+    {l:'Back of Head',t:fBack},
+    {l:'Front Body',t:bFront},
+    {l:'Left Side',t:bLeft},
+    {l:'Right Side',t:bRight},
+    {l:'Back Body',t:bBack},
+    {l:'Face Reference Sheet',t:faceSheet},
+    {l:'Body Reference Sheet',t:bodySheet},
+    {l:'Full Creative',t:creative},
+  ];
+  window._sdIdx=0;
+  renderSDBox();
   const negEl=document.getElementById('negText');
-  if(posEl) posEl.innerHTML=outputHTML;
   if(negEl) negEl.textContent=neg;
   buildComfyUI(fFront,neg);
 }
@@ -12830,33 +12906,62 @@ function copyComfy(){
   else{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);doCopy();}
 }
 
-function copyPart(p){
-  const posEl=document.getElementById('posText');
-  const negEl=document.getElementById('negText');
-  const pos=(posEl?.innerText||posEl?.textContent||'').replace(/[^\S\n]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
-  const neg=(negEl?.innerText||negEl?.textContent||'').replace(/\s+/g,' ').trim();
-  const txt=p==='pos'?pos:p==='neg'?neg:`Positive:\n${pos}\n\nNegative:\n${neg}`;
-  const doCopy=()=>{
-    const btns=document.querySelectorAll('.btn-copy');
-    const idx=p==='pos'?0:p==='neg'?1:2;
-    const orig=['Copy All','Copy Negative','Copy Both'];
-    btns[idx].textContent='✓ Copied!';setTimeout(()=>btns[idx].textContent=orig[idx],2000);
-  };
+function _sdClip(txt,done){
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(doCopy).catch(()=>{
+    navigator.clipboard.writeText(txt).then(done).catch(()=>{
       const ta=document.createElement('textarea');
       ta.value=txt;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
       document.body.appendChild(ta);ta.select();document.execCommand('copy');
-      document.body.removeChild(ta);doCopy();
+      document.body.removeChild(ta);done();
     });
   } else {
     const ta=document.createElement('textarea');
     ta.value=txt;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
     document.body.appendChild(ta);ta.select();document.execCommand('copy');
-    document.body.removeChild(ta);doCopy();
+    document.body.removeChild(ta);done();
   }
 }
-
+function renderSDBox(){
+  const posEl=document.getElementById('posText');
+  if(!posEl||!window._sdPrompts||!window._sdPrompts.length)return;
+  const n=window._sdPrompts.length;
+  const i=Math.min(Math.max(window._sdIdx||0,0),n-1);
+  const p=window._sdPrompts[i];
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  posEl.innerHTML=
+    '<div style="font-size:.62rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px">'+p.l+' — '+(i+1)+'/'+n+'</div>'
+    +'<div style="user-select:text;-webkit-user-select:text;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:3px;padding:8px 9px;line-height:1.65">'+esc(p.t)+'</div>'
+    +'<div style="display:flex;gap:12px;justify-content:center;margin-top:9px">'
+    +'<button type="button" onclick="sdCycle(-1)" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);width:64px;height:40px;border-radius:4px;font-size:1rem;cursor:pointer">◀</button>'
+    +'<button type="button" onclick="sdCycle(1)" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);width:64px;height:40px;border-radius:4px;font-size:1rem;cursor:pointer">▶</button>'
+    +'</div>'
+    +'<div style="text-align:center;margin-top:9px"><button type="button" id="sdCopyCur" class="btn-copy" onclick="sdCopyCurrent()" style="cursor:pointer">Copy Current</button></div>';
+}
+function sdCycle(d){
+  const n=window._sdPrompts?window._sdPrompts.length:0;
+  if(!n)return;
+  window._sdIdx=(((window._sdIdx||0)+d)%n+n)%n;
+  renderSDBox();
+}
+function sdCopyCurrent(){
+  const p=window._sdPrompts&&window._sdPrompts[window._sdIdx||0];
+  if(!p)return;
+  _sdClip(p.t,()=>{
+    const b=document.getElementById('sdCopyCur');
+    if(b){b.textContent='✓ Copied!';setTimeout(()=>{b.textContent='Copy Current';},2000);}
+  });
+}
+function copyPart(p){
+  const negEl=document.getElementById('negText');
+  const neg=(negEl?.innerText||negEl?.textContent||'').replace(/\s+/g,' ').trim();
+  const cur=(window._sdPrompts&&window._sdPrompts[window._sdIdx||0])?window._sdPrompts[window._sdIdx||0].t:'';
+  const txt=p==='neg'?neg:`Positive:\n${cur}\n\nNegative:\n${neg}`;
+  const btn=document.getElementById(p==='neg'?'btnCopyNeg':'btnCopyBoth');
+  const orig=p==='neg'?'Copy Negative':'Copy Both';
+  _sdClip(txt,()=>{
+    if(btn){btn.textContent='✓ Copied!';setTimeout(()=>{btn.textContent=orig;},2000);}
+  });
+}
 function generateNarrative(){
   // ── Pull every wheel result ──
   const race=gv('race');
@@ -12875,6 +12980,9 @@ function generateNarrative(){
   const teeth=gv('teeth');
   const ears=gv('ears');
   const neck=gv('neck');
+  const location=gv('location');
+  const timeDay=gv('time_day');
+  const season=gv('season');
   const faceShape=gv('face_shape');
   const faceRating=gv('face');
   const hair=ga('hair_light','hair_north_asian','hair_medium','hair_afro_latina','hair_dark');
@@ -12895,7 +13003,6 @@ function generateNarrative(){
   const disobedience=gv('disobedience'),punishment=gv('punishment');
   const skinSoft=gv('skin_soft'),natScent=gv('nat_scent');
   const skinTemp=gv('skin_temp'),touchResp=gv('touch_resp');
-  const timeDay=gv('time_day'),season=gv('season'),location=gv('location');
   const favPart=gv('fav_part'),kinkMode=gv('kink');
 
   // ── Helpers ──
