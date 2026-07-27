@@ -224,7 +224,7 @@ canvas#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 50px 
 .diff-badge.random{border-color:var(--gold);color:var(--gold)}
 .results-section{width:300px;flex-shrink:0;position:sticky;top:22px}
 .results-title{font-family:'Cinzel Decorative',serif;font-size:.8rem;color:var(--gold);letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.results-scroll{max-height:calc(100vh - 200px);overflow-y:auto}
+.results-scroll{max-height:calc(100vh - 200px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .results-scroll::-webkit-scrollbar{width:3px}
 .results-scroll::-webkit-scrollbar-thumb{background:var(--border)}
 .result-item{padding:10px 14px;border-left:2px solid var(--accent2);margin-bottom:8px;background:var(--bg2)}
@@ -504,6 +504,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
       <div class="result-overlay" id="resultOverlay">
         <div class="result-overlay-text" id="resultText">—<span class="result-overlay-sub" id="resultSub"></span></div>
       </div>
+      <div id="genOverlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.75);z-index:50;align-items:center;justify-content:center;border-radius:50%;color:var(--gold);font-size:1rem;letter-spacing:1px;text-align:center">Generating...</div>
     </div>
     <div class="progress-wrap" id="progressWrap"><div class="pdot current" title="Difficulty"></div><div class="pdot" title="Race"></div><div class="pdot cat-break" title="Age"></div><div class="pdot" title="Height"></div><div class="pdot" title="Body Type"></div><div class="pdot" title="Stretch Marks (Mid/Thick)"></div><div class="pdot" title="Cellulite (Mid/Thick)"></div><div class="pdot" title="Muscle Tone (Mid/Thick)"></div><div class="pdot" title="Waist-to-Hip (Mid/Thick)"></div><div class="pdot cat-break" title="Skin (Medium)"></div><div class="pdot" title="Eyes (Medium)"></div><div class="pdot" title="Nose (Medium)"></div><div class="pdot" title="Eyebrows (Medium)"></div><div class="pdot" title="Skin Glow (Medium)"></div><div class="pdot" title="Lips (Medium)"></div><div class="pdot" title="Face Rating"></div><div class="pdot" title="Face Shape"></div><div class="pdot" title="Teeth"></div><div class="pdot" title="Ears"></div><div class="pdot" title="Neck"></div><div class="pdot" title="Oral Enthusiasm (Perform)"></div><div class="pdot" title="Oral Psychological Aspects"></div><div class="pdot" title="Oral Make Up"></div><div class="pdot" title="Oral Saliva &amp; Moisture"></div><div class="pdot" title="Oral Depth &amp; Capacity"></div><div class="pdot" title="Oral Sensation (For Her)"></div><div class="pdot" title="Oral Sensation (For Me)"></div><div class="pdot cat-break" title="Hair (Medium)"></div><div class="pdot" title="Hair Color (Medium/Afro Latina)"></div><div class="pdot cat-break" title="Cup Size"></div><div class="pdot" title="Breast Shape"></div><div class="pdot" title="Breast Position"></div><div class="pdot" title="Breast Firmness"></div><div class="pdot" title="Breast Projection"></div><div class="pdot cat-break" title="Nipple Size"></div><div class="pdot" title="Nipple Type"></div><div class="pdot" title="Nipple Placement"></div><div class="pdot" title="Nipple Color (Medium)"></div><div class="pdot cat-break" title="Areola Size"></div><div class="pdot" title="Areola Texture"></div><div class="pdot" title="Areola Shape"></div><div class="pdot cat-break" title="Breast Enthusiasm (Receive)"></div><div class="pdot" title="Breast Psychological Aspects"></div><div class="pdot" title="Breast Anatomical Variations"></div><div class="pdot" title="Breast Compression Depth &amp; Response"></div><div class="pdot" title="Breast Sensation (For Her — Glandular)"></div><div class="pdot" title="Breast Sensation (For Her — Nipple)"></div><div class="pdot" title="Lactation Milk Volume"></div><div class="pdot" title="Lactation Milk Taste"></div><div class="pdot" title="Milk Play Integration"></div><div class="pdot cat-break" title="Ass Size"></div><div class="pdot" title="Ass Shape"></div><div class="pdot" title="Ass Projection"></div><div class="pdot" title="Ass Firmness"></div><div class="pdot" title="Ass-to-Lower-Back Transition"></div><div class="pdot" title="Ass Skin Texture"></div><div class="pdot" title="Ass Body Hair"></div><div class="pdot" title="Anal Enthusiasm (Receive)"></div><div class="pdot" title="Anal Psychological Aspects"></div><div class="pdot" title="Anal Make Up"></div><div class="pdot" title="Anal Depth &amp; Capacity"></div><div class="pdot" title="Anal Appearance (Sphincter Only)"></div><div class="pdot" title="Anal Sensation (For Her)"></div><div class="pdot" title="Anal Sensation (For Me)"></div><div class="pdot cat-break" title="Thigh Thickness"></div><div class="pdot" title="Thigh Shape"></div><div class="pdot" title="Thigh Inner Relationship"></div><div class="pdot" title="Thigh Texture"></div><div class="pdot cat-break" title="Stomach"></div><div class="pdot" title="Legs"></div><div class="pdot" title="Back"></div><div class="pdot" title="Collarbone"></div><div class="pdot cat-break" title="Labia Size &amp; Shape"></div><div class="pdot" title="Labia Color (Medium)"></div><div class="pdot" title="Vaginal Enthusiasm (Receive)"></div><div class="pdot" title="Vaginal Psychological Aspects"></div><div class="pdot" title="Vaginal Make Up"></div><div class="pdot" title="Vaginal Depth &amp; Capacity"></div><div class="pdot" title="Vaginal Moisture"></div><div class="pdot" title="Vaginal Sensation (For Her)"></div><div class="pdot" title="Vaginal Sensation (For Me)"></div><div class="pdot" title="Squirting Enthusiasm"></div><div class="pdot" title="Squirting Anatomical Variations"></div><div class="pdot" title="Squirting Trigger Threshold"></div><div class="pdot" title="Squirting Psychological Aspects"></div><div class="pdot" title="Squirting Fluid Appearance &amp; Volume"></div><div class="pdot" title="Squirting Sensation (For Her)"></div><div class="pdot" title="Squirting Sensation (For Me)"></div><div class="pdot cat-break" title="Shave"></div><div class="pdot" title="Cleavage"></div><div class="pdot" title="General Body Hair"></div><div class="pdot" title="Hands"></div><div class="pdot" title="Position / Pose"></div><div class="pdot" title="Feet"></div><div class="pdot cat-break" title="Skin Softness"></div><div class="pdot" title="Natural Scent"></div><div class="pdot" title="Skin Temperature"></div><div class="pdot" title="Touch Response"></div><div class="pdot cat-break" title="Financial Status"></div><div class="pdot" title="Personality"></div><div class="pdot" title="Education"></div><div class="pdot" title="Intelligence"></div><div class="pdot" title="Street Smarts"></div><div class="pdot" title="Sexual Experience"></div><div class="pdot" title="How Acquired / Met"></div><div class="pdot" title="Mental State"></div><div class="pdot" title="Emotional Response"></div><div class="pdot" title="Bond &amp; Threat"></div><div class="pdot" title="Voice"></div><div class="pdot" title="Language &amp; Accent"></div><div class="pdot cat-break" title="Kink"></div><div class="pdot" title="Mode"></div><div class="pdot" title="Breeding"></div><div class="pdot" title="Breeding Wheel"></div><div class="pdot" title="Amount"></div><div class="pdot" title="Length"></div><div class="pdot" title="Disobedience"></div><div class="pdot" title="Punishment"></div><div class="pdot" title="Location"></div><div class="pdot" title="Fav Part"></div><div class="pdot cat-break" title="Time of Day"></div><div class="pdot" title="Season / Weather"></div><div class="pdot" title="Wildcard"></div><div class="pdot cat-break" title="Sibling Sub Enthusiasm"></div><div class="pdot" title="Sibling Sub Sensation (For Me)"></div><div class="pdot" title="Sibling Sub Sensation (For Her)"></div><div class="pdot" title="Sibling Sub Psychological Aspects"></div><div class="pdot" title="Sibling Sub Role Depth &amp; Intensity"></div></div>
     <div class="spin-row">
@@ -511,6 +512,7 @@ input[type=range].wslider::-webkit-slider-thumb{-webkit-appearance:none;width:18
       <button type="button" class="btn btn-skip" id="skipBtn" onclick="doSkip()" style="display: block;">Skip</button>
       <button type="button" class="btn-spin" id="spinBtn" onclick="doSpin()">SPIN</button>
       <button type="button" class="btn" id="autoBtn" onclick="toggleAuto()" style="font-size:.7rem;padding:5px 10px">Auto: Off</button>
+      <button type="button" class="btn" id="autoCompleteBtn" onclick="autoCompleteAll()" style="font-size:.7rem;padding:5px 10px">Auto-Complete</button>
     </div>
   </div>
   <div class="results-section">
@@ -11699,6 +11701,49 @@ function resetStatStrip(){
 }
 // ═══════════════ END STAT STRIP ═══════════════
 
+function autoCompleteAll(){
+  if(spinning)return;
+  const overlay=document.getElementById('genOverlay');
+  if(overlay)overlay.style.display='flex';
+  spinning=true;
+  autoAdvance=false;
+  const runBatch=()=>{
+    let iterations=0;
+    // Run in small batches with a 0ms setTimeout between them so the browser can repaint
+    // the "Generating..." overlay instead of freezing the tab during the loop.
+    while(iterations<40){
+      if(!WHEEL_DEFS[currentWheelId]){break;}
+      const segs=WHEEL_DEFS[currentWheelId].segments;
+      const winIdx=weightedRandom(segs,currentWheelId);
+      const label=segs[winIdx].label;
+      const seg=segs[winIdx];
+      results.push({wheelId:currentWheelId,wheelName:WHEEL_DEFS[currentWheelId].name,label,seg});
+      const next=computeNext(currentWheelId,label,seg);
+      if(next==='RESTART'){
+        spinning=false;
+        if(overlay)overlay.style.display='none';
+        restartAll();
+        return;
+      } else if(next==='DONE'){
+        spinning=false;
+        if(overlay)overlay.style.display='none';
+        renderResultsList();
+        updateStatStrip();
+        if(currentWheelId==='wildcard') executeWildcard(label);
+        else showOutput();
+        return;
+      }
+      currentWheelId=next;
+      currentAngle=0;
+      randomMultipliers[next]=undefined;
+      iterations++;
+    }
+    if(WHEEL_DEFS[currentWheelId]){
+      setTimeout(runBatch,0);
+    }
+  };
+  setTimeout(runBatch,0);
+}
 function onSpinDone(idx,label,seg){
   const overlay=document.getElementById('resultOverlay');
   document.getElementById('resultText').innerHTML=`${label}<span class="result-overlay-sub">${WHEEL_DEFS[currentWheelId].name}</span>`;
@@ -11722,7 +11767,7 @@ function onSpinDone(idx,label,seg){
       renderWheelUI();
       document.getElementById('spinBtn').disabled=false;
       drawWheel(0);
-      if(_auto){ _autoSteps++; if(_autoSteps>220){ autoAdvance=false; const _b=document.getElementById('autoBtn'); if(_b)_b.textContent='Auto: Off'; } else setTimeout(()=>{ if(autoAdvance&&!spinning) doSpin(); }, 450); }
+      if(_auto){ _autoSteps++; if(_autoSteps>450){ autoAdvance=false; const _b=document.getElementById('autoBtn'); if(_b)_b.textContent='Auto: Off'; } else setTimeout(()=>{ if(autoAdvance&&!spinning) doSpin(); }, 450); }
     }
   }, _auto?850:2000);
 }
@@ -11875,6 +11920,9 @@ function renderResultsList(){
   const list=document.getElementById('resultsList');
   document.getElementById('noResults').style.display=results.length?'none':'block';
   document.getElementById('resultCount').textContent=results.length;
+  // Only auto-scroll to the newest result if the user was already at/near the bottom.
+  // If they have scrolled up to review earlier results, leave their position alone.
+  const nearBottom=(list.scrollHeight-list.scrollTop-list.clientHeight)<80;
   list.querySelectorAll('.result-item').forEach(el=>el.remove());
   results.forEach((r,i)=>{
     const el=document.createElement('div');
@@ -11882,7 +11930,7 @@ function renderResultsList(){
     el.innerHTML=`<div class="ri-wheel">${r.wheelName}</div><div class="ri-val">${r.label}</div>`;
     list.appendChild(el);
   });
-  list.scrollTop=list.scrollHeight;
+  if(nearBottom||results.length<=1){list.scrollTop=list.scrollHeight;}
 }
 
 
