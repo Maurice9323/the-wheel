@@ -12867,7 +12867,119 @@ function buildSDPrompt(){
     'best quality, sharp focus, detailed skin texture',
   ].filter(Boolean).join(', ');
 
+  // ── Region + religion adaptation for the reference card ──
+  const REGION_OF={
+    origin_white_us:'na',origin_black_us:'na',
+    origin_native:'native',origin_native_sw:'native',origin_native_plains:'native',origin_native_ne:'native',origin_native_se:'native',origin_native_pnw:'native',
+    origin_white_euro:'weuro',origin_uk:'weuro',origin_german:'weuro',origin_scandinavian:'weuro',origin_french:'weuro',
+    origin_italian:'medi',origin_mediterranean:'medi',
+    origin_slavic:'eeuro',
+    origin_latina:'latam',origin_mexico:'latam',origin_brazil:'latam',origin_peru:'latam',origin_argentina:'latam',origin_colombia:'latam',origin_el_salvador:'latam',
+    origin_puerto_rico:'carib',origin_caribbean:'carib',origin_afro_latina:'carib',
+    origin_west_africa:'wafrica',origin_black_afro:'wafrica',
+    origin_north_africa:'mena',origin_persian:'mena',origin_persian_iran:'mena',origin_persian_gulf:'mena',origin_persian_levant:'mena',origin_persian_iraq:'mena',
+    origin_horn_africa:'eafrica',origin_central_east_africa:'eafrica',
+    origin_southern_africa:'safrica',
+    origin_south_asian:'sasia',origin_indian_north:'sasia',origin_indian_south:'sasia',origin_indian_east:'sasia',origin_indian_west:'sasia',origin_sri_lankan:'sasia',origin_pakistani:'sasia',origin_bangladeshi:'sasia',
+    origin_north_asian:'easia',origin_japanese:'easia',origin_korean:'easia',origin_chinese:'easia',origin_taiwanese:'easia',origin_hong_kong:'easia',origin_mongolian:'easia',
+    origin_filipino:'seasia',origin_vietnamese:'seasia',origin_thai:'seasia',origin_indonesian:'seasia',origin_burmese:'seasia',
+    origin_hawaiian:'pacific',origin_samoan:'pacific',origin_tongan:'pacific',origin_fijian:'pacific',origin_micronesian:'pacific',
+  };
+  const REGION_DATA={
+    na:{city:'American city street, brick rowhouses',suburb:'American suburban bedroom interior',rural:'rural American ranch house, wood beams, Appalachian countryside',town:'American townhouse interior',school:'American public school classroom, lockers',worship:'Baptist church interior, wooden pews',cellar:'unfinished basement, concrete walls, exposed pipes',fort:'stone dungeon interior, torchlit walls'},
+    weuro:{city:'European city street, old stone buildings',suburb:'European suburban home interior',rural:'rural European farmhouse, stone walls, green countryside',town:'European terraced house interior',school:'European school classroom',worship:'Anglican church interior, stone arches, wooden pews',cellar:'stone cellar, low ceiling, cool damp walls',fort:'stone castle dungeon, torchlit walls, iron fixtures'},
+    medi:{city:'Mediterranean city street, ochre stucco buildings',suburb:'Mediterranean villa interior, tile floors',rural:'rural Mediterranean farmhouse, terracotta roof, olive groves',town:'Mediterranean townhouse interior, shuttered windows',school:'Mediterranean school classroom',worship:'Catholic church interior, marble and frescoes, wooden pews',cellar:'stone wine cellar, arched brick ceiling',fort:'old stone castle dungeon, torchlit walls'},
+    eeuro:{city:'Eastern European city street, concrete apartment blocks',suburb:'Eastern European suburban home interior',rural:'rural Eastern European farmhouse, wooden shutters, open fields',town:'Eastern European apartment interior',school:'Eastern European school classroom',worship:'Orthodox church interior, gold icons, candles',cellar:'concrete cellar, bare bulb, stored preserves',fort:'stone fortress dungeon, torchlit walls'},
+    latam:{city:'Latin American city street, colorful painted buildings',suburb:'Latin American suburban home interior, tile floors',rural:'rural Latin American ranch, adobe walls, dry countryside',town:'Latin American townhouse interior, iron window grilles',school:'Latin American school classroom',worship:'Catholic church interior, painted saints, wooden pews',cellar:'concrete block storeroom at the back of the house',fort:'colonial stone fort dungeon, torchlit walls'},
+    carib:{city:'Caribbean town street, pastel painted buildings',suburb:'Caribbean home interior, louvered windows',rural:'rural Caribbean plantation house, wooden veranda, palms',town:'Caribbean townhouse interior, bright walls',school:'Caribbean school classroom',worship:'Catholic church interior, bright walls, wooden pews',cellar:'concrete storeroom beneath a raised house',fort:'colonial stone fort dungeon, torchlit walls'},
+    wafrica:{city:'West African city street, concrete buildings, busy market',suburb:'West African home interior, patterned fabrics',rural:'rural West African compound, red earth yard, mango trees',town:'West African townhouse interior',school:'West African school classroom, concrete walls',worship:'African Pentecostal church interior, plastic chairs, bright banners',cellar:'concrete block back storeroom, corrugated roof',fort:'colonial stone fort dungeon, torchlit walls'},
+    eafrica:{city:'East African city street, concrete buildings',suburb:'East African home interior',rural:'rural East African homestead, acacia trees, dry earth yard',town:'East African townhouse interior',school:'East African school classroom, concrete walls',worship:'church interior, simple wooden benches, bright walls',cellar:'concrete block back storeroom',fort:'colonial stone fort dungeon, torchlit walls'},
+    safrica:{city:'Southern African city street, modern concrete buildings',suburb:'Southern African suburban home interior',rural:'rural Southern African farmhouse, dry veld, wide sky',town:'Southern African townhouse interior',school:'Southern African school classroom',worship:'church interior, wooden pews, bright walls',cellar:'concrete back storeroom, corrugated roof',fort:'colonial stone fort dungeon, torchlit walls'},
+    mena:{city:'Middle Eastern city street, sand-colored buildings',suburb:'Middle Eastern home interior, patterned rugs',rural:'rural Middle Eastern farmstead, mudbrick walls, date palms',town:'Middle Eastern townhouse interior, carved screens',school:'Middle Eastern school classroom',worship:'mosque interior, geometric tilework, prayer rugs',cellar:'stone storeroom, thick mudbrick walls',fort:'old stone fortress chamber, torchlit walls'},
+    sasia:{city:'South Asian city street, dense painted buildings',suburb:'South Asian home interior, tile floors, ceiling fan',rural:'rural South Asian village house, mud and brick walls, banyan trees',town:'South Asian townhouse interior',school:'South Asian school classroom, concrete walls',worship:'Hindu temple interior, carved stone, oil lamps',cellar:'back storeroom, concrete walls, ceiling fan',fort:'old stone fort chamber, torchlit walls'},
+    easia:{city:'East Asian city street, neon signage, dense buildings',suburb:'East Asian apartment interior, tatami or tile',rural:'rural East Asian farmhouse, tiled roof, rice paddies',town:'East Asian townhouse interior, sliding doors',school:'East Asian school classroom',worship:'Buddhist temple interior, incense, gilded statues',cellar:'underground storage room, concrete walls',fort:'old stone fortress cellar, torchlit walls'},
+    seasia:{city:'Southeast Asian city street, motorbikes, signage',suburb:'Southeast Asian home interior, tile floors, ceiling fan',rural:'rural Southeast Asian village house, corrugated tin roof, palm trees',town:'Southeast Asian townhouse interior, louvered shutters',school:'Southeast Asian school classroom, open windows',worship:'Buddhist temple interior, gilded statues, incense',cellar:'storeroom beneath a raised stilt house, packed earth floor',fort:'colonial stone fort chamber, torchlit walls'},
+    pacific:{city:'Pacific island town street, low buildings, palms',suburb:'Pacific island home interior, woven mats',rural:'modest corrugated tin roof village home, tropical foliage, dirt yard',town:'Pacific island house interior, louvered windows',school:'Pacific island school classroom, open windows',worship:'island Methodist church interior, wooden pews, bright walls',cellar:'storage space beneath a raised house, woven mats',fort:'colonial stone fort chamber, torchlit walls'},
+    native:{city:'small western town street, low brick buildings',suburb:'reservation housing interior, modest furnishings',rural:'rural high desert homestead, dry earth, distant mesas',town:'small town house interior',school:'rural school classroom',worship:'small mission church interior, wooden pews',cellar:'back storeroom, concrete floor',fort:'stone dungeon interior, torchlit walls'},
+  };
+  const WORSHIP_OVERRIDE={
+    origin_pakistani:'mosque interior, geometric tilework, prayer rugs',
+    origin_bangladeshi:'mosque interior, geometric tilework, prayer rugs',
+    origin_indonesian:'mosque interior, geometric tilework, prayer rugs',
+    origin_horn_africa:'mosque interior, woven prayer rugs, plain white walls',
+    origin_sri_lankan:'Buddhist temple interior, white stupa, oil lamps',
+    origin_burmese:'Buddhist temple interior, gilded stupa, incense',
+    origin_thai:'Thai Buddhist temple interior, gold leaf, incense',
+    origin_filipino:'Catholic church interior, painted saints, wooden pews',
+    origin_vietnamese:'Buddhist pagoda interior, incense, red and gold',
+    origin_japanese:'Shinto shrine interior, wooden beams, paper lanterns',
+    origin_korean:'Korean Buddhist temple interior, painted eaves',
+    origin_mongolian:'Buddhist monastery interior, painted pillars, prayer wheels',
+    origin_italian:'Catholic church interior, marble and frescoes, wooden pews',
+    origin_slavic:'Orthodox church interior, gold icons, candles',
+    origin_fijian:'island Methodist church interior, wooden pews',
+    origin_black_us:'Black Baptist church interior, wooden pews, choir stand',
+  };
+  let _regKey='na',_origId=null;
+  for(const oid in REGION_OF){if(gv(oid)){_origId=oid;_regKey=REGION_OF[oid];break;}}
+  const RG=REGION_DATA[_regKey]||REGION_DATA.na;
+  const CARD_BG={
+    'City (Georgetown)':RG.city,
+    'Suburbs (Davidsonville)':RG.suburb,
+    'Secluded Ranch (WV)':RG.rural,
+    'Townhouse (VA)':RG.town,
+    'School (QAS)':RG.school,
+    'Church (Baptist)':(_origId&&WORSHIP_OVERRIDE[_origId])||RG.worship,
+    "Basement (Mom's)":RG.cellar,
+    'Dungeon (Castle)':RG.fort,
+    'Boat (Mini-yacht)':'yacht deck, polished wood, open water behind',
+    'International (Airbnb)':'modern rental apartment interior, minimalist furniture',
+    'Secluded Mansion':'grand mansion interior, marble floors, tall windows',
+    'Condo (Downtown)':'modern condo interior, floor to ceiling windows, city skyline',
+    'Shitty Apartment':'small rundown apartment, worn furniture, cluttered space',
+  };
   // ── SFW Reference Card — magazine-style visual card, undersized bra + thong ──
+  // ── MOOD / VIBE — personality + kink + emotional (text line only, panels stay neutral) ──
+  const personality=gv('personality')||gv('personality_60plus');
+  const emotional=gv('emotional')||gv('emotional_response_60plus');
+  const PERS_VIBE={
+    'bubbly and outgoing, very social':'Bright. Social.',
+    'shy and reserved, takes time to open up':'Reserved. Guarded.',
+    'cold and detached, hard to read':'Cold. Detached.',
+    'aggressive and confrontational':'Aggressive. Confrontational.',
+    'sweet and people-pleasing':'Sweet. Accommodating.',
+    'manipulative and calculated':'Calculating. Deliberate.',
+    'naive and trusting, easily influenced':'Naive. Trusting.',
+    'bold and fearless, no filter':'Bold. Unfiltered.',
+    'quiet and observant, rarely speaks':'Quiet. Watchful.',
+    'emotional and reactive, mood shifts fast':'Volatile. Reactive.',
+    'confident and self-assured':'Confident. Assured.',
+    'broken and defeated, low self worth':'Worn. Defeated.',
+    'rebellious, pushes back on everything':'Rebellious. Defiant.',
+    'submissive by nature, follows easily':'Yielding. Compliant.',
+    'unpredictable, hot and cold':'Unpredictable. Shifting.',
+  };
+  const KINK_VIBE={
+    'Super Dom':'Commanding.','Med Dom':'Dominant.','Light Dom':'Assertive.','Gentle Dom':'Steady.',
+    'Normal':'Grounded.','Gentle Sub':'Deferential.','Light Sub':'Soft.','Med Sub':'Submissive.',
+    'Super Sub':'Yielding.','Free Use':'Passive.','Unwilling':'Resistant.',
+  };
+  const EMO_VIBE={
+    'terrified, visibly shaking':'Fearful.','crying, emotionally overwhelmed':'Overwhelmed.',
+    'silent, frozen in shock':'Frozen.','screaming and resisting physically':'Resisting.',
+    'begging and pleading':'Pleading.','angry and confrontational':'Angry.',
+    'cold and completely silent':'Silent.','numb, no visible reaction':'Numb.',
+    'confused, asking questions':'Uncertain.','resigned, given up fighting':'Resigned.',
+    'compliant out of fear':'Wary.','genuinely compliant, conditioned response':'Conditioned.',
+    'relieved, wanted this situation':'Relieved.','protective of captor, Stockholm syndrome':'Attached.',
+    'performing happiness, hiding true feelings':'Guarded. Performing.',
+  };
+  const vibeParts=[
+    PERS_VIBE[personality]||'',
+    KINK_VIBE[kink]||'',
+    EMO_VIBE[emotional]||'',
+  ].filter(Boolean);
+  const cardVibe=vibeParts.length?vibeParts.join(' '):'Neutral. Quiet. Grounded.';
   const charName=pickCharName();
   const cardTitle=charName.toUpperCase();
   const cardSubtitle=(ethnic||'woman').toUpperCase()+' VISUAL CARD';
@@ -12877,7 +12989,7 @@ function buildSDPrompt(){
   const statHips=wLock.hips?wLock.hips+'"':'';
   const statBust=wLock.bust?wLock.bust+'"':'';
   const cardStats=[
-    'AGE: '+(ageTag||'unknown'),
+    'AGE: '+(wLock.appAge?wLock.appAge:(ageTag||'unknown')),
     htTag?'HEIGHT: '+htTag.replace(/^(very short|short|tall|very tall|extremely tall),?\s*/i,'').toUpperCase():'',
     statW?'WEIGHT: '+statW:'',
     'BUILD: '+(bodyTag||'').split(',')[0].toUpperCase(),
@@ -12900,11 +13012,11 @@ function buildSDPrompt(){
   if(collarboneTag&&/asymmetr|prominent|buried/i.test(collarboneTag))notes.push(collarboneTag);
   if(faceFullTag&&/jowls|double chin|gaunt/.test(faceFullTag))notes.push(faceFullTag.split(',').slice(0,2).join(','));
   const lookNotes=notes.slice(0,5).map(n=>'• '+n).join(' ');
-  const cardOutfit='undersized tight white bra straining at the bust, dark thong';
-  const cardScene=bgTag||'neutral interior setting';
+  const cardOutfit='undersized tight white bra straining at the bust, undersized tight dark thong';
+  const cardScene=(location&&CARD_BG[location])||bgTag||'neutral interior setting';
   const cardLight=lightTag||'soft natural daylight';
   const refCard=[
-    'professional character visual reference card, clean modern graphic design, sharp perfectly legible text, bold clear typography, all text must be sharp and fully readable, high-end model sheet layout',
+    'professional photorealistic character visual reference card, clean modern graphic design, sharp perfectly legible text, bold clear typography, all text must be sharp and fully readable, high-end model sheet layout',
     'LEFT SIDE: large portrait of '+charName+', '+[ageTag,ethnic].filter(Boolean).join(' ')+', '+[skinClean,faceDesc,faceFullTag,faceShapeTag,eyesTag,browsTag,noseTag,lipsTag,hairTag].filter(Boolean).join(', ')+', neutral expression, '+cardOutfit+', standing in front of '+cardScene+' softly blurred behind her',
     'big bold magenta title text: "'+cardTitle+'" white subtitle text: "'+cardSubtitle+'"',
     'clear vertical white stats text: '+cardStats,
@@ -12916,7 +13028,7 @@ function buildSDPrompt(){
     'DETAILS — 2x2 close-ups: '+[[faceDesc,faceFullTag].filter(Boolean).join(', ')||'face',cupTag?cupTag+' under bra':'bust',assSizeTag||'glute curve',celluTag||stretchTag||'skin texture'].filter(Boolean).join(', ')+', background softly out of focus behind each crop',
     'BOTTOM BLACK BAR with clear white text: LOOK NOTES: '+lookNotes,
     'COLOR PALETTE: flat color swatches labeled SKIN | HAIR | EYES | CLOTHING',
-    'MOOD / VIBE: Neutral. Quiet. Grounded.',
+    'MOOD / VIBE: '+cardVibe,
     cardScene+' throughout, everyday unposed atmosphere, '+cardLight+', no harsh shadows',
     'photorealistic, RAW photo, 8k, extremely detailed skin, sharp focus, perfect readable text, clean graphic design',
   ].filter(Boolean).join(', ');
