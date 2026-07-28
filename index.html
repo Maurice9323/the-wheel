@@ -11935,6 +11935,7 @@ function renderResultsList(){
 
 
 function restartAll(){
+  generatedName=null;
   results=[];currentWheelId='difficulty';currentAngle=0;spinning=false;
   diffMode='medium';randomMultipliers={};
   raceGroup='medium';hairGroup='medium';bodyGroup='mid';
@@ -12251,6 +12252,89 @@ const ETHNIC_MAP={
   'Pacific Northwest Nations':'native american woman',
 };
 
+const NAME_POOLS={
+origin_white_us:{y:['Madison','Emma','Olivia','Ashley','Taylor','Hannah','Kayla','Brittany','Megan','Lauren','Chloe','Abigail'],a:['Jennifer','Amy','Melissa','Heather','Michelle','Kimberly','Lisa','Angela','Stephanie','Rebecca','Christine','Amanda'],s:['Linda','Barbara','Patricia','Carol','Susan','Nancy','Donna','Sandra','Judith','Karen','Diane','Janet']},
+origin_white_euro:{y:['Emma','Lena','Sofia','Anna','Laura','Julia','Mia','Elena','Clara','Amelie','Nora','Eva'],a:['Katrin','Monika','Petra','Sabine','Nicole','Andrea','Silke','Claudia','Marta','Irene','Sonja','Birgit'],s:['Helga','Ingrid','Ursula','Margarethe','Gerda','Elfriede','Hannelore','Renate','Christa','Edith','Ilse','Brigitte']},
+origin_black_us:{y:['Aaliyah','Jada','Imani','Kiara','Nia','Destiny','Asia','Tiana','Zaria','Amara','Jasmine','Kennedy'],a:['Keisha','Tamika','Latoya','Ebony','Shanice','Monique','Tanisha','Yolanda','Nichelle','Rochelle','Danielle','Angela'],s:['Gloria','Dorothy','Mabel','Bernice','Earnestine','Willie Mae','Odessa','Beulah','Josephine','Clara','Ruthie','Delores']},
+origin_black_afro:{y:['Amara','Zuri','Chidinma','Adaeze','Nala','Ayana','Makena','Femi','Sanaa','Nia','Thandiwe','Zola'],a:['Ngozi','Chiamaka','Folake','Abena','Akosua','Wanjiru','Nomvula','Fatoumata','Aissatou','Adwoa','Nneka','Yetunde'],s:['Mariama','Comfort','Grace','Beatrice','Esther','Agnes','Margaret','Florence','Patience','Charity','Constance','Victoria']},
+origin_caribbean:{y:['Shanice','Kadija','Renee','Alicia','Tiana','Shania','Amoy','Kerian','Dania','Sherika','Abigail','Toni-Ann'],a:['Marcia','Sandra','Pauline','Janet','Claudette','Merlene','Veronica','Jacqueline','Michelle','Novelette','Sharon','Andrea'],s:['Icilda','Enid','Hyacinth','Cynthia','Gwendolyn','Doreen','Norma','Vinette','Adassa','Merle','Daphne','Monica']},
+origin_afro_latina:{y:['Yaritza','Amara','Dayanara','Xiomara','Marisol','Anais','Leilani','Zunilda','Jayleen','Nashaly','Genesis','Arianny'],a:['Altagracia','Milagros','Yesenia','Carmen','Iris','Belkis','Ramona','Josefina','Marisela','Daysi','Ivelisse','Xiomara'],s:['Mercedes','Juana','Ana Luisa','Georgina','Petronila','Caridad','Dominga','Esperanza','Felicia','Gregoria','Isabel','Candida']},
+origin_latina:{y:['Valentina','Camila','Isabella','Ximena','Daniela','Mariana','Fernanda','Alejandra','Paola','Andrea','Lucia','Natalia'],a:['Veronica','Claudia','Adriana','Gabriela','Monica','Patricia','Lorena','Sandra','Maribel','Rocio','Leticia','Silvia'],s:['Guadalupe','Rosa','Maria Elena','Consuelo','Esperanza','Dolores','Teresa','Carmen','Amparo','Refugio','Socorro','Graciela']},
+origin_south_asian:{y:['Priya','Ananya','Riya','Aisha','Zara','Diya','Sana','Mehak','Kavya','Ishita','Anika','Simran'],a:['Sunita','Anita','Rekha','Kavita','Shabana','Nasreen','Meena','Geeta','Farida','Shalini','Rukhsana','Poonam'],s:['Kamala','Savitri','Shanti','Lakshmi','Zainab','Khadija','Parvati','Radha','Fatima','Saraswati','Indira','Amina']},
+origin_north_asian:{y:['Yuna','Mei','Sakura','Jia','Hana','Rin','Soo-ah','Xinyi','Aiko','Minji','Yui','Lina'],a:['Naoko','Mei Ling','Sun-hee','Xiu','Keiko','Eun-ju','Hui','Tomoko','Mi-young','Lan','Yumiko','Jing'],s:['Kazuko','Young-sook','Xiulan','Haruko','Ok-ja','Guiying','Setsuko','Chun-ja','Meirong','Fumiko','Soon-bok','Shizuko']},
+origin_persian:{y:['Yasmin','Layla','Darya','Roya','Sara','Niloufar','Kimia','Setareh','Parisa','Shirin','Melika','Donya'],a:['Mahnaz','Fereshteh','Azadeh','Mojgan','Nasrin','Shahla','Mitra','Farzaneh','Simin','Zohreh','Maryam','Afsaneh'],s:['Batoul','Ashraf','Sedigheh','Touran','Ozra','Kobra','Iran','Shamsi','Fatemeh','Robabeh','Masoumeh','Zahra']},
+origin_native:{y:['Aiyana','Winona','Nizhoni','Kaya','Tala','Halona','Cheyenne','Dakota','Sage','Aponi','Imala','Nayeli'],a:['Doli','Awinita','Sinopa','Marie','Ramona','Charlene','Delores','Wilma','Roberta','Geraldine','Loretta','Verna'],s:['Agnes','Bessie','Irene','Mildred','Evelyn','Lucille','Juanita','Alberta','Sarah','Emma','Nellie','Grace']},
+origin_persian_iran:{y:['Niloufar','Setareh','Parisa','Kimia','Donya','Yasaman','Ghazal','Mahsa','Elnaz','Sahar','Bahar','Negar'],a:['Azadeh','Fereshteh','Mahnaz','Mojgan','Farzaneh','Nasrin','Mitra','Simin','Shahla','Zohreh','Afsaneh','Leila'],s:['Sedigheh','Batoul','Touran','Ashraf','Kobra','Ozra','Fatemeh','Masoumeh','Robabeh','Shamsi','Zahra','Iran']},
+origin_persian_gulf:{y:['Noura','Reem','Dana','Sara','Hessa','Maha','Latifa','Shaikha','Alia','Mariam','Fajer','Ghala'],a:['Moza','Amal','Wadha','Aisha','Badria','Fatima','Sheikha','Hind','Muneera','Awatif','Naima','Jawaher'],s:['Sheikha','Fatima','Aisha','Moza','Hessa','Amna','Salama','Maryam','Ousha','Afra','Shamsa','Latifa']},
+origin_persian_levant:{y:['Lina','Yara','Maya','Nour','Rania','Dana','Lara','Hala','Tala','Farah','Joud','Salma'],a:['Rima','Ghada','Suha','Nada','Manal','Samar','Abeer','Hanan','Wafa','Iman','Rana','Dalal'],s:['Souad','Wadad','Nadia','Samira','Leila','Amal','Fadwa','Widad','Ihsan','Najla','Salwa','Inaam']},
+origin_persian_iraq:{y:['Zainab','Fatima','Noor','Rusul','Duaa','Aya','Tabarak','Rand','Shahad','Maryam','Zahraa','Hawraa'],a:['Suhad','Bushra','Intisar','Wafaa','Sundus','Ibtisam','Khawla','Nidhal','Samira','Hanaa','Salwa','Amira'],s:['Sabiha','Fadhila','Najiya','Karima','Badriya','Zakiya','Rasmiya','Halima','Saniya','Fawziya','Nazira','Wadha']},
+origin_indian_north:{y:['Aanya','Kiara','Myra','Anaya','Simran','Ishita','Avni','Mehak','Riya','Diya','Navya','Prisha'],a:['Pooja','Neha','Ritu','Anju','Seema','Manju','Sarita','Renu','Kiran','Suman','Archana','Deepa'],s:['Kamla','Shanti','Savitri','Vidya','Sushila','Krishna','Santosh','Prem','Raj Kumari','Bimla','Shakuntala','Urmila']},
+origin_indian_south:{y:['Ananya','Diya','Shreya','Aishwarya','Keerthana','Nithya','Deepika','Meghana','Sahana','Harini','Varsha','Divya'],a:['Lakshmi','Padma','Radha','Suja','Geetha','Vasanthi','Latha','Usha','Prema','Jayanthi','Sudha','Vijaya'],s:['Saraswathi','Kamakshi','Parvathi','Meenakshi','Rajeswari','Alamelu','Pankajam','Bhagyam','Janaki','Seetha','Andal','Visalakshi']},
+origin_indian_east:{y:['Ankita','Priyanka','Sushmita','Riya','Moumita','Sreeja','Debasmita','Puja','Tanushree','Ipsita','Madhurima','Shrabani'],a:['Mousumi','Soma','Krishna','Aparna','Sharmila','Kaberi','Anuradha','Mitali','Sujata','Rina','Dipa','Chandana'],s:['Gita','Anjali','Shefali','Bela','Chhaya','Namita','Pratima','Sandhya','Arati','Minati','Basanti','Kalyani']},
+origin_indian_west:{y:['Aditi','Sneha','Pooja','Rutuja','Prachi','Mrunal','Gauri','Tejal','Ketki','Manasi','Shruti','Vaidehi'],a:['Vaishali','Smita','Varsha','Rekha','Nanda','Shubhangi','Sunanda','Manisha','Jyoti','Sangita','Alka','Meenal'],s:['Shakuntala','Indumati','Kusum','Sulochana','Malati','Kamal','Vimal','Shalini','Sushila','Nirmala','Prabha','Suman']},
+origin_native_sw:{y:['Nizhoni','Shandiin','Aiyana','Dezba','Kaya','Nascha','Yanaba','Sialea','Tiva','Alo','Chenoa','Sonseeahray'],a:['Doli','Haseya','Asdzaa','Marie','Louise','Bernice','Ramona','Juanita','Delfina','Rose','Stella','Virginia'],s:['Bessie','Nellie','Emma','Grace','Alice','Zonnie','Despah','Annie','Mary','Helen','Daisy','Lena']},
+origin_native_plains:{y:['Winona','Kimimela','Tala','Dakota','Cheyenne','Wachiwi','Macha','Zitkala','Ptaysanwee','Chumani','Wichahpi','Anpaytoo'],a:['Charlene','Marlene','Darlene','Ramona','Wanda','Yvonne','Delores','Georgene','Arlene','Verna','Lorna','Phyllis'],s:['Mildred','Evelyn','Irene','Lucille','Agnes','Viola','Thelma','Alvina','Leona','Blanche','Myrtle','Cordelia']},
+origin_native_ne:{y:['Kanti','Nadie','Alsoomse','Numees','Sokanon','Wawetseka','Kimi','Nittawosew','Sooleawa','Hausis','Nuna','Oota'],a:['Charlotte','Denise','Brenda','Gail','Sharon','Paula','Diane','Joanne','Cheryl','Marilyn','Gloria','Judith'],s:['Ethel','Florence','Beatrice','Harriet','Marion','Doris','Eleanor','Ruth','Edna','Sylvia','Vera','Charlotte']},
+origin_native_se:{y:['Ayita','Salali','Adsila','Awinita','Galilahi','Inola','Noya','Tayanita','Woya','Amadahy','Kamama','Leotie'],a:['Wilma','Joyce','Brenda','Linda','Peggy','Shirley','Betty Jo','Carolyn','Glenda','Wanda','Faye','Reba'],s:['Maude','Ollie','Lula','Pearl','Opal','Ruby','Beulah','Ida','Cora','Effie','Lottie','Vinnie']},
+origin_native_pnw:{y:['Kaliska','Yona','Tsomah','Sisika','Kwanita','Meda','Litonya','Hateya','Ankti','Chosovi','Kasa','Yepa'],a:['Roberta','Geraldine','Loretta','Darlene','Marcella','Bernadette','Adeline','Priscilla','Ida','Frances','Theresa','Cecilia'],s:['Matilda','Josephine','Adeline','Sophie','Cecelia','Christine','Louisa','Amelia','Selina','Harriet','Millie','Augusta']},
+origin_hawaiian:{y:['Leilani','Kailani','Malia','Nohea','Kiana','Alana','Moana','Anela','Halia','Keala','Naia','Pua'],a:['Haunani','Lokelani','Momi','Ualani','Kehaulani','Pualani','Noelani','Mahina','Lehua','Kalei','Nalani','Iwalani'],s:['Haleaka','Kaipo','Meleana','Luana','Napua','Keola','Hannah','Rachel','Abigail','Emalia','Kini','Malama']},
+origin_samoan:{y:['Sina','Teuila','Moana','Fetu','Leilani','Alofa','Masina','Litara','Vaiola','Manaia','Talia','Fiapapalagi'],a:['Faasavalu','Tausala','Malama','Fuatino','Sieni','Losa','Mele','Salaevalu','Tofilau','Vaosa','Emi','Peta'],s:['Faafetai','Meaalofa','Talalelei','Amataga','Fesili','Lagi','Miriama','Sara','Ruta','Elisapeta','Losa','Ana']},
+origin_tongan:{y:['Mele','Ana','Seini','Lupe','Heilala','Kalo','Losana','Salote','Vika','Fifita','Langi','Meleane'],a:['Kalolaine','Seluvaia','Fane','Latu','Malia','Konga','Paea','Toa','Uinise','Sela','Lesieli','Fehi'],s:['Salote','Fusipala','Meleane','Tupou','Halaevalu','Sinaitakala','Lavinia','Amelia','Kaloni','Vaisima','Fatai','Losaline']},
+origin_fijian:{y:['Litia','Adi','Mereani','Salote','Torika','Unaisi','Vika','Kelera','Milika','Asinate','Laisa','Sereana'],a:['Litiana','Mereoni','Vasiti','Akosita','Salanieta','Miriama','Ateca','Losalini','Karalaini','Sainimili','Vani','Elenoa'],s:['Adi Mei','Litia','Salaseini','Makereta','Torika','Verenaisi','Emele','Merewalesi','Alumita','Kelerayani','Susana','Vasemaca']},
+origin_micronesian:{y:['Marina','Lihna','Kiana','Mwarike','Serena','Talia','Rosina','Justina','Merlina','Kasia','Nena','Ioana'],a:['Iemima','Rosania','Bernolina','Antonia','Maria','Regina','Carmen','Julia','Dolores','Esperansa','Rufina','Benita'],s:['Maria','Rosa','Antonia','Carmen','Ana','Isabel','Dolores','Juana','Magdalena','Francisca','Cristina','Benedikta']},
+origin_uk:{y:['Olivia','Amelia','Isla','Freya','Poppy','Daisy','Millie','Ruby','Grace','Evie','Charlotte','Phoebe'],a:['Claire','Sarah','Emma','Rachel','Rebecca','Joanne','Nicola','Louise','Kelly','Gemma','Samantha','Victoria'],s:['Margaret','Jean','Dorothy','Joan','Sheila','Brenda','Maureen','Valerie','Sylvia','Audrey','Pamela','Wendy']},
+origin_german:{y:['Lena','Hannah','Leonie','Mia','Emilia','Marie','Sophie','Lea','Amelie','Johanna','Charlotte','Frieda'],a:['Katrin','Sabine','Petra','Nicole','Stefanie','Melanie','Sandra','Tanja','Anja','Daniela','Kerstin','Bianca'],s:['Helga','Ursula','Ingrid','Renate','Gisela','Hannelore','Christa','Erika','Elfriede','Waltraud','Gertrud','Hildegard']},
+origin_scandinavian:{y:['Freja','Saga','Astrid','Alma','Ebba','Maja','Wilma','Signe','Ingrid','Nora','Liv','Tuva'],a:['Anna','Kristin','Mette','Camilla','Line','Hanne','Pia','Trine','Lena','Marianne','Susanne','Heidi'],s:['Solveig','Gunhild','Astrid','Bergljot','Ragnhild','Kirsten','Inger','Bodil','Grethe','Aase','Torunn','Sigrid']},
+origin_mediterranean:{y:['Elena','Sofia','Maria','Katerina','Eleni','Chiara','Martina','Carmen','Lucia','Anastasia','Despina','Ioanna'],a:['Georgia','Dimitra','Vasiliki','Rosa','Anna Maria','Paola','Antonella','Dolores','Pilar','Fotini','Stavroula','Concetta'],s:['Panagiota','Evangelia','Assunta','Immacolata','Carmela','Esperanza','Remedios','Chrysoula','Aikaterini','Filomena','Addolorata','Amparo']},
+origin_slavic:{y:['Anastasia','Katya','Milena','Zuzana','Karolina','Oksana','Alina','Veronika','Daria','Polina','Marta','Ivana'],a:['Svetlana','Olga','Natalia','Irina','Tatiana','Elena','Halina','Bozena','Ludmila','Galina','Marina','Danuta'],s:['Vera','Nadezhda','Lyubov','Zinaida','Valentina','Raisa','Stanislawa','Jadwiga','Antonina','Zofia','Praskovya','Yevdokia']},
+origin_french:{y:['Lea','Manon','Camille','Chloe','Ines','Jade','Louise','Emma','Juliette','Margaux','Oceane','Clara'],a:['Sophie','Isabelle','Nathalie','Sandrine','Valerie','Celine','Karine','Stephanie','Aurelie','Delphine','Virginie','Laetitia'],s:['Monique','Jacqueline','Nicole','Danielle','Micheline','Josette','Yvette','Colette','Bernadette','Simone','Huguette','Ginette']},
+origin_italian:{y:['Giulia','Sofia','Aurora','Alice','Ginevra','Emma','Giorgia','Greta','Beatrice','Vittoria','Martina','Chiara'],a:['Paola','Francesca','Alessandra','Simona','Barbara','Monica','Cristina','Elisabetta','Silvia','Daniela','Roberta','Antonella'],s:['Giuseppina','Assunta','Carmela','Concetta','Immacolata','Filomena','Addolorata','Rosaria','Vincenza','Antonietta','Nunzia','Santina']},
+origin_mexico:{y:['Ximena','Valeria','Camila','Renata','Fernanda','Regina','Daniela','Andrea','Sofia','Vanessa','Melissa','Itzel'],a:['Guadalupe','Veronica','Leticia','Araceli','Maribel','Rocio','Alejandra','Claudia','Norma','Silvia','Elvira','Yolanda'],s:['Maria del Carmen','Josefina','Guillermina','Esperanza','Refugio','Socorro','Amparo','Remedios','Consuelo','Herlinda','Aurelia','Petra']},
+origin_brazil:{y:['Julia','Larissa','Leticia','Camila','Beatriz','Gabriela','Amanda','Mariana','Isabela','Thais','Bruna','Vitoria'],a:['Adriana','Simone','Vanessa','Patricia','Fernanda','Cristiane','Luciana','Renata','Fabiana','Michele','Elaine','Viviane'],s:['Maria Aparecida','Terezinha','Marlene','Neuza','Iracema','Zilda','Creusa','Josefa','Sebastiana','Raimunda','Dirce','Odete']},
+origin_peru:{y:['Valeria','Luciana','Camila','Alejandra','Fernanda','Micaela','Daniela','Ariana','Nicole','Fiorella','Killari','Alessandra'],a:['Rosa Maria','Carmen','Milagros','Roxana','Giovanna','Maritza','Yolanda','Nancy','Betty','Doris','Gladys','Vilma'],s:['Juana','Francisca','Hilda','Aurora','Teodora','Zoila','Alejandrina','Julia','Victoria','Paulina','Emperatriz','Dominga']},
+origin_argentina:{y:['Martina','Catalina','Valentina','Sofia','Delfina','Agustina','Julieta','Camila','Florencia','Lucia','Milagros','Guadalupe'],a:['Veronica','Gabriela','Silvina','Mariela','Andrea','Fernanda','Claudia','Sandra','Karina','Alejandra','Cecilia','Romina'],s:['Norma','Susana','Beatriz','Alicia','Graciela','Marta','Nelida','Elsa','Haydee','Mabel','Zulema','Irma']},
+origin_puerto_rico:{y:['Yaritza','Genesis','Alondra','Nashaly','Kiara','Valeria','Adriana','Camila','Paola','Gabriela','Neysha','Dayanara'],a:['Carmen','Wanda','Ivette','Maritza','Migdalia','Lourdes','Brenda','Damaris','Lissette','Sonia','Vilma','Ivelisse'],s:['Carmen Maria','Iris','Aida','Gladys','Awilda','Nilda','Luz','Providencia','Monserrate','Ramonita','Georgina','Milagros']},
+origin_colombia:{y:['Valentina','Isabella','Mariana','Salome','Gabriela','Luciana','Manuela','Sara','Camila','Daniela','Laura','Juanita'],a:['Luz Marina','Sandra Milena','Diana','Claudia','Adriana','Paola','Marcela','Liliana','Yaneth','Carolina','Consuelo','Amparo'],s:['Blanca','Rosalba','Fabiola','Myriam','Cecilia','Stella','Nohora','Aracelly','Ligia','Omaira','Edilma','Bertha']},
+origin_el_salvador:{y:['Fatima','Alejandra','Gabriela','Katherine','Andrea','Daniela','Marcela','Vanessa','Karla','Tatiana','Xiomara','Beatriz'],a:['Reina','Sonia','Marisol','Dinora','Maribel','Lorena','Ana Gloria','Morena','Yesenia','Blanca','Sandra','Vilma'],s:['Transito','Candelaria','Paula','Angela','Dominga','Santos','Mercedes','Etelvina','Rosaura','Herminia','Felipa','Tomasa']},
+origin_west_africa:{y:['Adaeze','Chidinma','Aminata','Fatoumata','Ngozi','Yemi','Ifeoma','Kadiatou','Mariama','Abena','Efua','Titilayo'],a:['Folake','Yetunde','Bisi','Funke','Nneka','Chinyere','Awa','Oumou','Adjoa','Akosua','Ramatoulaye','Bintou'],s:['Comfort','Patience','Grace','Victoria','Felicia','Margaret','Beatrice','Theresa','Cecilia','Agnes','Esther','Juliana']},
+origin_north_africa:{y:['Yasmine','Salma','Amira','Nour','Rania','Meriem','Lina','Aya','Hiba','Douaa','Imane','Chaima'],a:['Fatiha','Naima','Khadija','Samira','Latifa','Rachida','Malika','Souad','Nadia','Karima','Saida','Zohra'],s:['Aicha','Fatna','Zineb','Rabia','Halima','Yamna','Mbarka','Kheira','Zahra','Mimouna','Tamou','Itto']},
+origin_horn_africa:{y:['Amina','Hodan','Ayaan','Sagal','Nimo','Iman','Samira','Muna','Zahra','Ifrah','Deka','Hani'],a:['Fadumo','Khadra','Maryan','Halima','Asha','Fartun','Shukri','Ubah','Sahra','Nasteexo','Caasha','Hawa'],s:['Xaawo','Faadumo','Maryan','Caasha','Khadiija','Aamina','Ruqiya','Timiro','Dahabo','Cambaro','Xaliimo','Saynab']},
+origin_central_east_africa:{y:['Makena','Wanjiru','Achieng','Nyambura','Zawadi','Neema','Amani','Rehema','Wambui','Akinyi','Njeri','Baraka'],a:['Grace','Faith','Mercy','Esther','Joyce','Beatrice','Catherine','Margaret','Jane','Agnes','Rose','Lucy'],s:['Wangari','Wairimu','Nyokabi','Wanjiku','Waithera','Muthoni','Nduta','Wangui','Njoki','Gathoni','Wambura','Nyaguthii']},
+origin_southern_africa:{y:['Thandiwe','Nomvula','Lerato','Zanele','Ayanda','Nokuthula','Palesa','Bontle','Amahle','Sibongile','Refilwe','Zinhle'],a:['Nomsa','Thembi','Busisiwe','Ntombi','Dikeledi','Mmabatho','Portia','Precious','Pretty','Gugu','Lindiwe','Khanyisile'],s:['Nomathemba','Nobuhle','Thokozile','Ntombizodwa','Maria','Selina','Emily','Evelyn','Regina','Josephina','Anna','Miriam']},
+origin_japanese:{y:['Yui','Hina','Sakura','Rin','Aoi','Mei','Himari','Koharu','Ichika','Akari','Honoka','Riko'],a:['Naoko','Tomoko','Yumiko','Kumiko','Mariko','Keiko','Junko','Akiko','Yoko','Hiromi','Sachiko','Miyuki'],s:['Kazuko','Haruko','Setsuko','Fumiko','Shizuko','Yoshiko','Kiyoko','Masako','Chiyoko','Toshiko','Hisako','Teruko']},
+origin_korean:{y:['Ji-woo','Seo-yeon','Min-seo','Ha-eun','Soo-ah','Ji-yoo','Chae-won','Yuna','Da-eun','Ye-eun','Hae-won','Na-yeon'],a:['Eun-ju','Mi-kyung','Hyun-jung','Sun-young','Ji-hye','Soo-jin','Mi-sook','Kyung-hee','Young-mi','Jung-hwa','Hye-jin','Yoon-jung'],s:['Young-sook','Ok-ja','Chun-ja','Soon-bok','Jung-soon','Myung-ja','Bok-hee','Keum-ja','Soon-ja','Ok-soon','Young-ja','Malsook']},
+origin_chinese:{y:['Xinyi','Yutong','Zihan','Jiaqi','Mengyao','Yixuan','Shiyu','Ruoxi','Wenxin','Sitong','Keyi','Hanyu'],a:['Wei','Fang','Yan','Juan','Li','Min','Jing','Hong','Xia','Ping','Hui','Lan'],s:['Xiulan','Guiying','Meirong','Yulan','Fengying','Suzhen','Cuifen','Shulan','Zhilan','Xiuzhen','Guilan','Chunmei']},
+origin_taiwanese:{y:['Yi-chen','Pin-yu','Yu-han','Tzu-ying','Hsin-yi','Chia-ling','Yun-ting','Pei-shan','Wan-ting','Szu-chi','Ya-wen','Chih-han'],a:['Mei-ling','Shu-fen','Li-hua','Hsiu-mei','Ya-ping','Su-chen','Ming-chu','Feng-chiao','Li-chen','Yueh-e','Chin-lien','Pao-chu'],s:['A-mei','Hsiu-lan','Yueh-hsia','Chin-mei','Su-ying','Pao-yu','Mei-hua','Kuei-hsiang','Man-li','Feng-ying','Tsai-feng','Jui-lien']},
+origin_mongolian:{y:['Nomin','Anu','Khulan','Enkhjin','Maral','Tsetseg','Sarnai','Odval','Bolormaa','Ariunaa','Namuun','Michid'],a:['Oyunchimeg','Tsetsegmaa','Narantsetseg','Enkhtuya','Altantsetseg','Bayarmaa','Erdenechimeg','Otgonbayar','Delgermaa','Munkhtsetseg','Oyuntsetseg','Batchimeg'],s:['Dulmaa','Tsermaa','Khandmaa','Dolgor','Suren','Tsevelmaa','Norjmaa','Pagma','Dejid','Lkhamsuren','Tserendulam','Dulamjav']},
+origin_hong_kong:{y:['Hei-tung','Wing-yan','Ka-yan','Tsz-ching','Hoi-lam','Cheuk-lam','Yuet-ying','Sum-yu','Chloe','Vivian','Kelly','Natalie'],a:['Siu-ming','Wai-fong','Mei-yee','Lai-fun','Yuk-ling','Suk-fan','Fiona','Winnie','Cindy','Amy','Queenie','Carmen'],s:['Siu-lan','Yuk-ying','Sau-chun','Lai-ha','Fung-ying','Kam-ling','Ah-ngan','Oi-lin','Siu-king','Wai-chun','Ngan-fa','Mei-fong']},
+origin_filipino:{y:['Althea','Samantha','Andrea','Angel','Nicole','Danica','Kyla','Bianca','Trisha','Jasmine','Ella','Chelsea'],a:['Maricel','Jocelyn','Rowena','Marites','Analyn','Cherry','Aileen','Marilou','Gemma','Liezel','Divina','Rosalie'],s:['Remedios','Lourdes','Erlinda','Corazon','Teresita','Esperanza','Adoracion','Milagros','Purificacion','Rosario','Felicidad','Natividad']},
+origin_vietnamese:{y:['Linh','Ngoc','Anh','Thao','Trang','Phuong','My','Han','Chi','Nhi','Vy','Quynh'],a:['Huong','Lan','Hoa','Thuy','Hanh','Nga','Mai','Dung','Loan','Tuyet','Yen','Hong'],s:['Bay','Sau','Ut','Muoi','Tam','Suong','Gai','Nhung','Cuc','Dao','Lieu','Sen']},
+origin_thai:{y:['Ploy','Namfon','Fern','Mint','Praew','Bam','Kwan','Nan','Aom','Mook','View','Cream'],a:['Siriporn','Wanida','Sunisa','Pornpan','Rattana','Malee','Suwanna','Kanya','Duangjai','Amporn','Pranee','Wilai'],s:['Somjai','Boonsri','Thongdee','Bualoi','Chanpen','Kamlai','Saengduan','Bunma','Somsri','Thipphawan','Ubon','Lamduan']},
+origin_indonesian:{y:['Putri','Ayu','Dinda','Salsabila','Nabila','Citra','Intan','Bella','Rani','Dewi','Sari','Maharani'],a:['Siti','Sri','Endang','Yuni','Wati','Rina','Lilis','Yanti','Nining','Titin','Eka','Ratna'],s:['Suharti','Sumiati','Partini','Ngatiyem','Sulastri','Kasih','Painem','Tukinem','Warsini','Sarinah','Jumiati','Rukmini']},
+origin_sri_lankan:{y:['Sanduni','Kavindi','Nethmi','Dilini','Sachini','Hiruni','Tharushi','Ishara','Nimasha','Chamodi','Dinithi','Sewwandi'],a:['Kumari','Chandrika','Nilmini','Damayanthi','Priyanka','Shyama','Sriyani','Renuka','Malani','Anoma','Deepika','Chamari'],s:['Kamalawathi','Somawathi','Leelawathi','Podimenike','Karunawathi','Gunawathi','Chandrawathi','Wimalawathi','Piyaseeli','Ranmenika','Sumanawathi','Dayawathi']},
+origin_pakistani:{y:['Ayesha','Fatima','Zainab','Maryam','Hira','Iqra','Mahnoor','Areeba','Laiba','Eman','Khadija','Amna'],a:['Shazia','Nasreen','Farzana','Rubina','Shabana','Samina','Naheed','Kausar','Riffat','Tahira','Shaheen','Yasmin'],s:['Zubaida','Hameeda','Rasheeda','Sakina','Khursheed','Mumtaz','Suraiya','Anwar','Zohra','Bilquis','Aziz Fatima','Sardar Begum']},
+origin_bangladeshi:{y:['Nusrat','Sumaiya','Tasnim','Sadia','Maisha','Faria','Anika','Raisa','Lamia','Nabila','Tanha','Mim'],a:['Shahana','Nasima','Rehana','Shirin','Salma','Hasina','Rokeya','Momena','Jahanara','Ferdousi','Rabeya','Khaleda'],s:['Anowara','Jobeda','Rahima','Halima','Sufia','Amena','Fatema','Zohra','Ayesha Khatun','Saleha','Hazera','Marium']},
+origin_burmese:{y:['Su Myat','Hnin','Thiri','Ei Mon','Shwe Yi','Nandar','Yoon','May Thu','Zin Mar','Phyu Phyu','Khin Sandar','Thet Htar'],a:['Khin Mar','Aye Aye','Than Than','Mya Mya','San San','Nwe Nwe','Tin Tin','Moe Moe','Yin Yin','Khaing Khaing','Cho Cho','Hla Hla'],s:['Daw Khin','Daw Mya','Daw Aye','Daw Tin','Daw San','Daw Hla','Daw Than','Daw Yin','Daw Cho','Daw Nwe','Daw Sein','Daw Ohn']}
+};
+let generatedName=null;
+function pickCharName(){
+  if(generatedName)return generatedName;
+  const gvn=id=>{const r=results.find(r=>r.wheelId===id);return r?r.label:null;};
+  const age=gvn('age')||'';
+  const band=/^(18|2\d|30-35)/.test(age)?'y':/^(36|41|51)/.test(age)?'a':'s';
+  let pool=null;
+  for(const oid in NAME_POOLS){if(results.find(r=>r.wheelId===oid)){pool=NAME_POOLS[oid];break;}}
+  if(!pool){
+    // Race fallback when no origin wheel fired
+    const race=(gvn('race')||'').toLowerCase();
+    const rMap={'white us':'origin_white_us','white euro':'origin_white_euro','black us':'origin_black_us','black afro':'origin_black_afro','latina':'origin_latina','north asian':'origin_north_asian','south asian':'origin_south_asian','persian':'origin_persian','native':'origin_native','caribbean':'origin_caribbean','afro latina':'origin_afro_latina'};
+    for(const k in rMap){if(race.includes(k)){pool=NAME_POOLS[rMap[k]];break;}}
+    if(!pool)pool=NAME_POOLS.origin_white_us;
+  }
+  const names=pool[band]||pool.a;
+  generatedName=names[Math.floor(Math.random()*names.length)];
+  return generatedName;
+}
 function buildSDPrompt(){
   // ── helpers ──
   const gv=id=>{const r=results.find(r=>r.wheelId===id);return r?r.label:null;};
@@ -12596,11 +12680,16 @@ function buildSDPrompt(){
   // ── Face ──
   const ratingNum=faceRating?parseInt(faceRating.split('/')[0])||0:0;
   const FACE_MAP={
-    1:'plain face, unattractive features',2:'plain face, unattractive features',
-    3:'below average face, plain features',4:'below average face, ordinary looks',
-    5:'average face, girl next door',6:'average attractive face, pleasant features',
-    7:'beautiful face, pretty',8:'beautiful face, very pretty',
-    9:'stunning face, highly attractive',10:'perfect face, breathtaking beauty',
+    1:'very unattractive face, unfortunate features',
+    2:'unattractive face, homely features',
+    3:'plain face, forgettable features',
+    4:'slightly below average face, ordinary looks',
+    5:'average face, girl next door',
+    6:'above average face, pleasant features',
+    7:'attractive face, noticeably pretty',
+    8:'beautiful face, striking features',
+    9:'stunning face, head-turning beauty',
+    10:'flawless face, breathtaking beauty',
   };
   const faceDesc=FACE_MAP[ratingNum]||'';
   const faceShapeTag=faceShape?faceShape.replace(/\bface\b/gi,'').replace(/,.*$/,'').trim()+' face shape':'';
@@ -12778,6 +12867,60 @@ function buildSDPrompt(){
     'best quality, sharp focus, detailed skin texture',
   ].filter(Boolean).join(', ');
 
+  // ── SFW Reference Card — magazine-style visual card, undersized bra + thong ──
+  const charName=pickCharName();
+  const cardTitle=charName.toUpperCase();
+  const cardSubtitle=(ethnic||'woman').toUpperCase()+' VISUAL CARD';
+  const wLock=typeof ssCache!=='undefined'?ssCache:{};
+  const statW=wLock.weight?wLock.weight+' LBS':'';
+  const statWaist=wLock.waist?wLock.waist+'"':'';
+  const statHips=wLock.hips?wLock.hips+'"':'';
+  const statBust=wLock.bust?wLock.bust+'"':'';
+  const cardStats=[
+    'AGE: '+(ageTag||'unknown'),
+    htTag?'HEIGHT: '+htTag.replace(/^(very short|short|tall|very tall|extremely tall),?\s*/i,'').toUpperCase():'',
+    statW?'WEIGHT: '+statW:'',
+    'BUILD: '+(bodyTag||'').split(',')[0].toUpperCase(),
+    cup?'CUP SIZE: '+cup:'',
+    statBust?'BUST: '+statBust:'',
+    statWaist?'WAIST: '+statWaist:'',
+    statHips?'HIPS: '+statHips:'',
+    'HAIR: '+(hairTag||'').split(',')[0].toUpperCase(),
+    'EYES: '+(eyesTag||'').replace(/ eyes$/i,'').toUpperCase(),
+    faceDesc?'FACE: '+faceDesc.split(',')[0].toUpperCase():'',
+  ].filter(Boolean).join(' ');
+  // Look Notes — notable segments, max 5, priority order
+  const notes=[];
+  if(skinAgingTag)notes.push(skinAgingTag);
+  if(stretchTag)notes.push(stretchTag);
+  if(celluTag)notes.push(celluTag);
+  if(backTag&&/roll|fat|spillover|buried/.test(backTag))notes.push(backTag.split(',').slice(0,2).join(','));
+  if(armsTag&&/bingo|elbow fold|crepey/.test(armsTag))notes.push(armsTag.split(',').slice(0,2).join(','));
+  if(thighTexture&&/darkening|cellulite|stretch|loose|crepey/i.test(thighTexture))notes.push(clean(thighTexture)+' on thighs');
+  if(collarboneTag&&/asymmetr|prominent|buried/i.test(collarboneTag))notes.push(collarboneTag);
+  if(faceFullTag&&/jowls|double chin|gaunt/.test(faceFullTag))notes.push(faceFullTag.split(',').slice(0,2).join(','));
+  const lookNotes=notes.slice(0,5).map(n=>'• '+n).join(' ');
+  const cardOutfit='undersized tight white bra straining at the bust, dark thong';
+  const cardScene=bgTag||'neutral interior setting';
+  const cardLight=lightTag||'soft natural daylight';
+  const refCard=[
+    'professional character visual reference card, clean modern graphic design, sharp perfectly legible text, bold clear typography, all text must be sharp and fully readable, high-end model sheet layout',
+    'LEFT SIDE: large portrait of '+charName+', '+[ageTag,ethnic].filter(Boolean).join(' ')+', '+[skinClean,faceDesc,faceFullTag,faceShapeTag,eyesTag,browsTag,noseTag,lipsTag,hairTag].filter(Boolean).join(', ')+', neutral expression, '+cardOutfit+', standing in front of '+cardScene+' softly blurred behind her',
+    'big bold magenta title text: "'+cardTitle+'" white subtitle text: "'+cardSubtitle+'"',
+    'clear vertical white stats text: '+cardStats,
+    'CENTER five panels with bold white labels:',
+    'FRONT — full body front view, '+[faceDesc,cupTag,assSizeTag,bodyTag].filter(Boolean).join(', ')+', '+cardOutfit+', arms at sides, feet together, standing facing camera, '+cardScene+', '+cardLight,
+    'LEFT SIDE — full body left side profile, body turned 90 degrees left, '+[cupTag,assProjTag,bodyTag].filter(Boolean).join(', ')+', '+cardOutfit+', standing in profile, '+cardScene+', '+cardLight,
+    'RIGHT SIDE — full body right side profile, body turned 90 degrees right, '+[cupTag,assProjTag,bodyTag].filter(Boolean).join(', ')+', '+cardOutfit+', standing in profile, '+cardScene+', '+cardLight,
+    'BACK — full body rear view, '+[assParts,backTag].filter(Boolean).join(', ')+', '+(hairTag?hairTag+' down the back, ':'')+cardOutfit+', standing facing away, '+cardScene+', '+cardLight,
+    'DETAILS — 2x2 close-ups: '+[[faceDesc,faceFullTag].filter(Boolean).join(', ')||'face',cupTag?cupTag+' under bra':'bust',assSizeTag||'glute curve',celluTag||stretchTag||'skin texture'].filter(Boolean).join(', ')+', background softly out of focus behind each crop',
+    'BOTTOM BLACK BAR with clear white text: LOOK NOTES: '+lookNotes,
+    'COLOR PALETTE: flat color swatches labeled SKIN | HAIR | EYES | CLOTHING',
+    'MOOD / VIBE: Neutral. Quiet. Grounded.',
+    cardScene+' throughout, everyday unposed atmosphere, '+cardLight+', no harsh shadows',
+    'photorealistic, RAW photo, 8k, extremely detailed skin, sharp focus, perfect readable text, clean graphic design',
+  ].filter(Boolean).join(', ');
+
   // ── Output — single cycling box, 13 prompts ──
   window._sdPrompts=[
     {l:'Front Face',t:fFront},
@@ -12793,6 +12936,7 @@ function buildSDPrompt(){
     {l:'Face Reference Sheet',t:faceSheet},
     {l:'Body Reference Sheet',t:bodySheet},
     {l:'Full Creative',t:creative},
+    {l:'Reference Card',t:refCard},
   ];
   window._sdIdx=0;
   renderSDBox();
