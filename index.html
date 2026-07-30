@@ -11437,6 +11437,9 @@ function calcStatStrip(){
     const bustTotal=Math.round(bustBase+shoulderMod+projMod+shapeMod+firmMod+posMod);
     const bustAllKnown=backL&&breastProjL&&breastShapeL&&breastFirmL&&breastPosL;
     bustStr=bustAllKnown?`${bustTotal}"`:`~${bustTotal-1}\u2013${bustTotal+1}"`;
+    // Cache for the reference card (bra size + bust circumference)
+    if(braAllKnown)ssCache.bra=(body==='USSBBW'?'60+'+cup:band+cup);
+    if(bustAllKnown)ssCache.bust=bustTotal;
   }
 
   // \u2500\u2500 Waist \u2500\u2500
@@ -12982,21 +12985,65 @@ function buildSDPrompt(){
   const cardVibe=vibeParts.length?vibeParts.join(' '):'Neutral. Quiet. Grounded.';
   const charName=pickCharName();
   const cardTitle=charName.toUpperCase();
-  const cardSubtitle=(ethnic||'woman').toUpperCase()+' VISUAL CARD';
+  const cardSubtitle=(ethnic||'woman').toUpperCase()+(originPlace?' \u2014 '+originPlace.toUpperCase():'');
   const wLock=typeof ssCache!=='undefined'?ssCache:{};
+  // Card-only height figures — extremes get concrete numbers for the text block
+  const CARD_HT={
+    "<4'0\"":'3FT9',"4'1\"-4'5\"":'4FT3',"4'6\"-4'10\"":'4FT8',"4'11\"-5'2\"":'5FT1',
+    "5'3\"-5'7\"":'5FT5',"5'8\"-5'11\"":'5FT9',"6'0\"-6'5\"":'6FT2',">6'6\"":'6FT9',
+  };
+  const cardHt=CARD_HT[height]||'';
+  // Origin location — text before the em-dash, truncated at the first comma if long
+  let originPlace='';
+  for(const oid in REGION_OF){const v=gv(oid);if(v){originPlace=v.split('\u2014')[0].trim();break;}}
+  if(originPlace.length>34&&originPlace.includes(','))originPlace=originPlace.split(',')[0].trim();
   const statW=wLock.weight?wLock.weight+' LBS':'';
   const statWaist=wLock.waist?wLock.waist+'"':'';
   const statHips=wLock.hips?wLock.hips+'"':'';
   const statBust=wLock.bust?wLock.bust+'"':'';
+  // ── Height perspective — tested gradient, left portrait only ──
+  const HT_LEAD={
+    "<4'0\"":'(high angle from above:1.4)',
+    "4'1\"-4'5\"":'(high angle from above:1.4)',
+    "4'6\"-4'10\"":'(slightly high angle from above:1.4)',
+    "4'11\"-5'2\"":'(slightly high angle from above:1.4)',
+    "5'3\"-5'7\"":'(eye level shot:1.3)',
+    "5'8\"-5'11\"":'(low angle shot from below:1.2)',
+    "6'0\"-6'5\"":'(low angle shot from below:1.35)',
+    ">6'6\"":'(low angle shot from below:1.5)',
+  };
+  const HT_DESC={
+    "<4'0\"":'(very short petite tiny woman, dwarfed by the viewer:1.4)',
+    "4'1\"-4'5\"":'(very short petite woman, much shorter than the viewer:1.35)',
+    "4'6\"-4'10\"":'(short petite woman, noticeably shorter than the viewer:1.3)',
+    "4'11\"-5'2\"":'(short woman, shorter than the viewer:1.3)',
+    "5'3\"-5'7\"":'(average height woman, same height as the viewer:1.2)',
+    "5'8\"-5'11\"":'(slightly tall woman, slightly taller than the viewer:1.3)',
+    "6'0\"-6'5\"":'(tall woman, noticeably taller than the viewer:1.35)',
+    ">6'6\"":'(very tall statuesque towering woman, towering over the viewer:1.4)',
+  };
+  const HT_TAIL={
+    "<4'0\"":'(shot from above:1.3), looking up at viewer',
+    "4'1\"-4'5\"":'(shot from above:1.3), looking up at viewer',
+    "4'6\"-4'10\"":'(shot from slightly above:1.3), looking up at viewer',
+    "4'11\"-5'2\"":'(shot from slightly above:1.3), looking up at viewer',
+    "5'3\"-5'7\"":'(shot at eye level:1.2), looking at viewer',
+    "5'8\"-5'11\"":'(shot from below looking up at her:1.15), looking down at viewer',
+    "6'0\"-6'5\"":'(shot from below looking up at her:1.3), looking down at viewer',
+    ">6'6\"":'(shot from below looking up at her:1.4), looking down at viewer',
+  };
+  const htLead=HT_LEAD[height]||'(eye level shot:1.3)';
+  const htDesc=HT_DESC[height]||'';
+  const htTail=HT_TAIL[height]||'(shot at eye level:1.2), looking at viewer';
   const cardStats=[
     'AGE: '+(wLock.appAge?wLock.appAge:(ageTag||'unknown')),
-    htTag?'HEIGHT: '+htTag.replace(/^(very short|short|tall|very tall|extremely tall),?\s*/i,'').toUpperCase():'',
-    statW?'WEIGHT: '+statW:'',
-    'BUILD: '+(bodyTag||'').split(',')[0].toUpperCase(),
-    cup?'CUP SIZE: '+cup:'',
-    statBust?'BUST: '+statBust:'',
-    statWaist?'WAIST: '+statWaist:'',
-    statHips?'HIPS: '+statHips:'',
+    cardHt?'HEIGHT: '+cardHt:'',
+    wLock.weight?'WEIGHT: '+wLock.weight+' LBS':'',
+    'BUILD: '+(bodyTag||'').split(',')[0].replace(/\s*\b(build|figure|body)\b\s*/gi,' ').replace(/\s{2,}/g,' ').trim().toUpperCase(),
+    wLock.bra?'CUP SIZE: '+wLock.bra:(cup?'CUP SIZE: '+cup:''),
+    wLock.bust?'BUST: '+wLock.bust+'\"':'',
+    wLock.waist?'WAIST: '+wLock.waist+'\"':'',
+    wLock.hips?'HIPS: '+wLock.hips+'\"':'',
     'HAIR: '+(hairTag||'').split(',')[0].toUpperCase(),
     'EYES: '+(eyesTag||'').replace(/ eyes$/i,'').toUpperCase(),
     faceDesc?'FACE: '+faceDesc.split(',')[0].toUpperCase():'',
@@ -13017,7 +13064,7 @@ function buildSDPrompt(){
   const cardLight=lightTag||'soft natural daylight';
   const refCard=[
     'professional photorealistic character visual reference card, clean modern graphic design, sharp perfectly legible text, bold clear typography, all text must be sharp and fully readable, high-end model sheet layout',
-    'LEFT SIDE: large portrait of '+charName+', '+[ageTag,ethnic].filter(Boolean).join(' ')+', '+[skinClean,faceDesc,faceFullTag,faceShapeTag,eyesTag,browsTag,noseTag,lipsTag,hairTag].filter(Boolean).join(', ')+', neutral expression, '+cardOutfit+', standing in front of '+cardScene+' softly blurred behind her',
+    'LEFT SIDE: '+htLead+', large portrait of '+charName+', '+[htDesc,ageTag,ethnic].filter(Boolean).join(', ')+', '+[skinClean,faceDesc,faceFullTag,faceShapeTag,eyesTag,browsTag,noseTag,lipsTag,hairTag].filter(Boolean).join(', ')+', neutral expression, '+cardOutfit+', standing in front of '+cardScene+' softly blurred behind her, '+htTail,
     'big bold magenta title text: "'+cardTitle+'" white subtitle text: "'+cardSubtitle+'"',
     'clear vertical white stats text: '+cardStats,
     'CENTER five panels with bold white labels:',
