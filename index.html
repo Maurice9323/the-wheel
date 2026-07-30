@@ -13052,7 +13052,6 @@ function buildSDPrompt(){
     (wLock.weight||wLock.weightApprox)?'WEIGHT: '+(wLock.weight||wLock.weightApprox)+' LBS':'',
     'BUILD: '+(bodyTag||'').split(',')[0].replace(/\s*\b(build|figure|body)\b\s*/gi,' ').replace(/\s{2,}/g,' ').trim().toUpperCase(),
     (wLock.bra||wLock.braApprox)?'CUP SIZE: '+(wLock.bra||wLock.braApprox):(cup?'CUP SIZE: '+cup:''),
-    (wLock.bust||wLock.bustApprox)?'BUST: '+(wLock.bust||wLock.bustApprox)+'\"':'',
     wLock.waist?'WAIST: '+wLock.waist+'\"':'',
     wLock.hips?'HIPS: '+wLock.hips+'\"':'',
     hairTag?'HAIR: '+hairTag.split(',')[0].replace(/\s*\bhair\b\s*/gi,' ').replace(/\s{2,}/g,' ').trim().toUpperCase()+' HAIR':'',
