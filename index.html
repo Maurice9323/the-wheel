@@ -11414,6 +11414,7 @@ function calcStatStrip(){
       lo=Math.min(620,Math.max(70,Math.round(lo)));hi=Math.min(620,Math.max(70,Math.round(hi)));
       const allKnown=height&&cup&&thickL&&ageL&&assL&&muscleL&&frameL&&backL&&stomachL&&breastProjL&&bodyPropL&&(!is60||(redistL&&skinAgingL));
       weightStr=allKnown?`~${ssLock('weight',lo,hi)} lbs`:`~${lo}\u2013${hi} lbs`;
+      if(!allKnown)ssCache.weightApprox=Math.round((lo+hi)/2);
     }
   }
 
@@ -11439,7 +11440,9 @@ function calcStatStrip(){
     bustStr=bustAllKnown?`${bustTotal}"`:`~${bustTotal-1}\u2013${bustTotal+1}"`;
     // Cache for the reference card (bra size + bust circumference)
     if(braAllKnown)ssCache.bra=(body==='USSBBW'?'60+'+cup:band+cup);
+    else ssCache.braApprox=(body==='USSBBW'?'60+'+cup:band+cup);
     if(bustAllKnown)ssCache.bust=bustTotal;
+    else ssCache.bustApprox=bustTotal;
   }
 
   // \u2500\u2500 Waist \u2500\u2500
@@ -11464,6 +11467,14 @@ function calcStatStrip(){
       if(bodyPropL){const bph=SS_BODY_PROP_HIP[bodyPropL]??0;lo+=bph;hi+=bph;}
       if(is60&&redistL){const rh=SS_REDIST_HIP[redistL]??0;lo+=rh;hi+=rh;}
       lo=Math.min(130,Math.max(24,Math.round(lo)));hi=Math.min(130,Math.max(24,Math.round(hi)));
+      // Anatomical floor: hips can't sit far below the waist base except on true apple shapes
+      const _wb=SS_WAIST_BASE[body];
+      if(_wb&&!/Meatball|Upside Down Triangle/.test(body)){
+        const hipFloorLo=Math.round(_wb[0]*1.02),hipFloorHi=Math.round(_wb[1]*1.02);
+        if(lo<hipFloorLo)lo=hipFloorLo;
+        if(hi<hipFloorHi)hi=hipFloorHi;
+        if(hi<lo)hi=lo;
+      }
       _hipLo=lo;_hipHi=hi;
       const allKnown=assL&&thickL&&assProjL&&assShapeL&&bodyPropL&&(!is60||redistL);
       hipsStr=allKnown?`~${ssLock('hips',lo,hi)}"`:`~${lo}\u2013${hi}"`;
@@ -12985,6 +12996,10 @@ function buildSDPrompt(){
   const cardVibe=vibeParts.length?vibeParts.join(' '):'Neutral. Quiet. Grounded.';
   const charName=pickCharName();
   const cardTitle=charName.toUpperCase();
+  // Origin location — text before the em-dash, truncated at the first comma if long
+  let originPlace='';
+  for(const oid in REGION_OF){const v=gv(oid);if(v){originPlace=v.split('\u2014')[0].trim();break;}}
+  if(originPlace.length>34&&originPlace.includes(','))originPlace=originPlace.split(',')[0].trim();
   const cardSubtitle=(ethnic||'woman').toUpperCase()+(originPlace?' \u2014 '+originPlace.toUpperCase():'');
   const wLock=typeof ssCache!=='undefined'?ssCache:{};
   // Card-only height figures — extremes get concrete numbers for the text block
@@ -12993,10 +13008,6 @@ function buildSDPrompt(){
     "5'3\"-5'7\"":'5FT5',"5'8\"-5'11\"":'5FT9',"6'0\"-6'5\"":'6FT2',">6'6\"":'6FT9',
   };
   const cardHt=CARD_HT[height]||'';
-  // Origin location — text before the em-dash, truncated at the first comma if long
-  let originPlace='';
-  for(const oid in REGION_OF){const v=gv(oid);if(v){originPlace=v.split('\u2014')[0].trim();break;}}
-  if(originPlace.length>34&&originPlace.includes(','))originPlace=originPlace.split(',')[0].trim();
   const statW=wLock.weight?wLock.weight+' LBS':'';
   const statWaist=wLock.waist?wLock.waist+'"':'';
   const statHips=wLock.hips?wLock.hips+'"':'';
@@ -13038,14 +13049,14 @@ function buildSDPrompt(){
   const cardStats=[
     'AGE: '+(wLock.appAge?wLock.appAge:(ageTag||'unknown')),
     cardHt?'HEIGHT: '+cardHt:'',
-    wLock.weight?'WEIGHT: '+wLock.weight+' LBS':'',
+    (wLock.weight||wLock.weightApprox)?'WEIGHT: '+(wLock.weight||wLock.weightApprox)+' LBS':'',
     'BUILD: '+(bodyTag||'').split(',')[0].replace(/\s*\b(build|figure|body)\b\s*/gi,' ').replace(/\s{2,}/g,' ').trim().toUpperCase(),
-    wLock.bra?'CUP SIZE: '+wLock.bra:(cup?'CUP SIZE: '+cup:''),
-    wLock.bust?'BUST: '+wLock.bust+'\"':'',
+    (wLock.bra||wLock.braApprox)?'CUP SIZE: '+(wLock.bra||wLock.braApprox):(cup?'CUP SIZE: '+cup:''),
+    (wLock.bust||wLock.bustApprox)?'BUST: '+(wLock.bust||wLock.bustApprox)+'\"':'',
     wLock.waist?'WAIST: '+wLock.waist+'\"':'',
     wLock.hips?'HIPS: '+wLock.hips+'\"':'',
-    'HAIR: '+(hairTag||'').split(',')[0].toUpperCase(),
-    'EYES: '+(eyesTag||'').replace(/ eyes$/i,'').toUpperCase(),
+    hairTag?'HAIR: '+hairTag.split(',')[0].replace(/\s*\bhair\b\s*/gi,' ').replace(/\s{2,}/g,' ').trim().toUpperCase()+' HAIR':'',
+    eyesTag?'EYES: '+eyesTag.split(',')[0].replace(/\s*\beyes?\b\s*/gi,' ').replace(/\s{2,}/g,' ').trim().toUpperCase()+' EYES':'',
     faceDesc?'FACE: '+faceDesc.split(',')[0].toUpperCase():'',
   ].filter(Boolean).join(' ');
   // Look Notes — notable segments, max 5, priority order
